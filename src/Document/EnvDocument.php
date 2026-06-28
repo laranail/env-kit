@@ -113,6 +113,21 @@ final class EnvDocument
         return new self($entries, $this->eol, $this->hasBom, $this->trailingNewline);
     }
 
+    /** Rename a key in place (preserving its position), returning a new document. */
+    public function renamed(string $from, string $to): self
+    {
+        $entries = $this->entries;
+
+        foreach ($entries as $i => $entry) {
+            if ($entry instanceof Setter && $entry->key === $from) {
+                $entries[$i] = new Setter($to, $entry->value, $entry->export, $entry->alwaysQuote);
+                break;
+            }
+        }
+
+        return new self($entries, $this->eol, $this->hasBom, $this->trailingNewline);
+    }
+
     public function eol(): string
     {
         return $this->eol;
