@@ -13,7 +13,8 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   - [x] slice 1 — document layer (Entry/Parser/Document/ValueFormatter) + round-trip & phpdotenv conformance.
   - [x] slice 2 — atomic writer + ConflictDetector + IntegrityVerifier + EditSession (+ exception base).
   - [x] slice 3 — security core (KeyValidator/ValueSanitizer/SecretRedactor/ProtectedKeys/ProductionGuard) + Rules.
-  - [ ] slice 2b — CommitPipeline + BackupManager (wire security + backup into commit).
+  - [x] slice 2b — CommitPipeline (validate→guard→backup→write→verify) + BackupManager, wired into EditSession.
+  - [ ] slice 4 — root EnvKit service + facade + helper + service provider (programmatic API).
   - [ ] slice 4 — root EnvKit service + facade + helper + service provider (programmatic API).
   - [ ] slice 5 — CLI commands · slice 6 — TUI · slice 7 — audit/encryption/extensibility.
 - [ ] **Phase 6 — docs** — README + docs/ set incl. `extending.md`.
@@ -80,3 +81,10 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   ValueSanitizer rejects NUL + strips control chars (keeps \t\n\r); redactor = length-preserving
   partial mask + key-pattern masking + message scrub; guards throw with override paths. **85 tests**
   incl. a secret-leak test (no raw value in exception messages). L9 + Pint clean.
+- **Slice 2b (commit pipeline + backups) green:** `Backup/{BackupFile,BackupManager}` (timestamped,
+  microsecond-ordered, count-retention; non-dotfile names), `Pipeline/{CommitContext,CommitPipeline}`
+  + `Pipes/{ValidateKeys,Guard,Backup,Write,Verify}` (Illuminate Pipeline). `EditSession.save()`
+  refactored to commit through the pipeline; `allowProduction()` added. Guards/validation/backup now
+  enforce on the real save path; `push()` lets consumers add middleware. **93 tests** incl.
+  production-block + override, protected-key refusal, invalid-key rejection, auto-backup snapshot,
+  custom-middleware. L9 + Pint clean. Bug found & fixed: `.env`-prefixed backups were hidden dotfiles.
