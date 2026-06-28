@@ -11,7 +11,8 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
 - [x] **Phase 3 — gap analysis** — `research/FEATURE_MATRIX.md` finalized, every row decided (no TBD).
 - [~] **Phase 4 — build headless** — engine, EditSession, guardrails, CLI, TUI, audit, encryption, extensibility; full test regime green.
   - [x] slice 1 — document layer (Entry/Parser/Document/ValueFormatter) + round-trip & phpdotenv conformance.
-  - [ ] slice 2 — atomic writer + EditSession + CommitPipeline.
+  - [x] slice 2 — atomic writer + ConflictDetector + IntegrityVerifier + EditSession (+ exception base).
+  - [ ] slice 2b — CommitPipeline + BackupManager (fold backup into commit).
   - [ ] slice 3 — security core (KeyValidator/ValueSanitizer/redaction/guards) + Rules.
   - [ ] slice 4 — root EnvKit service + facade + helper + service provider (programmatic API).
   - [ ] slice 5 — CLI commands · slice 6 — TUI · slice 7 — audit/encryption/extensibility.
@@ -67,3 +68,9 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   encode↔decode property, phpdotenv-loadable conformance. PHPStan L9 clean; Pint clean.
 - Spec refinement found in impl: a bare `=` does **not** force quoting (dotenv splits on first `=`) →
   updated §3B in the plan + ValueFormatter.
+- **Slice 2 (atomic write + transaction) green:** `Exceptions/{EnvKitException + 5 subclasses}`,
+  `Contracts/WriterInterface`, `Writer/{AtomicEnvWriter,IntegrityVerifier}` (LOCK_EX + tmpfile + fsync
+  + rename; preserves mode), `Session/{ConflictDetector,EditSession}` (+ `EnvDocument::renamed`).
+  Commit path: no-op-if-clean → optimistic-lock check → atomic write → integrity verify →
+  auto-rollback. Tests: **55 passing** incl. a **real parallel-process concurrency test** (4 writers,
+  reader never sees a partial file), rollback-on-failure, conflict detection, in-place rename. L9 + Pint clean.
