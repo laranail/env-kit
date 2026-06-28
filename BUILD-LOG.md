@@ -9,7 +9,12 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
 - [x] **Phase 1 — discovery** — 26 repos cloned → `research/_src/` (gitignored); `research/INDEX.md` complete, all licenses ✅.
 - [x] **Phase 2 — feature inventory** — 26 `research/<pkg>.FEATURES.md`; signatures re-verified vs source.
 - [x] **Phase 3 — gap analysis** — `research/FEATURE_MATRIX.md` finalized, every row decided (no TBD).
-- [ ] **Phase 4 — build headless** — engine, EditSession, guardrails, CLI, TUI, audit, encryption, extensibility; full test regime green.
+- [~] **Phase 4 — build headless** — engine, EditSession, guardrails, CLI, TUI, audit, encryption, extensibility; full test regime green.
+  - [x] slice 1 — document layer (Entry/Parser/Document/ValueFormatter) + round-trip & phpdotenv conformance.
+  - [ ] slice 2 — atomic writer + EditSession + CommitPipeline.
+  - [ ] slice 3 — security core (KeyValidator/ValueSanitizer/redaction/guards) + Rules.
+  - [ ] slice 4 — root EnvKit service + facade + helper + service provider (programmatic API).
+  - [ ] slice 5 — CLI commands · slice 6 — TUI · slice 7 — audit/encryption/extensibility.
 - [ ] **Phase 6 — docs** — README + docs/ set incl. `extending.md`.
 - [ ] **Phase 7 — release** — only after explicit approval.
 
@@ -49,3 +54,16 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   10 keep / 9 merge / 5 drop. Headless = behavioral superset; drops = obsolete stacks + anti-patterns.
 - **Phase 3→4 gate: needs the TUI-engine decision (`symfony/tui` vs `laravel/prompts`) + Infection
   thresholds before engine coding.**
+
+### Phase 4 — build headless (in progress, 2026-06-28)
+- Decisions: **TUI on `laranail/console`** (latest v1.0.0 → built on `laravel/prompts` + symfony/console
+  8; `symfony/tui` is only suggested). Infection thresholds **MSI ≥ 85% / covered-MSI ≥ 90%**.
+- `composer update` resolves & installs cleanly (Laravel 13, testbench 11.1, Pest 4.7, PHPStan 2.2,
+  Infection 0.33.3, symfony/console 8.1, laravel/prompts 0.3.21, phpdotenv 5.6.3). Fixed: infection
+  `^0.29 → ^0.33` (symfony/console 8 support); added `laranail/console` + `ext-mbstring`.
+- **Slice 1 (document layer) green:** `Entry/{AbstractEntry,Setter,Comment,EmptyLine}`,
+  `Document/{EnvParser,EnvDocument}`, `Support/ValueFormatter`, `Contracts/{EntryInterface,EnvKitInterface(read API)}`.
+  Tests: 44 passing / 64 assertions — byte-for-byte round-trip (LF/CRLF/BOM/comments/empty/no-trailing-NL),
+  encode↔decode property, phpdotenv-loadable conformance. PHPStan L9 clean; Pint clean.
+- Spec refinement found in impl: a bare `=` does **not** force quoting (dotenv splits on first `=`) →
+  updated §3B in the plan + ValueFormatter.
