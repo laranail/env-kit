@@ -40,6 +40,8 @@ abstract class TestCase extends Orchestra
         config(array_merge([
             'env-kit.path' => $path,
             'env-kit.backup_path' => $dir.'/backups',
+            'env-kit.audit.enabled' => false,        // opt-in per test
+            'env-kit.audit.path' => $dir.'/audit.log',
         ], $overrides));
 
         $this->app->forgetInstance(EnvKitInterface::class);

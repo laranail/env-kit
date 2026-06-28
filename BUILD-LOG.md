@@ -18,7 +18,8 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   - [x] slice 5 — CLI commands (set/get/unset/keys/list/rename) + namespaced names & env:* aliases.
   - [ ] slice 5b — CLI backup/restore/validate/diff/doctor/etc.
   - [x] slice 7a — runtime extensibility: EnvKitConfigurator (configure() DSL) + Macroable on EnvKit.
-  - [ ] slice 7b — audit sinks + events · slice 7c — encryption · EnvKit::fake() · EnvKitManager.
+  - [x] slice 7b — audit sinks (file/null) + AfterWrite event, wired into the commit pipeline (redacted).
+  - [ ] slice 7c — encryption · EnvKit::fake() · EnvKitManager.
   - [ ] slice 6 — TUI.
 - [ ] **Phase 6 — docs** — README + docs/ set incl. `extending.md`.
 - [ ] **Phase 7 — release** — only after explicit approval.
@@ -110,3 +111,9 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   `EnvKit`; `pipeline()` merges the configurator's middleware/protected-keys/writer each commit. **118
   tests** incl. a consumer macro, a veto mutation-middleware, extra protected keys, and a custom writer
   — all applied from "consumer" code with zero source edits (Open/Closed). L9 + Pint clean.
+- **Slice 7b (audit + events) green:** `Contracts/AuditSinkInterface`, `Audit/{AuditEvent,FileAuditSink
+  (JSON-lines),NullAuditSink}`, `Events/AfterWrite`, `Pipeline/Pipes/Audit` (final pipe; records to all
+  sinks + dispatches the event, **values redacted**, only on success). Default sink + redactor +
+  dispatcher built lazily in the provider closure (honors test config + `Event::fake()`); consumers add
+  sinks via `configure()->registerAuditSink()`. **123 tests** incl. redacted JSON-lines audit, AfterWrite
+  redaction, sink fan-out, no-op-skips-audit. L9 + Pint clean.

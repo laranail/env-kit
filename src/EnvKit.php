@@ -5,16 +5,20 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless;
 
 use Closure;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
 use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
 use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitPipeline;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Audit;
 use Simtabi\Laranail\EnvKit\Headless\Security\ProductionGuard;
 use Simtabi\Laranail\EnvKit\Headless\Security\ProtectedKeys;
+use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
 use Simtabi\Laranail\EnvKit\Headless\Session\EditSession;
 use Simtabi\Laranail\EnvKit\Headless\Support\Interpolator;
 use Simtabi\Laranail\EnvKit\Headless\Support\TypedAccessor;
@@ -48,6 +52,9 @@ final class EnvKit implements EnvKitInterface
         private readonly TypedAccessor $typed,
         private readonly Interpolator $interpolator,
         private readonly EnvKitConfigurator $configurator,
+        private readonly AuditSinkInterface $auditSink,
+        private readonly SecretRedactor $redactor,
+        private readonly ?Dispatcher $events = null,
     ) {}
 
     /** The fluent runtime-configuration DSL (Open/Closed; §2A). */
@@ -260,6 +267,9 @@ final class EnvKit implements EnvKitInterface
             $this->typed,
             $this->interpolator,
             $this->configurator,
+            $this->auditSink,
+            $this->redactor,
+            $this->events,
         );
     }
 
@@ -293,11 +303,18 @@ final class EnvKit implements EnvKitInterface
 
     private function pipeline(): CommitPipeline
     {
+        $audit = new Audit(
+            [$this->auditSink, ...$this->configurator->auditSinks()],
+            $this->redactor,
+            $this->events,
+        );
+
         $pipeline = CommitPipeline::default(
             writer: $this->configurator->writer(),
             backups: $this->autoBackup ? $this->backups : null,
             production: new ProductionGuard($this->isProduction, $this->protectProduction),
             protected: new ProtectedKeys([...$this->protectedKeys, ...$this->configurator->protectedKeys()]),
+            audit: $audit,
         );
 
         foreach ($this->configurator->mutationMiddleware() as $pipe) {
