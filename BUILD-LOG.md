@@ -14,8 +14,7 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   - [x] slice 2 — atomic writer + ConflictDetector + IntegrityVerifier + EditSession (+ exception base).
   - [x] slice 3 — security core (KeyValidator/ValueSanitizer/SecretRedactor/ProtectedKeys/ProductionGuard) + Rules.
   - [x] slice 2b — CommitPipeline (validate→guard→backup→write→verify) + BackupManager, wired into EditSession.
-  - [ ] slice 4 — root EnvKit service + facade + helper + service provider (programmatic API).
-  - [ ] slice 4 — root EnvKit service + facade + helper + service provider (programmatic API).
+  - [x] slice 4 — root EnvKit service + facade + helper + service provider (programmatic API).
   - [ ] slice 5 — CLI commands · slice 6 — TUI · slice 7 — audit/encryption/extensibility.
 - [ ] **Phase 6 — docs** — README + docs/ set incl. `extending.md`.
 - [ ] **Phase 7 — release** — only after explicit approval.
@@ -88,3 +87,11 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   enforce on the real save path; `push()` lets consumers add middleware. **93 tests** incl.
   production-block + override, protected-key refusal, invalid-key rejection, auto-backup snapshot,
   custom-middleware. L9 + Pint clean. Bug found & fixed: `.env`-prefixed backups were hidden dotfiles.
+- **Slice 4 (programmatic API) green:** root `EnvKit` (implements `EnvKitInterface`) + `Facades/EnvKit`
+  + `EnvKitServiceProvider` (on `laranail/package-tools`; `scoped` binding, lazy config) + `config/env-kit.php`
+  + `Support/{TypedAccessor,Interpolator}` + `ValidationException`. Full read API (typed getters, group/
+  only/except, `${VAR}` interpolation, entries) + three write modes (immediate `auto_commit`,
+  `transaction()`, `open()`), `allowProduction()`, `backups()`. **107 tests** incl. Testbench feature
+  tests (facade + DI + `env_kit()` helper, immediate write, transaction, interpolated reads, auto-backup).
+  L9 + Pint clean. Note: provider needs `name('laranail/env-kit-headless')` (vendor/package) +
+  `hasConfigFile('env-kit')`.
