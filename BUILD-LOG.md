@@ -17,7 +17,8 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   - [x] slice 4 — root EnvKit service + facade + helper + service provider (programmatic API).
   - [x] slice 5 — CLI commands (set/get/unset/keys/list/rename) + namespaced names & env:* aliases.
   - [x] slice 5b — CLI backup/backups/restore/validate (+ EnvKit backup()/restore()/path(), BackupManager find()).
-  - [ ] slice 5c — CLI diff/doctor/import/export.
+  - [x] slice 5c — doctor (extensible rule engine) + diff.
+  - [ ] slice 5d — import/export Porter (JSON/CSV).
   - [x] slice 7a — runtime extensibility: EnvKitConfigurator (configure() DSL) + Macroable on EnvKit.
   - [x] slice 7b — audit sinks (file/null) + AfterWrite event, wired into the commit pipeline (redacted).
   - [x] slice 7c-i — EnvKit::fake() test seam (in-memory EnvKitFake + assertions).
@@ -142,3 +143,9 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   (`resolveCipherUsing`) so APP_KEY is only touched on use; consumers override with `configure()->useCipher()`.
   **141 tests** incl. at-rest round-trip (asserts plaintext absent), `setEncrypted`, manager `extend()`,
   and a custom configurator cipher. L9 + Pint clean.
+- **Slice 5c (doctor + diff) green:** `Contracts/DoctorRuleInterface` + `Doctor/{Diagnostic,Doctor}` +
+  `Doctor/Rules/{DuplicateKeys,BlankValue,ByteOrderMark,MissingTrailingNewline}` (extensible via
+  `configure()->registerDoctorRule()`); `EnvKit::inspect()` + `EnvKit::diff()`; `Console/{Doctor,Diff}Command`
+  (`env:doctor` exits 3 on any error-severity finding; `env:diff` compares by key). Added
+  `EnvDocument::hasTrailingNewline()`. **148 tests** incl. clean doctor, duplicate-keys error, trailing-
+  newline warning, custom rule via configure(), structured diff, and identical-files. L9 + Pint clean.

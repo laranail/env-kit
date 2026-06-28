@@ -101,6 +101,8 @@ final class EnvKitServiceProvider extends PackageServiceProvider
                 Console\RestoreCommand::class,
                 Console\ValidateCommand::class,
                 Console\EditCommand::class,
+                Console\DoctorCommand::class,
+                Console\DiffCommand::class,
             ]);
         }
     }
