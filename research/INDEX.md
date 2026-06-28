@@ -50,7 +50,38 @@ Discovery run **2026-06-28**. Metadata from the Packagist API; source shallow-cl
   **cranux** (2020), **marianvlad** (2018), **brotzka** (2023). Forks with no net-new API: koel, alezhu,
   encodia, vtmdev.
 
-## Gate status (Phase 1)
+## Phase 2 verified findings (from cloned source — full detail in each `*.FEATURES.md`)
 
-✅ INDEX complete — 27 rows (26 cloned + 1 doc-inventoried), **every license cell ✅, none ⛔, no
-blanks**. Ready for Phase 2 (per-package `FEATURES.md`).
+**Build-impacting:**
+- **jackiedo `getValue(string $key)`** — confirmed **no default arg**; throws `KeyNotFoundException`
+  on missing (→ EnvKit adopts `get($k,$default)` from amdadulhaq).
+- **amdadulhaq** is a **service class, not a facade** (`AmdadulHaq\EnvEditor\EnvEditor`); **auto-save**.
+- **msztorc** declares a `LaravelEnv` facade that is **never bound** — real entrypoint is `new Env()`;
+  hybrid `$write` (default true).
+- **jobmetric** uses `file_put_contents(..., LOCK_EX)` **in place** — NOT temp+rename; its docblock
+  "atomically" is overstated → **validates EnvKit's stronger choice** (LOCK_EX + tmpfile + fsync + rename).
+- **tamer-dev** read command is **`env:read`** (not `env:get`) — confirmed. `--file` on all 4 commands;
+  `-b/--backup` only on `env:set`; APP_KEY guard only in `env:set`.
+- **geo-sot** group insertion = `addKey($key,$value,['group'=>…])` (options array); update via `editKey`.
+- **phpdotenv** (BSD-3): `ifPresent()` is on `Dotenv` (not `Validator`); `allowedValues($choices)`.
+  Parse model → single-quote literal; double-quote escapes only `\" \\ \$ \f \n \r \t \v`; `#` outside
+  quotes starts a comment; **only `${VAR}` brace form resolved** (no bare `$VAR`) → locks the §3B spec.
+- **filament-general-settings** cloned HEAD = **3.x / Filament 5** (`^5.3`) — plan's Filament-5 label
+  correct; but it's a **DB-settings panel, not an `.env` editor** → mine `canAccess()/canEdit()` + tabs only.
+- **filament-edit-env** production guard is **render-time only** (overridable, no save-time gate) →
+  validates EnvKit's pipeline-level ProductionGuard as the stronger model.
+- **geo-sot/filament-env-editor** does **hide-only** (drops keys), not `****` masking.
+
+**Cautionary (anti-patterns to avoid, not copy):**
+- **fadllabanie** "auth + IP gating + session timeout" are **broken/unenforced** (edit/update routes have
+  no middleware; timeout never set) — EnvKit implements these properly (§9).
+- **imliam** key validation `^[a-zA-Z_]+$` rejects digits (e.g. `S3_BUCKET`); **sven** has a dead
+  `env:example` stub + a regex that misses digit-containing keys — avoid both.
+
+**Net-new among forks:** only **alezhu** adds real API (`getEOLMode/setEOLMode/…` EOL handling); koel =
+L11–13 modernization (no new API); encodia/vtmdev = trivial/stale.
+
+## Gate status
+
+✅ **Phase 1** — 27-row INDEX, all licenses ✅. ✅ **Phase 2** — 26 `*.FEATURES.md` written, signatures
+re-verified against source, corrections logged above. Ready for **Phase 3** (finalize `FEATURE_MATRIX.md`).

@@ -1,0 +1,4 @@
+# FEATURES — encodia/laravel-dotenv-editor (fork)
+Source: github.com/encodia/laravel-dotenv-editor · no version tag (branch-alias 2.x-dev) · MIT
+
+Fork of jackiedo/laravel-dotenv-editor. Diffs from jackiedo: (1) Illuminate constraint bumped to add `^11.0` (5.8–11); (2) a single one-line bugfix in `DotenvEditor::getDotenvPackageVersion()` — it now merges `composer.lock`'s `packages-dev` into `packages` before searching for `vlucas/phpdotenv`, so the parser-version lookup no longer fails when phpdotenv is resolved as a dev dependency. No other source changes. Net-new public API: none. Tests: N (no tests/, no require-dev). Abandoned/stale: stale/minimal — exists only to add Laravel 11 to the constraint plus one defensive fix; no tests, no changelog, no version tag, and it still carries jackiedo's full multi-parser machinery (unlike koel). Effectively jackiedo + a tiny patch; superseded by koel for Laravel 11+.
