@@ -1,0 +1,83 @@
+{
+    "name": "laranail/env-kit-headless",
+    "description": "View-less, fluent .env editing engine for Laravel — programmatic API, Artisan CLI, and interactive TUI.",
+    "keywords": ["laravel", "dotenv", "env", "editor", "cli", "tui", "laranail", "oss"],
+    "homepage": "https://opensource.simtabi.com/env-kit-headless/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Imani Manyara",
+            "email": "imani@simtabi.com",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Simtabi LLC",
+            "email": "opensource@simtabi.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/laranail/env-kit-headless/issues",
+        "source": "https://github.com/laranail/env-kit-headless",
+        "docs": "https://opensource.simtabi.com/env-kit-headless/docs/"
+    },
+    "require": {
+        "php": "^8.4.1 || ^8.5",
+        "laranail/package-tools": "^1.0",
+        "illuminate/console": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/encryption": "^13.0",
+        "illuminate/events": "^13.0",
+        "illuminate/filesystem": "^13.0",
+        "illuminate/pipeline": "^13.0",
+        "illuminate/support": "^13.0",
+        "illuminate/validation": "^13.0",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "phpstan/phpstan": "^2.0",
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.0",
+        "rector/rector": "^2.0",
+        "infection/infection": "^0.29"
+    },
+    "suggest": {
+        "laranail/database-tools": "Enables the database audit sink (publish its migration).",
+        "aws/aws-sdk-php": "Enables the optional AWS KMS encryption driver."
+    },
+    "autoload": {
+        "psr-4": {
+            "Simtabi\\Laranail\\EnvKit\\Headless\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Simtabi\\Laranail\\EnvKit\\Headless\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Simtabi\\Laranail\\EnvKit\\Headless\\EnvKitServiceProvider"
+            ],
+            "aliases": {
+                "EnvKit": "Simtabi\\Laranail\\EnvKit\\Headless\\Facades\\EnvKit"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "infection/extension-installer": true
+        }
+    }
+}
