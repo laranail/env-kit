@@ -6,6 +6,7 @@ namespace Simtabi\Laranail\EnvKit\Headless\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\Testing\EnvKitFake;
 
 /**
  * @method static mixed get(string $key, mixed $default = null)
@@ -40,6 +41,18 @@ use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
  */
 final class EnvKit extends Facade
 {
+    /**
+     * Swap EnvKit for an in-memory fake (no disk I/O) and return it for assertions.
+     *
+     * @param  array<string, string>  $initial
+     */
+    public static function fake(array $initial = []): EnvKitFake
+    {
+        self::swap($fake = new EnvKitFake($initial));
+
+        return $fake;
+    }
+
     protected static function getFacadeAccessor(): string
     {
         return EnvKitInterface::class;
