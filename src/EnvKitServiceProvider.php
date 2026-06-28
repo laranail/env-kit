@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless;
 
+use Illuminate\Contracts\Events\Dispatcher;
+use Simtabi\Laranail\EnvKit\Headless\Audit\FileAuditSink;
+use Simtabi\Laranail\EnvKit\Headless\Audit\NullAuditSink;
 use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
 use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
+use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
 use Simtabi\Laranail\EnvKit\Headless\Support\Interpolator;
 use Simtabi\Laranail\EnvKit\Headless\Support\TypedAccessor;
 use Simtabi\Laranail\Package\Tools\Package;
@@ -43,6 +47,13 @@ final class EnvKitServiceProvider extends PackageServiceProvider
             $interpolation = $config['interpolation'] ?? [];
             $throwOnUndefined = is_array($interpolation) && ($interpolation['on_undefined'] ?? 'empty') === 'throw';
 
+            $audit = is_array($config['audit'] ?? null) ? $config['audit'] : [];
+            $auditEnabled = (bool) ($audit['enabled'] ?? true);
+            $auditPath = is_string($audit['path'] ?? null) ? $audit['path'] : (string) $app->storagePath('env-kit/audit.log');
+
+            $maskKeys = $config['hidden_keys'] ?? [];
+            $maskKeys = is_array($maskKeys) ? array_values(array_filter($maskKeys, 'is_string')) : [];
+
             return new EnvKit(
                 path: (string) ($config['path'] ?? $app->basePath('.env')),
                 autoCommit: (bool) ($config['auto_commit'] ?? true),
@@ -57,6 +68,9 @@ final class EnvKitServiceProvider extends PackageServiceProvider
                 typed: new TypedAccessor,
                 interpolator: new Interpolator(throwOnUndefined: $throwOnUndefined),
                 configurator: $app->make(EnvKitConfigurator::class),
+                auditSink: $auditEnabled ? new FileAuditSink($auditPath) : new NullAuditSink,
+                redactor: $maskKeys === [] ? new SecretRedactor : new SecretRedactor($maskKeys),
+                events: $app->make(Dispatcher::class),
             );
         });
 

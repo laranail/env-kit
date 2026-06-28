@@ -7,6 +7,7 @@ namespace Simtabi\Laranail\EnvKit\Headless\Pipeline;
 use Illuminate\Pipeline\Pipeline;
 use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Audit;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Backup;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Guard;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\ValidateKeys;
@@ -36,6 +37,7 @@ final class CommitPipeline
         private readonly Backup $backup,
         private readonly Write $write,
         private readonly Verify $verify,
+        private readonly ?Audit $audit = null,
     ) {}
 
     public static function default(
@@ -44,6 +46,7 @@ final class CommitPipeline
         ?ProductionGuard $production = null,
         ?ProtectedKeys $protected = null,
         ?KeyValidator $keys = null,
+        ?Audit $audit = null,
     ): self {
         $writer ??= new AtomicEnvWriter;
 
@@ -53,6 +56,7 @@ final class CommitPipeline
             backup: new Backup($backups),
             write: new Write($writer),
             verify: new Verify($writer, new IntegrityVerifier),
+            audit: $audit,
         );
     }
 
@@ -66,9 +70,15 @@ final class CommitPipeline
 
     public function run(CommitContext $context): void
     {
+        $pipes = [$this->validate, $this->guard, ...$this->middleware, $this->backup, $this->write, $this->verify];
+
+        if ($this->audit !== null) {
+            $pipes[] = $this->audit;
+        }
+
         (new Pipeline)
             ->send($context)
-            ->through([$this->validate, $this->guard, ...$this->middleware, $this->backup, $this->write, $this->verify])
+            ->through($pipes)
             ->thenReturn();
     }
 }

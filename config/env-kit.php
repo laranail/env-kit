@@ -30,6 +30,12 @@ return [
         'on_undefined' => 'empty', // 'empty' | 'throw'
     ],
 
-    // schema / encryption / audit settings land in later slices.
+    // Audit trail: who changed what, when. Values are redacted (hidden_keys).
+    'audit' => [
+        'enabled' => true,
+        'path' => storage_path('env-kit/audit.log'), // JSON-lines (file sink, the default)
+    ],
+
+    // schema / encryption settings land in later slices.
 
 ];
