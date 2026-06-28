@@ -42,6 +42,8 @@ use Simtabi\Laranail\EnvKit\Headless\Testing\EnvKitFake;
  * @method static \Simtabi\Laranail\EnvKit\Headless\EnvKit decrypt(string $key)
  * @method static \Simtabi\Laranail\EnvKit\Headless\EnvKit setEncrypted(string $key, string $value)
  * @method static string|null getDecrypted(string $key, ?string $default = null)
+ * @method static list<\Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic> inspect()
+ * @method static array{only_here: list<string>, only_there: list<string>, changed: list<string>} diff(string $against)
  * @method static \Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator configure()
  *
  * @see \Simtabi\Laranail\EnvKit\Headless\EnvKit

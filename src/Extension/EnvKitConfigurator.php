@@ -6,6 +6,7 @@ namespace Simtabi\Laranail\EnvKit\Headless\Extension;
 
 use Closure;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
 use Simtabi\Laranail\EnvKit\Headless\EnvKit;
@@ -34,6 +35,9 @@ final class EnvKitConfigurator
 
     /** @var (Closure(): ValueCipherInterface)|null */
     private $cipherResolver = null;
+
+    /** @var list<DoctorRuleInterface> */
+    private array $doctorRules = [];
 
     /** Append a pipe to the commit pipeline (runs after the built-in guards, before write). */
     public function pushMutationMiddleware(object $pipe): self
@@ -67,6 +71,20 @@ final class EnvKitConfigurator
         $this->auditSinks[] = $sink;
 
         return $this;
+    }
+
+    /** Register a custom doctor health-check rule (runs after the built-ins). */
+    public function registerDoctorRule(DoctorRuleInterface $rule): self
+    {
+        $this->doctorRules[] = $rule;
+
+        return $this;
+    }
+
+    /** @return list<DoctorRuleInterface> */
+    public function doctorRules(): array
+    {
+        return $this->doctorRules;
     }
 
     /** Swap the value cipher used for encrypt()/decrypt() (e.g. a Vault-backed one). */

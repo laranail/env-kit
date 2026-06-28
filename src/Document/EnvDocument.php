@@ -155,6 +155,11 @@ final class EnvDocument
         return $this->hasBom;
     }
 
+    public function hasTrailingNewline(): bool
+    {
+        return $this->trailingNewline;
+    }
+
     private function find(string $key): ?Setter
     {
         foreach ($this->entries as $entry) {

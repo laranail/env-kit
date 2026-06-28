@@ -13,6 +13,8 @@ use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
+use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
+use Simtabi\Laranail\EnvKit\Headless\Doctor\Doctor;
 use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\BackupNotFoundException;
@@ -339,6 +341,42 @@ final class EnvKit implements EnvKitInterface
     private function cipher(): ValueCipherInterface
     {
         return $this->configurator->cipher() ?? throw EncryptionException::notConfigured();
+    }
+
+    // --- Diagnostics --------------------------------------------------------
+
+    /**
+     * Run the doctor health-check (built-in rules + any configure()-registered).
+     *
+     * @return list<Diagnostic>
+     */
+    public function inspect(): array
+    {
+        return Doctor::withDefaults(...$this->configurator->doctorRules())->inspect($this->document());
+    }
+
+    /**
+     * Compare this file against another, by key.
+     *
+     * @return array{only_here: list<string>, only_there: list<string>, changed: list<string>}
+     */
+    public function diff(string $against): array
+    {
+        $here = $this->all();
+        $there = EnvDocument::parse(is_file($against) ? (string) @file_get_contents($against) : '')->toArray();
+
+        $changed = [];
+        foreach ($here as $key => $value) {
+            if (\array_key_exists($key, $there) && $there[$key] !== $value) {
+                $changed[] = $key;
+            }
+        }
+
+        return [
+            'only_here' => array_values(array_diff(array_keys($here), array_keys($there))),
+            'only_there' => array_values(array_diff(array_keys($there), array_keys($here))),
+            'changed' => $changed,
+        ];
     }
 
     /** A new EnvKit bound to a different .env file (same config). */
