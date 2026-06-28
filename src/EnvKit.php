@@ -235,6 +235,28 @@ final class EnvKit implements EnvKitInterface
         return $this->backups;
     }
 
+    /** A new EnvKit bound to a different .env file (same config). */
+    public function file(string $path): self
+    {
+        return new self(
+            $path,
+            $this->autoCommit,
+            $this->autoBackup,
+            $this->isProduction,
+            $this->protectProduction,
+            $this->protectedKeys,
+            $this->backups,
+            $this->typed,
+            $this->interpolator,
+        );
+    }
+
+    /** Bind to a sibling `.env.{environment}` file. */
+    public function on(string $environment): self
+    {
+        return $this->file(\dirname($this->path).'/.env.'.$environment);
+    }
+
     public function isDirty(): bool
     {
         return $this->pending?->isDirty() ?? false;
