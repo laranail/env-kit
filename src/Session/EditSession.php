@@ -6,39 +6,37 @@ namespace Simtabi\Laranail\EnvKit\Headless\Session;
 
 use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
-use Simtabi\Laranail\EnvKit\Headless\Writer\AtomicEnvWriter;
-use Simtabi\Laranail\EnvKit\Headless\Writer\IntegrityVerifier;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitPipeline;
 
 /**
  * A transactional editing session over a single .env file.
  *
  * Stages mutations against an in-memory working document (reads reflect staged
- * changes — read-your-writes), then {@see save()} commits in one shot:
- * optimistic-lock check → atomic write → integrity verify → auto-rollback on
- * failure. A `save()` with no changes is a no-op (no write, no churn).
- *
- * Encryption, validation, audit and backups are layered onto the commit path in
- * later slices; this slice owns the durable, crash-safe write mechanics.
+ * changes — read-your-writes), then {@see save()} commits in one shot: no-op if
+ * clean → optimistic-lock check → {@see CommitPipeline} (validate → guard →
+ * backup → atomic write → verify → auto-rollback). The pipeline is the seam where
+ * encryption, audit and consumer middleware attach.
  */
 final class EditSession
 {
     private EnvDocument $working;
 
+    private bool $allowProduction = false;
+
     public function __construct(
         private readonly string $path,
         private readonly EnvDocument $original,
         private readonly string $fingerprint,
-        private readonly WriterInterface $writer,
         private readonly ConflictDetector $conflicts,
-        private readonly IntegrityVerifier $verifier,
+        private readonly CommitPipeline $pipeline,
     ) {
         $this->working = $original;
     }
 
     /** Open a session for $path (an absent file starts as an empty document). */
-    public static function open(string $path, ?WriterInterface $writer = null): self
+    public static function open(string $path, ?WriterInterface $writer = null, ?CommitPipeline $pipeline = null): self
     {
         $raw = is_file($path) ? (string) @file_get_contents($path) : '';
         $conflicts = new ConflictDetector;
@@ -47,10 +45,17 @@ final class EditSession
             path: $path,
             original: EnvDocument::parse($raw),
             fingerprint: $conflicts->fingerprint($path),
-            writer: $writer ?? new AtomicEnvWriter,
             conflicts: $conflicts,
-            verifier: new IntegrityVerifier,
+            pipeline: $pipeline ?? CommitPipeline::default($writer),
         );
+    }
+
+    /** Permit this commit to run in production (overrides the production guard). */
+    public function allowProduction(): self
+    {
+        $this->allowProduction = true;
+
+        return $this;
     }
 
     public function get(string $key): ?string
@@ -134,9 +139,10 @@ final class EditSession
     }
 
     /**
-     * Commit staged changes atomically. No-op when nothing changed. Throws
-     * ConflictException (file changed underneath us) or IntegrityException
-     * (post-write check failed → rolled back).
+     * Commit staged changes atomically through the pipeline. No-op when nothing
+     * changed. May throw ConflictException, ProductionGuardException,
+     * ProtectedKeyException, InvalidKeyException, or IntegrityException
+     * (post-write failure → rolled back).
      */
     public function save(): self
     {
@@ -146,25 +152,13 @@ final class EditSession
 
         $this->conflicts->ensureUnchanged($this->path, $this->fingerprint);
 
-        $previous = is_file($this->path) ? (string) @file_get_contents($this->path) : null;
-
-        $this->writer->write($this->path, $this->working->render());
-
-        if (! $this->verifier->verify($this->path, $this->working)) {
-            $this->rollback($previous);
-
-            throw IntegrityException::for($this->path);
-        }
+        $this->pipeline->run(new CommitContext(
+            path: $this->path,
+            document: $this->working,
+            original: $this->original,
+            allowProduction: $this->allowProduction,
+        ));
 
         return $this;
-    }
-
-    private function rollback(?string $previous): void
-    {
-        if ($previous !== null) {
-            $this->writer->write($this->path, $previous);
-        } elseif (is_file($this->path)) {
-            @unlink($this->path);
-        }
     }
 }
