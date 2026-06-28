@@ -12,8 +12,8 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
 - [~] **Phase 4 — build headless** — engine, EditSession, guardrails, CLI, TUI, audit, encryption, extensibility; full test regime green.
   - [x] slice 1 — document layer (Entry/Parser/Document/ValueFormatter) + round-trip & phpdotenv conformance.
   - [x] slice 2 — atomic writer + ConflictDetector + IntegrityVerifier + EditSession (+ exception base).
-  - [ ] slice 2b — CommitPipeline + BackupManager (fold backup into commit).
-  - [ ] slice 3 — security core (KeyValidator/ValueSanitizer/redaction/guards) + Rules.
+  - [x] slice 3 — security core (KeyValidator/ValueSanitizer/SecretRedactor/ProtectedKeys/ProductionGuard) + Rules.
+  - [ ] slice 2b — CommitPipeline + BackupManager (wire security + backup into commit).
   - [ ] slice 4 — root EnvKit service + facade + helper + service provider (programmatic API).
   - [ ] slice 5 — CLI commands · slice 6 — TUI · slice 7 — audit/encryption/extensibility.
 - [ ] **Phase 6 — docs** — README + docs/ set incl. `extending.md`.
@@ -74,3 +74,9 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   Commit path: no-op-if-clean → optimistic-lock check → atomic write → integrity verify →
   auto-rollback. Tests: **55 passing** incl. a **real parallel-process concurrency test** (4 writers,
   reader never sees a partial file), rollback-on-failure, conflict detection, in-place rename. L9 + Pint clean.
+- **Slice 3 (security/validation core) green:** `Security/{KeyValidator,ValueSanitizer,SecretRedactor,
+  ProtectedKeys,ProductionGuard}`, reusable `Rules/{ValidEnvKey,ValidEnvValue}`, exceptions
+  `Invalid{Key,Value}/ProtectedKey/ProductionGuard`. KeyValidator allows digits (`S3_BUCKET`);
+  ValueSanitizer rejects NUL + strips control chars (keeps \t\n\r); redactor = length-preserving
+  partial mask + key-pattern masking + message scrub; guards throw with override paths. **85 tests**
+  incl. a secret-leak test (no raw value in exception messages). L9 + Pint clean.
