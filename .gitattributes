@@ -1,0 +1,21 @@
+# Keep the Packagist dist lean: exclude dev/build/research artifacts from the
+# package archive. (https://getcomposer.org/doc/articles/exclude-files.md)
+/.github/            export-ignore
+/research/           export-ignore
+/tests/              export-ignore
+/.gitattributes      export-ignore
+/.gitignore          export-ignore
+/.editorconfig       export-ignore
+/BUILD-LOG.md        export-ignore
+/phpunit.xml         export-ignore
+/phpunit.xml.dist    export-ignore
+/phpstan.neon        export-ignore
+/phpstan.neon.dist   export-ignore
+/pint.json           export-ignore
+/rector.php          export-ignore
+/infection.json5     export-ignore
+
+# Normalize line endings — the engine round-trip tests are line-ending-aware,
+# but our own PHP sources should be LF.
+* text=auto eol=lf
+*.php text eol=lf
