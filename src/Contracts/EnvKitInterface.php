@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Contracts;
 
 use Illuminate\Support\Collection;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
 
 /**
  * The public, DI-injectable contract for the EnvKit root service — the single
@@ -72,9 +73,9 @@ interface EnvKitInterface
     public function interpolated(string $key, mixed $default = null): mixed;
 
     /**
-     * Entry metadata (comments/export flags) as a collection.
+     * The setter entries (key/value/export/comment metadata), in file order.
      *
-     * @return Collection<int, EntryInterface>
+     * @return Collection<int, Setter>
      */
     public function entries(): Collection;
 }

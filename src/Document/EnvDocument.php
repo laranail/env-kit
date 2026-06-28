@@ -81,6 +81,23 @@ final class EnvDocument
         return $map;
     }
 
+    /**
+     * The setter entries (key/value/export/comment metadata), in file order.
+     *
+     * @return list<Setter>
+     */
+    public function setters(): array
+    {
+        $setters = [];
+        foreach ($this->entries as $entry) {
+            if ($entry instanceof Setter) {
+                $setters[] = $entry;
+            }
+        }
+
+        return $setters;
+    }
+
     /** Set or update a key, returning a new document. New keys are appended. */
     public function withValue(string $key, string $value, bool $export = false): self
     {
