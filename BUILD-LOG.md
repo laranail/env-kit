@@ -19,7 +19,8 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   - [ ] slice 5b — CLI backup/restore/validate/diff/doctor/etc.
   - [x] slice 7a — runtime extensibility: EnvKitConfigurator (configure() DSL) + Macroable on EnvKit.
   - [x] slice 7b — audit sinks (file/null) + AfterWrite event, wired into the commit pipeline (redacted).
-  - [ ] slice 7c — encryption · EnvKit::fake() · EnvKitManager.
+  - [x] slice 7c-i — EnvKit::fake() test seam (in-memory EnvKitFake + assertions).
+  - [ ] slice 7c-ii — encryption-at-rest · EnvKitManager driver registry.
   - [ ] slice 6 — TUI.
 - [ ] **Phase 6 — docs** — README + docs/ set incl. `extending.md`.
 - [ ] **Phase 7 — release** — only after explicit approval.
@@ -117,3 +118,7 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   dispatcher built lazily in the provider closure (honors test config + `Event::fake()`); consumers add
   sinks via `configure()->registerAuditSink()`. **123 tests** incl. redacted JSON-lines audit, AfterWrite
   redaction, sink fan-out, no-op-skips-audit. L9 + Pint clean.
+- **Slice 7c-i (test seam) green:** `Testing/EnvKitFake` (implements the full `EnvKitInterface`
+  in-memory, records writes, never touches disk) + `EnvKit::fake()` on the facade (swaps the binding).
+  Assertions: `assertSet`/`assertForgotten`/`assertNothingChanged`. **126 tests** incl. in-memory
+  read/record, no-disk-I/O-when-faked, and DI/`env_kit()` resolving the fake. L9 + Pint clean.
