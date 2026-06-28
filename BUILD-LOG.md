@@ -15,7 +15,9 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   - [x] slice 3 — security core (KeyValidator/ValueSanitizer/SecretRedactor/ProtectedKeys/ProductionGuard) + Rules.
   - [x] slice 2b — CommitPipeline (validate→guard→backup→write→verify) + BackupManager, wired into EditSession.
   - [x] slice 4 — root EnvKit service + facade + helper + service provider (programmatic API).
-  - [ ] slice 5 — CLI commands · slice 6 — TUI · slice 7 — audit/encryption/extensibility.
+  - [x] slice 5 — CLI commands (set/get/unset/keys/list/rename) + namespaced names & env:* aliases.
+  - [ ] slice 5b — CLI backup/restore/validate/diff/doctor/etc.
+  - [ ] slice 6 — TUI · slice 7 — audit/encryption/extensibility.
 - [ ] **Phase 6 — docs** — README + docs/ set incl. `extending.md`.
 - [ ] **Phase 7 — release** — only after explicit approval.
 
@@ -95,3 +97,9 @@ Spec: `_scratch-files/dotenv-editor-consolidation-plan.md`. Process: the EnvKit 
   tests (facade + DI + `env_kit()` helper, immediate write, transaction, interpolated reads, auto-backup).
   L9 + Pint clean. Note: provider needs `name('laranail/env-kit-headless')` (vendor/package) +
   `hasConfigFile('env-kit')`.
+- **Slice 5 (CLI core) green:** `Console/AbstractEnvCommand` (extends Illuminate Command + `use
+  SupportsNamespacedNames` for `laranail::env-kit-headless.*`; `$commandAliases` → `env:*`; exit-code
+  contract; `--file` + `--force-production`) and `Console/{Set,Get,Unset,Keys,List,Rename}KeyCommand`
+  (thin wrappers over the same `EnvKit` engine). Registered in `packageBooted()`. **114 tests** incl.
+  console tests for both name forms, `KEY=VALUE` shorthand, mixed-form (exit 2), invalid-key (exit 3),
+  get-with-default, unset, rename, and `env:list` secret masking (+ `--reveal`). L9 + Pint clean.

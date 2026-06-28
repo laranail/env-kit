@@ -56,4 +56,18 @@ final class EnvKitServiceProvider extends PackageServiceProvider
 
         $this->app->alias(EnvKitInterface::class, EnvKit::class);
     }
+
+    public function packageBooted(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Console\SetKeyCommand::class,
+                Console\GetKeyCommand::class,
+                Console\UnsetKeyCommand::class,
+                Console\KeysCommand::class,
+                Console\ListCommand::class,
+                Console\RenameKeyCommand::class,
+            ]);
+        }
+    }
 }
