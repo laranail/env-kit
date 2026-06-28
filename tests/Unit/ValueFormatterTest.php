@@ -41,6 +41,10 @@ it('forces quotes when asked', function () {
     expect(ValueFormatter::encode('simple', alwaysQuote: true))->toBe('"simple"');
 });
 
+it('keeps an empty value empty even when alwaysQuote is set', function () {
+    expect(ValueFormatter::encode('', alwaysQuote: true))->toBe('');
+});
+
 it('decodes single-quoted values literally (no unescaping)', function () {
     expect(ValueFormatter::decode("'literal \\n stays'"))->toBe('literal \\n stays');
 });
@@ -48,4 +52,48 @@ it('decodes single-quoted values literally (no unescaping)', function () {
 it('strips an inline comment from an unquoted value', function () {
     expect(ValueFormatter::decode('bare # a comment'))->toBe('bare')
         ->and(ValueFormatter::decode('  spaced  '))->toBe('spaced');
+});
+
+it('escapes each special character on encode with exact output', function (string $value, string $expected) {
+    expect(ValueFormatter::encode($value))->toBe($expected);
+})->with([
+    'backslash' => ['\\', '"\\\\"'],
+    'double quote' => ['"', '"\\""'],
+    'dollar sign' => ['$', '"\\$"'],
+    'newline' => ["\n", '"\\n"'],
+    'carriage return' => ["\r", '"\\r"'],
+    'tab' => ["\t", '"\\t"'],
+]);
+
+it('unescapes each escape sequence on decode back to the literal char', function (string $raw, string $expected) {
+    expect(ValueFormatter::decode($raw))->toBe($expected);
+})->with([
+    'backslash' => ['"\\\\"', '\\'],
+    'double quote' => ['"\\""', '"'],
+    'dollar sign' => ['"\\$"', '$'],
+    'newline' => ['"\\n"', "\n"],
+    'carriage return' => ['"\\r"', "\r"],
+    'tab' => ['"\\t"', "\t"],
+    'form feed' => ['"\\f"', "\f"],
+    'vertical tab' => ['"\\v"', "\v"],
+]);
+
+it('quotes a value with a leading NUL byte (whitespace regex misses NUL)', function () {
+    expect(ValueFormatter::needsQuoting("\0abc"))->toBeTrue();
+});
+
+it('quotes a value with a trailing NUL byte', function () {
+    expect(ValueFormatter::needsQuoting("abc\0"))->toBeTrue();
+});
+
+it('decodes a lone double quote as itself (no closing quote past index 0)', function () {
+    expect(ValueFormatter::decode('"'))->toBe('"');
+});
+
+it('decodes empty double quotes as an empty string', function () {
+    expect(ValueFormatter::decode('""'))->toBe('');
+});
+
+it('decodes only up to the closing quote, ignoring trailing chars', function () {
+    expect(ValueFormatter::decode('"hi" '))->toBe('hi');
 });
