@@ -18,7 +18,7 @@ if (! function_exists('env_kit')) {
      * transparently fakes it too. Core logic never lives in a procedural helper.
      *
      * @template TDefault
-     * @param  string|null  $key
+     *
      * @param  TDefault  $default
      * @return ($key is null ? EnvKitInterface : mixed|TDefault)
      */
