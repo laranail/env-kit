@@ -1,11 +1,11 @@
-# EnvKit Headless
+# laranail/env-kit-headless
+
+[![Latest version on Packagist](https://img.shields.io/packagist/v/laranail/env-kit-headless.svg)](https://packagist.org/packages/laranail/env-kit-headless)
+[![Tests](https://github.com/laranail/env-kit-headless/actions/workflows/ci.yml/badge.svg)](https://github.com/laranail/env-kit-headless/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > A view-less Laravel engine for reading and **safely editing** `.env` files — one
 > code path behind a programmatic API, a CLI, and an interactive TUI.
-
-[![Tests](https://github.com/laranail/env-kit-headless/actions/workflows/ci.yml/badge.svg)](https://github.com/laranail/env-kit-headless/actions)
-[![Packagist](https://img.shields.io/packagist/v/laranail/env-kit-headless)](https://packagist.org/packages/laranail/env-kit-headless)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 `laranail/env-kit-headless` is the engine of the **EnvKit** family. Every mutation
 flows through one transactional, atomic, guarded, audited commit path — whether you
@@ -105,42 +105,64 @@ php artisan env:edit
 
 Full reference: **[docs/configuration.md](docs/configuration.md)**.
 
-<a id="documentation"></a>
+## <a name="documentation"></a>Documentation
 
-## Documentation
+Hosted at [`opensource.simtabi.com/env-kit-headless/docs/`](https://opensource.simtabi.com/env-kit-headless/docs/).
+The same pages live under [`docs/`](docs/):
 
-| Page | What it covers |
-|------|----------------|
-| [Installation](docs/installation.md) | Requirements, install, publishing config, the `ENV_KIT_PATH` override |
-| [Configuration](docs/configuration.md) | Every config key, layered key policy, schema precedence |
-| [Architecture](docs/architecture.md) | The document model, commit pipeline, atomic writer, security core |
-| [Extending](docs/extending.md) | `configure()` DSL, Macroable, `EnvKitManager`, pipeline middleware, custom drivers, tag-based registration |
-| [Authorization](docs/authorization.md) | The update gate + write observers, the Laravel-ability bridge, the "which seam" table |
-| [Events](docs/events.md) | The lifecycle event table, actor attribution, listening |
-| [Notifications](docs/notifications.md) | Opt-in operator alerts, channels, testing |
-| [Release](docs/release.md) | Versioning, the release workflow, trusted publishing |
-| [Programmatic API](docs/tools/programmatic-api.md) | Reads, typed getters, the three write modes, schema, `.env.example` sync, secret generators, `EnvKit::fake()` |
-| [CLI](docs/tools/cli.md) | All 23 commands, exit-code contract, `--file` / `--force-production` |
-| [Schema](docs/tools/schema.md) | Declarative validation, the rule set, `MatchesEnvSchema` for FormRequests |
-| [TUI](docs/tools/tui.md) | The interactive `env:edit` editor |
-| [Encryption](docs/tools/encryption.md) | Per-value encryption-at-rest, cipher drivers |
-| [Doctor](docs/tools/doctor.md) | Health-check rules and writing your own |
-| [Import / Export](docs/tools/import-export.md) | The Porter, JSON/CSV/dotenv/YAML formats, custom formats |
-| [Audit & Events](docs/tools/audit-events.md) | Audit sinks, the `AfterWrite` event, redaction |
+### Guides
 
-The rendered docs live at
-**<https://opensource.simtabi.com/env-kit-headless/docs/>**.
+- [Installation](docs/installation.md) — requirements, install, publishing config, the `ENV_KIT_PATH` override.
+- [Configuration](docs/configuration.md) — every config key, layered key policy, schema precedence.
+- [Architecture](docs/architecture.md) — the document model, commit pipeline, atomic writer, security core.
+- [Extending](docs/extending.md) — `configure()` DSL, Macroable, `EnvKitManager`, pipeline middleware, custom drivers.
+- [Authorization](docs/authorization.md) — the update gate + write observers, the Laravel-ability bridge.
+- [Events](docs/events.md) — the lifecycle event table, actor attribution, listening.
+- [Notifications](docs/notifications.md) — opt-in operator alerts, channels, testing.
+- [Release](docs/release.md) — versioning, the release workflow, trusted publishing.
 
-## Security
+### Reference
 
-EnvKit handles secrets. Secret-shaped values never reach logs, exception messages,
-audit records, or events. Found a vulnerability? See **[SECURITY.md](SECURITY.md)** —
-report privately to `opensource@simtabi.com`.
+- [Programmatic API](docs/tools/programmatic-api.md) — reads, typed getters, the three write modes, schema, secret generators, `EnvKit::fake()`.
+- [CLI](docs/tools/cli.md) — all 23 commands, exit-code contract, `--file` / `--force-production`.
+- [Schema](docs/tools/schema.md) — declarative validation, the rule set, `MatchesEnvSchema` for FormRequests.
+- [TUI](docs/tools/tui.md) — the interactive `env:edit` editor.
+- [Encryption](docs/tools/encryption.md) — per-value encryption-at-rest, cipher drivers.
+- [Doctor](docs/tools/doctor.md) — health-check rules and writing your own.
+- [Import / export](docs/tools/import-export.md) — the Porter, JSON/CSV/dotenv/YAML formats, custom formats.
+- [Audit & events](docs/tools/audit-events.md) — audit sinks, the `AfterWrite` event, redaction.
 
-## Contributing
+### Project
 
-PRs welcome — see **[CONTRIBUTING.md](CONTRIBUTING.md)**. Run `vendor/bin/pest`,
-`vendor/bin/phpstan analyse` (level 9), and `vendor/bin/pint` before submitting.
+- [Changelog](CHANGELOG.md) — release history.
+
+## Stability
+
+Pre-1.0 (0.x) — the public API may change between minor versions. Pin a version before bumping.
+
+## Local development
+
+```bash
+vendor/bin/pest
+vendor/bin/phpstan analyse   # level 9
+vendor/bin/pint
+```
+
+## Sister packages
+
+- [`laranail/env-kit-webui`](https://github.com/laranail/env-kit-webui) — the web companion (JSON API + themed panel) that drives this engine.
+- [`laranail/console`](https://github.com/laranail/console) — the CLI/TUI base.
+
+## Community
+
+- [Issues](https://github.com/laranail/env-kit-headless/issues) — bugs + feature requests.
+
+## Contributing & security
+
+EnvKit handles secrets — secret-shaped values never reach logs, exceptions, audit records, or events.
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) — workflow + coding standards.
+- [SECURITY.md](SECURITY.md) — report vulnerabilities privately to `opensource@simtabi.com`.
 
 ## License
 
