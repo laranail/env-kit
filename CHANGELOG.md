@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-07-06
+
+### Changed
+
+- **Package renamed to `laranail/env-kit`** (from `laranail/env-kit-headless`).
+  Artisan command signatures follow: `laranail::env-kit.*` replaces
+  `laranail::env-kit-headless.*`. PHP namespaces, the `env-kit.php` config
+  file, and every API are unchanged. Requires `laranail/package-tools ^2.0`.
+
+### Removed
+
+- Internal development artifacts (build log, research notes) no longer ship
+  in the repository tree.
+
 ## [0.4.0] - 2026-06-29
 
 Completes the v1.0 feature surface — the last breadth items from the consolidation plan.
