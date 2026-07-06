@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class RenameKeyCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.rename
+    protected $signature = 'laranail::env-kit.rename
         {from : current key name}
         {to : new key name}
         {--file= : operate on a custom .env file}

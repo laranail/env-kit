@@ -10,7 +10,7 @@ use Simtabi\Laranail\EnvKit\Headless\Support\DocsGenerator;
 final class DocsCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.docs
+    protected $signature = 'laranail::env-kit.docs
         {--output= : write the markdown to a file instead of stdout}';
 
     /** @var string */

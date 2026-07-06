@@ -10,7 +10,7 @@ use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
 final class ListCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.list
+    protected $signature = 'laranail::env-kit.list
         {--file= : operate on a custom .env file}
         {--reveal : show secret values instead of masking them}';
 

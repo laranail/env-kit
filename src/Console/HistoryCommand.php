@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\Audit\HistoryReader;
 final class HistoryCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.history {--limit=20 : how many recent entries to show}';
+    protected $signature = 'laranail::env-kit.history {--limit=20 : how many recent entries to show}';
 
     /** @var string */
     protected $description = 'Show the recent audit history (who changed which keys, when). Values are never shown.';

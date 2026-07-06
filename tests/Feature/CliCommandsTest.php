@@ -11,7 +11,7 @@ it('sets a key via the env:set alias and the namespaced name', function () {
     $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
 
     $this->artisan('env:set', ['key' => 'NEW', 'value' => 'val'])->assertExitCode(0);
-    $this->artisan('laranail::env-kit-headless.set', ['key' => 'B', 'value' => '2'])->assertExitCode(0);
+    $this->artisan('laranail::env-kit.set', ['key' => 'B', 'value' => '2'])->assertExitCode(0);
 
     $doc = EnvDocument::parse(file_get_contents($path));
     expect($doc->get('NEW'))->toBe('val')

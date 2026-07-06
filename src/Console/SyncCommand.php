@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class SyncCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.sync
+    protected $signature = 'laranail::env-kit.sync
         {--example= : path to the .env.example template (default: sibling .env.example)}
         {--file= : operate on a custom .env file}';
 

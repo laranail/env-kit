@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a problem with env-kit-headless
+description: Report a problem with env-kit
 labels: [bug]
 body:
   - type: markdown
@@ -43,6 +43,6 @@ body:
     attributes:
       label: Versions
       description: Package, PHP, and Laravel versions.
-      placeholder: "env-kit-headless 1.0.0, PHP 8.4, Laravel 13.0"
+      placeholder: "env-kit 1.0.0, PHP 8.4, Laravel 13.0"
     validations:
       required: true

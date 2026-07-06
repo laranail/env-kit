@@ -152,7 +152,7 @@ closing the remaining breadth gaps so EnvKit is a strict superset of every mined
 - Rich programmatic API: `EnvKit` Facade, DI of the `EnvKitInterface` contract,
   and the `env_kit()` helper; typed getters; and three persistence modes —
   immediate auto-commit, `transaction()`, and staged `open()`.
-- 14 Artisan commands under the `laranail::env-kit-headless.*` names, each with an
+- 14 Artisan commands under the `laranail::env-kit.*` names, each with an
   `env:*` alias: `set`, `get`, `unset`, `keys`, `list`, `rename`, `backup`,
   `backups`, `restore`, `validate`, `edit`, `doctor`, `diff`, `export`, `import`.
 - Interactive TUI (`env:edit`) built on `laravel/prompts`.
@@ -169,8 +169,8 @@ closing the remaining breadth gaps so EnvKit is a strict superset of every mined
 - JSON and CSV import/export via the Porter.
 - `EnvKit::fake()` test seam.
 
-[Unreleased]: https://github.com/laranail/env-kit-headless/compare/v0.2.1...HEAD
-[0.2.1]: https://github.com/laranail/env-kit-headless/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/laranail/env-kit-headless/compare/v0.1.1...v0.2.0
-[0.1.1]: https://github.com/laranail/env-kit-headless/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/laranail/env-kit-headless/releases/tag/v0.1.0
+[Unreleased]: https://github.com/laranail/env-kit/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/laranail/env-kit/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/laranail/env-kit/compare/v0.1.1...v0.2.0
+[0.1.1]: https://github.com/laranail/env-kit/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/laranail/env-kit/releases/tag/v0.1.0

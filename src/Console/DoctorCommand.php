@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class DoctorCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.doctor {--file= : operate on a custom .env file}';
+    protected $signature = 'laranail::env-kit.doctor {--file= : operate on a custom .env file}';
 
     /** @var string */
     protected $description = 'Run health checks over the .env file.';

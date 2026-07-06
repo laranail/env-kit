@@ -1,8 +1,8 @@
 {
-    "name": "laranail/env-kit-headless",
+    "name": "laranail/env-kit",
     "description": "View-less, fluent .env editing engine for Laravel — programmatic API, Artisan CLI, and interactive TUI.",
     "keywords": ["laravel", "dotenv", "env", "editor", "cli", "tui", "laranail", "oss"],
-    "homepage": "https://opensource.simtabi.com/documentation/laranail/env-kit-headless/",
+    "homepage": "https://opensource.simtabi.com/documentation/laranail/env-kit/",
     "license": "MIT",
     "authors": [
         {
@@ -16,9 +16,9 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/laranail/env-kit-headless/issues",
-        "source": "https://github.com/laranail/env-kit-headless",
-        "docs": "https://opensource.simtabi.com/documentation/laranail/env-kit-headless/"
+        "issues": "https://github.com/laranail/env-kit/issues",
+        "source": "https://github.com/laranail/env-kit",
+        "docs": "https://opensource.simtabi.com/documentation/laranail/env-kit/"
     },
     "require": {
         "php": "^8.4.1 || ^8.5",

@@ -11,7 +11,7 @@ use Simtabi\Laranail\EnvKit\Headless\Security\ValueSanitizer;
 final class ValidateCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.validate {--file= : operate on a custom .env file}';
+    protected $signature = 'laranail::env-kit.validate {--file= : operate on a custom .env file}';
 
     /** @var string */
     protected $description = 'Check every key/value for well-formedness + the configured schema.';

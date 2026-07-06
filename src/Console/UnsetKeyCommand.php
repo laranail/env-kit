@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class UnsetKeyCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.unset
+    protected $signature = 'laranail::env-kit.unset
         {key : the key to remove}
         {--file= : operate on a custom .env file}
         {--force-production : allow the write in production}';

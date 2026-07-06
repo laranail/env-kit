@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in improving `laranail/env-kit-headless`. This guide
+Thanks for your interest in improving `laranail/env-kit`. This guide
 covers everything you need to get a change merged.
 
 ## Requirements
@@ -32,7 +32,7 @@ vendor/bin/pint                 # code style, Laravel preset + strict types
   code, and never calls `app()` or other service-locator helpers. Inject
   dependencies through constructors and contracts instead.
 - **New Artisan commands** extend the namespaced command base and follow the
-  `laranail::env-kit-headless.*` naming with an `env:*` alias.
+  `laranail::env-kit.*` naming with an `env:*` alias.
 - Keep PRs **small and reviewable** — one focused change per PR.
 
 ## Commits

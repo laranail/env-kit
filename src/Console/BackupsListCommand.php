@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class BackupsListCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.backups {--file= : operate on a custom .env file}';
+    protected $signature = 'laranail::env-kit.backups {--file= : operate on a custom .env file}';
 
     /** @var string */
     protected $description = 'List available .env backups (newest first).';

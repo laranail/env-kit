@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class GenerateCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.generate
+    protected $signature = 'laranail::env-kit.generate
         {type=token : token|hex|base64|app_key}
         {--bytes=32 : entropy for token/hex/base64}
         {--set= : write the generated value to this key (subject to the key policy)}

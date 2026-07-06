@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class BackupDeleteCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.backup-delete
+    protected $signature = 'laranail::env-kit.backup-delete
         {name? : the backup file name to delete}
         {--older-than= : instead, delete every backup older than N days}
         {--file= : operate on a custom .env file}';

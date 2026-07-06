@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class DiffCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.diff
+    protected $signature = 'laranail::env-kit.diff
         {against : the other .env file to compare against}
         {--file= : operate on a custom .env file}';
 

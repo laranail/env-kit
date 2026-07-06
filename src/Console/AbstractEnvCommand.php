@@ -16,7 +16,7 @@ use Simtabi\Laranail\EnvKit\Headless\Exceptions\LockException;
 use Simtabi\Laranail\EnvKit\Headless\Security\ProductionBanner;
 
 /**
- * Base for the EnvKit Artisan commands. Provides the `laranail::env-kit-headless.*`
+ * Base for the EnvKit Artisan commands. Provides the `laranail::env-kit.*`
  * primary name (via {@see SupportsNamespacedNames}) plus `env:*` short aliases,
  * the documented exit-code contract, and `--file` resolution. Commands stay thin:
  * parse flags → call the same {@see EnvKit} engine the programmatic API uses.

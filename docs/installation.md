@@ -9,7 +9,7 @@
 ## Install
 
 ```bash
-composer require laranail/env-kit-headless
+composer require laranail/env-kit
 ```
 
 The package ships a Laravel auto-discovery manifest, so the

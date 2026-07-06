@@ -30,7 +30,7 @@ final class EnvKitServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('laranail/env-kit-headless')
+            ->name('laranail/env-kit')
             ->hasConfigFile('env-kit');
     }
 

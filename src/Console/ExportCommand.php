@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class ExportCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.export
+    protected $signature = 'laranail::env-kit.export
         {--format=json : json or csv}
         {--file= : operate on a custom .env file}
         {--output= : write to this file instead of stdout}';

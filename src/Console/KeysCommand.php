@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class KeysCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.keys {--file= : operate on a custom .env file}';
+    protected $signature = 'laranail::env-kit.keys {--file= : operate on a custom .env file}';
 
     /** @var string */
     protected $description = 'List all environment keys.';

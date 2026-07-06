@@ -13,7 +13,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class EncryptCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.encrypt-value
+    protected $signature = 'laranail::env-kit.encrypt-value
         {key : the key whose value to encrypt in place}
         {--file= : operate on a custom .env file}';
 

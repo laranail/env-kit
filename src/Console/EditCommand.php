@@ -22,7 +22,7 @@ use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
 final class EditCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.edit
+    protected $signature = 'laranail::env-kit.edit
         {--file= : operate on a custom .env file}
         {--force-production : allow writes in production}';
 

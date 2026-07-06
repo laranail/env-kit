@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class SetKeyCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.set
+    protected $signature = 'laranail::env-kit.set
         {key : KEY, or KEY=VALUE shorthand}
         {value? : the value (omit when using KEY=VALUE)}
         {--file= : operate on a custom .env file}

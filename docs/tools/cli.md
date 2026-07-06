@@ -1,7 +1,7 @@
 # CLI
 
 EnvKit ships 23 Artisan commands. Each has a fully-qualified
-`laranail::env-kit-headless.<cmd>` name and a short `env:<cmd>` alias — use either.
+`laranail::env-kit.<cmd>` name and a short `env:<cmd>` alias — use either.
 
 ## Commands
 
@@ -77,7 +77,7 @@ php artisan env:set APP_NAME=Acme || echo "failed with code $?"
 
 ## Why `::` in the name?
 
-The `laranail::env-kit-headless.*` shape mirrors the package's composer slug so the
+The `laranail::env-kit.*` shape mirrors the package's composer slug so the
 source of a command is unambiguous across the laranail family. The `::` separator
 is enabled by the command base from `laranail/console`; the short `env:*` aliases
 are always available too.

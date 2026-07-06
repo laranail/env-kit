@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class BackupCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.backup {--file= : operate on a custom .env file}';
+    protected $signature = 'laranail::env-kit.backup {--file= : operate on a custom .env file}';
 
     /** @var string */
     protected $description = 'Snapshot the .env file to the backup directory.';

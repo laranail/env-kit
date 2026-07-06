@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class CheckCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.check
+    protected $signature = 'laranail::env-kit.check
         {--example= : path to the .env.example template (default: sibling .env.example)}
         {--file= : operate on a custom .env file}';
 

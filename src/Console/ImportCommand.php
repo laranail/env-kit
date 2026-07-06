@@ -9,7 +9,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 final class ImportCommand extends AbstractEnvCommand
 {
     /** @var string */
-    protected $signature = 'laranail::env-kit-headless.import
+    protected $signature = 'laranail::env-kit.import
         {source : the json or csv file to import}
         {--format=json : json or csv}
         {--file= : operate on a custom .env file}
