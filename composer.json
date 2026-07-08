@@ -2,7 +2,7 @@
     "name": "laranail/env-kit",
     "description": "View-less, fluent .env editing engine for Laravel — programmatic API, Artisan CLI, and interactive TUI.",
     "keywords": ["laravel", "dotenv", "env", "editor", "cli", "tui", "laranail", "oss"],
-    "homepage": "https://opensource.simtabi.com/documentation/laranail/env-kit/",
+    "homepage": "https://opensource.simtabi.com/products/laranail/env-kit",
     "license": "MIT",
     "authors": [
         {
