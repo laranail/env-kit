@@ -100,3 +100,43 @@ it('rolls back and throws when post-write verification fails', function () {
     expect(file_get_contents($path))->toBe("A=1\n")
         ->and($flaky->calls)->toBe(2);
 });
+
+it('reports a key-level diff of staged changes', function () {
+    $path = envkit_temp();
+    file_put_contents($path, "A=1\nB=2\nC=3\n");
+
+    $session = EditSession::open($path)->set('A', '9')->forget('C')->set('D', '4');
+
+    expect($session->changes())->toBe([
+        'A' => ['old' => '1', 'new' => '9'],
+        'D' => ['old' => null, 'new' => '4'],
+        'C' => ['old' => '3', 'new' => null],
+    ]);
+});
+
+it('starts from an empty document for an absent file', function () {
+    $path = envkit_temp(); // file intentionally not created
+
+    $session = EditSession::open($path);
+    expect($session->changes())->toBe([]);
+
+    $session->set('A', '1')->save();
+    expect(trim((string) file_get_contents($path)))->toBe('A=1'); // nothing but the staged key
+});
+
+it('treats an unreadable file as empty rather than failing', function () {
+    $path = envkit_temp();
+    file_put_contents($path, "A=1\n");
+    chmod($path, 0o000);
+
+    set_error_handler(static fn (): bool => true); // swallow the expected read warnings
+
+    try {
+        $session = EditSession::open($path);
+    } finally {
+        restore_error_handler();
+        chmod($path, 0o644);
+    }
+
+    expect($session->has('A'))->toBeFalse();
+});

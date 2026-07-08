@@ -74,3 +74,34 @@ it('reports no differences for identical files', function () {
 
     $this->artisan('env:diff', ['against' => $other])->expectsOutputToContain('No differences.')->assertExitCode(0);
 });
+
+it('prefixes key-scoped findings with the key name', function () {
+    $this->bindEnv("A=\nB=1\n");
+
+    $this->artisan('env:doctor')
+        ->expectsOutputToContain('[A] Key [A] has an empty value.')
+        ->assertExitCode(0);
+});
+
+it('env:diff reports each kind of difference and never claims a clean diff for them', function () {
+    $path = $this->bindEnv("A=1\nC=1\n");
+    $dir = dirname($path);
+
+    file_put_contents($dir.'/only-here.env', "C=1\n");
+    $this->artisan('env:diff', ['against' => $dir.'/only-here.env'])
+        ->expectsOutputToContain('+ A (only here)')
+        ->doesntExpectOutputToContain('No differences.')
+        ->assertExitCode(0);
+
+    file_put_contents($dir.'/only-there.env', "A=1\nB=2\nC=1\n");
+    $this->artisan('env:diff', ['against' => $dir.'/only-there.env'])
+        ->expectsOutputToContain("- B (only in {$dir}/only-there.env)")
+        ->doesntExpectOutputToContain('No differences.')
+        ->assertExitCode(0);
+
+    file_put_contents($dir.'/changed.env', "A=1\nC=2\n");
+    $this->artisan('env:diff', ['against' => $dir.'/changed.env'])
+        ->expectsOutputToContain('~ C (value differs)')
+        ->doesntExpectOutputToContain('No differences.')
+        ->assertExitCode(0);
+});

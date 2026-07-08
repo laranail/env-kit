@@ -13,7 +13,33 @@ it('quits immediately from the editor', function () {
 
     $this->artisan('env:edit')
         ->expectsQuestion('Choose a key or action', 'Quit')
+        ->expectsOutputToContain('Closed EnvKit editor.')
+        ->doesntExpectOutputToContain('PRODUCTION')
         ->assertExitCode(0);
+});
+
+it('offers every key plus the add and quit actions, and a full per-key menu', function () {
+    $this->bindEnv("A=1\nB=2\n", ['env-kit.auto_backup' => false]);
+
+    $this->artisan('env:edit')
+        ->expectsChoice('Choose a key or action', 'A', ['A', 'B', '＋ Add a new key', 'Quit'])
+        ->expectsChoice('Edit [A]', 'Back', ['Edit value', 'Rename', 'Delete', 'Back'])
+        ->expectsQuestion('Choose a key or action', 'Quit')
+        ->assertExitCode(0);
+});
+
+it('trims whitespace around a new key name', function () {
+    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+
+    $this->artisan('env:edit')
+        ->expectsQuestion('Choose a key or action', '＋ Add a new key')
+        ->expectsQuestion('New key name', '  C  ')
+        ->expectsQuestion('Value for C', '3') // prompt interpolates the already-trimmed key
+        ->expectsQuestion('Choose a key or action', 'Quit')
+        ->expectsOutputToContain('Set [C].')
+        ->assertExitCode(0);
+
+    expect(EnvKit::get('C'))->toBe('3');
 });
 
 it('edits a value through the interactive editor', function () {
@@ -24,6 +50,7 @@ it('edits a value through the interactive editor', function () {
         ->expectsQuestion('Edit [APP_NAME]', 'Edit value')
         ->expectsQuestion('New value for [APP_NAME]', 'NewName')
         ->expectsQuestion('Choose a key or action', 'Quit')
+        ->expectsOutputToContain('Updated [APP_NAME].')
         ->assertExitCode(0);
 
     expect(EnvKit::get('APP_NAME'))->toBe('NewName');
@@ -50,6 +77,7 @@ it('deletes a key after confirmation', function () {
         ->expectsQuestion('Edit [B]', 'Delete')
         ->expectsConfirmation('Delete [B]?', 'yes')
         ->expectsQuestion('Choose a key or action', 'Quit')
+        ->expectsOutputToContain('Removed [B].')
         ->assertExitCode(0);
 
     expect(EnvKit::has('B'))->toBeFalse();
@@ -63,6 +91,7 @@ it('surfaces an engine error without crashing the loop', function () {
         ->expectsQuestion('New key name', '1bad') // invalid → engine rejects
         ->expectsQuestion('Value for 1bad', 'x')
         ->expectsQuestion('Choose a key or action', 'Quit')
+        ->expectsOutputToContain('Invalid environment key: 1bad')
         ->assertExitCode(0);
 
     expect(EnvKit::has('1bad'))->toBeFalse();

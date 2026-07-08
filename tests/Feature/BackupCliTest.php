@@ -52,3 +52,40 @@ it('flags an unsafe value with env:validate (exit 3)', function () {
 
     $this->artisan('env:validate')->assertExitCode(3);
 });
+
+it('reports the backup and restore file names', function () {
+    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+
+    $this->artisan('env:backup')->expectsOutputToContain('Backed up to [')->assertExitCode(0);
+    $this->artisan('env:restore')->expectsOutputToContain('Restored from [')->assertExitCode(0);
+});
+
+it('prunes backups older than N days via --older-than', function () {
+    $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+
+    $this->artisan('env:backup')->assertExitCode(0);
+    $backup = glob(dirname($path).'/backups/*.bak')[0];
+    touch($backup, time() - 3_600); // an hour old
+
+    $this->artisan('env:backup-delete', ['--older-than' => '0'])
+        ->expectsOutputToContain('Deleted 1 backup(s) older than 0 day(s).')
+        ->assertExitCode(0);
+
+    expect(glob(dirname($path).'/backups/*.bak'))->toBe([]);
+});
+
+it('demands a backup name when neither a name nor --older-than is usable', function () {
+    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+
+    $this->artisan('env:backup-delete', ['name' => ''])
+        ->expectsOutputToContain('Provide a backup name, or --older-than=DAYS.')
+        ->assertExitCode(2);
+});
+
+it('env:validate reports the number of valid entries', function () {
+    $this->bindEnv("A=1\nB=2\n");
+
+    $this->artisan('env:validate')
+        ->expectsOutputToContain('All 2 entries are valid.')
+        ->assertExitCode(0);
+});

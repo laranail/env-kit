@@ -192,3 +192,91 @@ it('embeds a sub-second component in the backup name', function () {
     expect(array_filter($micros, static fn (string $v): bool => $v !== '000000'))
         ->not->toBeEmpty();
 });
+
+it('shapes the backup name as base.label.date-micros-random for a labelled backup', function () {
+    $path = envkit_temp();
+    file_put_contents($path, "A=1\n");
+
+    $backup = (new BackupManager(dirname($path).'/backups'))->backup($path, 'pre deploy!');
+
+    // The label is slugged and separated from the date stamp by a single dot.
+    expect($backup->name)->toMatch('/^env\.pre-deploy-\.\d{8}-\d{6}-\d{6}-[0-9a-f]{4}\.bak$/');
+});
+
+it('omits the label segment entirely for null and empty labels', function (?string $label) {
+    $path = envkit_temp();
+    file_put_contents($path, "A=1\n");
+
+    $backup = (new BackupManager(dirname($path).'/backups'))->backup($path, $label);
+
+    expect($backup->name)->toMatch('/^env\.\d{8}-\d{6}-\d{6}-[0-9a-f]{4}\.bak$/');
+})->with(['null label' => [null], 'empty label' => ['']]);
+
+it('lists an unstatable backup with a zero timestamp', function () {
+    $path = envkit_temp();
+    $dir = dirname($path).'/backups';
+    mkdir($dir, 0700, true);
+    symlink($dir.'/missing-target', $dir.'/dangling.bak'); // stat() fails, glob() still matches
+
+    set_error_handler(static fn (): bool => true); // swallow the expected stat warnings
+
+    try {
+        $backups = (new BackupManager($dir))->all();
+    } finally {
+        restore_error_handler();
+    }
+
+    expect($backups)->toHaveCount(1)
+        ->and($backups[0]->timestamp)->toBe(0)
+        ->and($backups[0]->size)->toBe(0);
+});
+
+it('deleteOlderThan clamps negative day counts to zero', function () {
+    $path = envkit_temp();
+    $dir = dirname($path).'/backups';
+    mkdir($dir, 0700, true);
+    $future = $dir.'/env.future.bak';
+    file_put_contents($future, "A=1\n");
+    touch($future, time() + 3600); // newer than any "now" cutoff
+
+    $deleted = (new BackupManager($dir))->deleteOlderThan(-1);
+
+    expect($deleted)->toBe(0)
+        ->and(is_file($future))->toBeTrue();
+});
+
+it('deleteOlderThan with zero days removes any backup older than now', function () {
+    $path = envkit_temp();
+    $dir = dirname($path).'/backups';
+    mkdir($dir, 0700, true);
+    $old = $dir.'/env.old.bak';
+    file_put_contents($old, "A=1\n");
+    touch($old, time() - 3600);
+
+    $deleted = (new BackupManager($dir))->deleteOlderThan(0);
+
+    expect($deleted)->toBe(1)
+        ->and(is_file($old))->toBeFalse();
+});
+
+it('deleteOlderThan cuts at exactly days * 86400 seconds', function () {
+    $path = envkit_temp();
+    $dir = dirname($path).'/backups';
+    mkdir($dir, 0700, true);
+    $days = 10_000; // amplify so a per-day off-by-one dwarfs test-runtime clock skew
+    $window = $days * 86_400;
+
+    $kept = $dir.'/env.kept.bak';
+    file_put_contents($kept, "A=1\n");
+    touch($kept, time() - $window + 5_000); // just inside the window
+
+    $removed = $dir.'/env.removed.bak';
+    file_put_contents($removed, "A=1\n");
+    touch($removed, time() - $window - 5_000); // just outside the window
+
+    $deleted = (new BackupManager($dir))->deleteOlderThan($days);
+
+    expect($deleted)->toBe(1)
+        ->and(is_file($kept))->toBeTrue()
+        ->and(is_file($removed))->toBeFalse();
+});
