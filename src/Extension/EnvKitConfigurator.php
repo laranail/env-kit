@@ -1,0 +1,349 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Simtabi\Laranail\EnvKit\Headless\Extension;
+
+use Closure;
+use Simtabi\Laranail\EnvKit\Headless\Audit\CallbackActorResolver;
+use Simtabi\Laranail\EnvKit\Headless\Authorization\DefaultUpdateGate;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\ActorResolverInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\UpdateGateInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriteObserverInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
+use Simtabi\Laranail\EnvKit\Headless\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
+
+/**
+ * The fluent registration DSL (`EnvKit::configure()->…`). A bound singleton a
+ * consumer drives from their OWN service provider to reshape EnvKit at runtime —
+ * extra protected keys, a custom writer, mutation-pipeline middleware, additional
+ * audit sinks, ad-hoc macros — with zero edits to package source (Open/Closed,
+ * §2A). EnvKit reads this state when it builds each commit pipeline.
+ */
+final class EnvKitConfigurator
+{
+    /** @var list<object> */
+    private array $mutationMiddleware = [];
+
+    /** @var list<string> */
+    private array $protectedKeys = [];
+
+    /** @var list<string> */
+    private array $editableKeys = [];
+
+    private ?WriterInterface $writer = null;
+
+    /** @var list<AuditSinkInterface> */
+    private array $auditSinks = [];
+
+    private ?ValueCipherInterface $cipher = null;
+
+    /** @var (Closure(): ValueCipherInterface)|null */
+    private $cipherResolver = null;
+
+    /** @var list<DoctorRuleInterface> */
+    private array $doctorRules = [];
+
+    /** @var list<PortFormatInterface> */
+    private array $portFormats = [];
+
+    private ?ActorResolverInterface $actorResolver = null;
+
+    private ?int $valueLengthLimit = null;
+
+    private bool $valueLengthLimitSet = false;
+
+    private ?EnvSchema $schema = null;
+
+    private bool $schemaSeeded = false;
+
+    /** The runtime schema builder (lazily created; shared with config-seeded rules). */
+    public function schema(): EnvSchema
+    {
+        return $this->schema ??= new EnvSchema;
+    }
+
+    /**
+     * Provider-seeded once from config('env-kit.schema') — runtime `schema()->…` rules
+     * (added in the consumer's boot) are preserved on the same instance.
+     *
+     * @param  array<array-key, mixed>  $rules
+     */
+    public function seedSchemaFromConfig(array $rules): void
+    {
+        if ($this->schemaSeeded) {
+            return;
+        }
+        $this->schemaSeeded = true;
+
+        foreach ($rules as $key => $spec) {
+            if (! is_string($key)) {
+                continue;
+            }
+            if (is_string($spec)) {
+                $this->schema()->define($key, $spec);
+            } elseif (is_array($spec)) {
+                $this->schema()->define($key, array_values(array_map(static fn (mixed $r): string => is_scalar($r) ? (string) $r : '', $spec)));
+            }
+        }
+    }
+
+    /** Cap the byte-length of any written value (null = unbounded). Takes precedence over config. */
+    public function limitValueLength(?int $max): self
+    {
+        $this->valueLengthLimit = $max;
+        $this->valueLengthLimitSet = true;
+
+        return $this;
+    }
+
+    /** Whether a consumer set the limit explicitly (so the provider must not clobber it). */
+    public function hasValueLengthLimit(): bool
+    {
+        return $this->valueLengthLimitSet;
+    }
+
+    public function valueLengthLimit(): ?int
+    {
+        return $this->valueLengthLimit;
+    }
+
+    private ?UpdateGateInterface $updateGate = null;
+
+    private ?UpdateGateInterface $defaultUpdateGate = null;
+
+    /** @var list<Closure(UpdateGateInterface): UpdateGateInterface> */
+    private array $gateDecorators = [];
+
+    /** @var list<WriteObserverInterface> */
+    private array $observers = [];
+
+    /** Replace the update-authorization gate outright (drops the default + ability bridge). */
+    public function useUpdateGate(UpdateGateInterface $gate): self
+    {
+        $this->updateGate = $gate;
+
+        return $this;
+    }
+
+    /**
+     * Wrap the current update gate (composes; the last decorator registered is the
+     * OUTERMOST wrapper, like the container's extend()).
+     *
+     * @param  Closure(UpdateGateInterface): UpdateGateInterface  $decorator
+     */
+    public function decorateUpdateGate(Closure $decorator): self
+    {
+        $this->gateDecorators[] = $decorator;
+
+        return $this;
+    }
+
+    /** Provider-seeded shipped default (env-aware + Laravel-ability bridge). */
+    public function setDefaultUpdateGate(UpdateGateInterface $gate): self
+    {
+        $this->defaultUpdateGate = $gate;
+
+        return $this;
+    }
+
+    /** The effective gate: consumer replacement ?? provider default ?? bare default, then decorators. */
+    public function updateGate(): UpdateGateInterface
+    {
+        $gate = $this->updateGate ?? $this->defaultUpdateGate ?? new DefaultUpdateGate;
+
+        foreach ($this->gateDecorators as $decorator) {
+            $gate = $decorator($gate);
+        }
+
+        return $gate;
+    }
+
+    /** Register a write observer (Eloquent-style lifecycle hooks; compose in order). */
+    public function observe(WriteObserverInterface $observer): self
+    {
+        $this->observers[] = $observer;
+
+        return $this;
+    }
+
+    /** @return list<WriteObserverInterface> */
+    public function observers(): array
+    {
+        return $this->observers;
+    }
+
+    /**
+     * Resolve "who" performs each commit (audit trail + events). Accepts a closure
+     * `fn (): ?string` or an {@see ActorResolverInterface}.
+     *
+     * @param  Closure(): ?string|ActorResolverInterface  $resolver
+     */
+    public function resolveActorUsing(Closure|ActorResolverInterface $resolver): self
+    {
+        $this->actorResolver = $resolver instanceof ActorResolverInterface
+            ? $resolver
+            : new CallbackActorResolver($resolver);
+
+        return $this;
+    }
+
+    /** The resolved actor for the current commit (null when no resolver is registered). */
+    public function resolveActor(): ?string
+    {
+        return $this->actorResolver?->resolve();
+    }
+
+    /** Append a pipe to the commit pipeline (runs after the built-in guards, before write). */
+    public function pushMutationMiddleware(object $pipe): self
+    {
+        $this->mutationMiddleware[] = $pipe;
+
+        return $this;
+    }
+
+    /** @param list<string> $keys */
+    public function protectKeys(array $keys): self
+    {
+        foreach ($keys as $key) {
+            $this->protectedKeys[] = $key;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Restrict writable keys to an allowlist (supports wildcards, e.g. `APP_*`).
+     * Empty = no restriction. Merged with config('env-kit.editable_keys').
+     *
+     * @param  list<string>  $keys
+     */
+    public function onlyEditable(array $keys): self
+    {
+        foreach ($keys as $key) {
+            $this->editableKeys[] = $key;
+        }
+
+        return $this;
+    }
+
+    /** @return list<string> */
+    public function editableKeys(): array
+    {
+        return $this->editableKeys;
+    }
+
+    /** Swap the writer strategy (e.g. wrap it in a decorator). */
+    public function useWriter(WriterInterface $writer): self
+    {
+        $this->writer = $writer;
+
+        return $this;
+    }
+
+    /** Register an additional audit destination (events fan out to all sinks). */
+    public function registerAuditSink(AuditSinkInterface $sink): self
+    {
+        $this->auditSinks[] = $sink;
+
+        return $this;
+    }
+
+    /** Register a custom doctor health-check rule (runs after the built-ins). */
+    public function registerDoctorRule(DoctorRuleInterface $rule): self
+    {
+        $this->doctorRules[] = $rule;
+
+        return $this;
+    }
+
+    /** @return list<DoctorRuleInterface> */
+    public function doctorRules(): array
+    {
+        return $this->doctorRules;
+    }
+
+    /** Register a custom import/export format (e.g. YAML). */
+    public function registerPortFormat(PortFormatInterface $format): self
+    {
+        $this->portFormats[] = $format;
+
+        return $this;
+    }
+
+    /** @return list<PortFormatInterface> */
+    public function portFormats(): array
+    {
+        return $this->portFormats;
+    }
+
+    /** Swap the value cipher used for encrypt()/decrypt() (e.g. a Vault-backed one). */
+    public function useCipher(ValueCipherInterface $cipher): self
+    {
+        $this->cipher = $cipher;
+
+        return $this;
+    }
+
+    /**
+     * Provider-seeded: lazily resolve the default cipher so the Encrypter (and its
+     * APP_KEY) is only touched when encryption is actually used.
+     *
+     * @param  Closure(): ValueCipherInterface  $resolver
+     */
+    public function resolveCipherUsing(Closure $resolver): self
+    {
+        $this->cipherResolver = $resolver;
+
+        return $this;
+    }
+
+    public function cipher(): ?ValueCipherInterface
+    {
+        if ($this->cipher !== null) {
+            return $this->cipher;
+        }
+
+        if ($this->cipherResolver !== null) {
+            return $this->cipher = ($this->cipherResolver)();
+        }
+
+        return null;
+    }
+
+    /** Add a fluent method to EnvKit without subclassing (Macroable). */
+    public function macro(string $name, callable $macro): self
+    {
+        EnvKit::macro($name, $macro);
+
+        return $this;
+    }
+
+    /** @return list<object> */
+    public function mutationMiddleware(): array
+    {
+        return $this->mutationMiddleware;
+    }
+
+    /** @return list<string> */
+    public function protectedKeys(): array
+    {
+        return $this->protectedKeys;
+    }
+
+    public function writer(): ?WriterInterface
+    {
+        return $this->writer;
+    }
+
+    /** @return list<AuditSinkInterface> */
+    public function auditSinks(): array
+    {
+        return $this->auditSinks;
+    }
+}

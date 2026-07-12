@@ -1,0 +1,28 @@
+# Dependencies
+/vendor/
+composer.lock
+
+# Cloned third-party mining source (reference only — never committed).
+# Our own analysis under research/ (*.md) stays tracked.
+/research/_src/
+
+# Test / tooling caches
+/.phpunit.cache/
+/.phpunit.result.cache
+.phpunit.result.cache
+/.phpstan.cache/
+/.pest/
+/build/
+/coverage/
+/.php-cs-fixer.cache
+/.rector.cache
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+/.idea/
+/.vscode/
+/.fleet/
+
+# stray test backup artifacts
+*.bak

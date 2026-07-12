@@ -1,0 +1,114 @@
+{
+    "name": "laranail/env-kit",
+    "description": "View-less, fluent .env editing engine for Laravel \u2014 programmatic API, Artisan CLI, and interactive TUI.",
+    "keywords": [
+        "laravel",
+        "dotenv",
+        "env",
+        "editor",
+        "cli",
+        "tui",
+        "laranail",
+        "oss"
+    ],
+    "homepage": "https://opensource.simtabi.com/products/laranail/env-kit",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Imani Manyara",
+            "email": "imani@simtabi.com",
+            "role": "Maintainer"
+        },
+        {
+            "name": "Simtabi LLC",
+            "email": "opensource@simtabi.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/laranail/env-kit/issues",
+        "source": "https://github.com/laranail/env-kit",
+        "docs": "https://opensource.simtabi.com/documentation/laranail/env-kit/"
+    },
+    "require": {
+        "php": "^8.4.1 || ^8.5",
+        "ext-mbstring": "*",
+        "laranail/console": "^0.1",
+        "laranail/package-tools": "^0.1",
+        "illuminate/auth": "^13.0",
+        "illuminate/console": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/encryption": "^13.0",
+        "illuminate/events": "^13.0",
+        "illuminate/filesystem": "^13.0",
+        "illuminate/notifications": "^13.0",
+        "illuminate/pipeline": "^13.0",
+        "illuminate/support": "^13.0",
+        "illuminate/validation": "^13.0",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "suggest": {
+        "symfony/yaml": "Enables the `yaml` import/export format (Porter)."
+    },
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "symfony/yaml": "^7.0 || ^8.0",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "pestphp/pest-plugin-mutate": "^4.0",
+        "phpstan/phpstan": "^2.0",
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.0",
+        "rector/rector": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Simtabi\\Laranail\\EnvKit\\Headless\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Simtabi\\Laranail\\EnvKit\\Headless\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.1.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Simtabi\\Laranail\\EnvKit\\Headless\\EnvKitServiceProvider"
+            ],
+            "aliases": {
+                "EnvKit": "Simtabi\\Laranail\\EnvKit\\Headless\\Facades\\EnvKit"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "pest",
+        "analyse": "phpstan analyse",
+        "style": "pint --test",
+        "mutate": "@php -d xdebug.mode=coverage vendor/bin/pest --mutate --covered-only --min=85"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/console"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/package-tools"
+        }
+    ]
+}
