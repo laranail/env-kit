@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\EnvKit\Headless;
+namespace Simtabi\Laranail\EnvKit\Headless\Providers;
 
 use Composer\InstalledVersions;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -13,12 +13,15 @@ use Simtabi\Laranail\EnvKit\Headless\Audit\NullAuditSink;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\DefaultUpdateGate;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\LaravelAbilityGate;
 use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
+use Simtabi\Laranail\EnvKit\Headless\Console;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\WriteObserverInterface;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Checks;
+use Simtabi\Laranail\EnvKit\Headless\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\EnvKitManager;
 use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 use Simtabi\Laranail\EnvKit\Headless\Listeners\SendEnvKitNotification;
 use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;

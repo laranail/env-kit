@@ -7,8 +7,8 @@ namespace Simtabi\Laranail\EnvKit\Headless\Tests;
 use Illuminate\Support\Facades\Facade;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
-use Simtabi\Laranail\EnvKit\Headless\EnvKitServiceProvider;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Providers\EnvKitServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
