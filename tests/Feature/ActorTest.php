@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 
 uses(TestCase::class);
 
@@ -22,17 +22,17 @@ it('records the resolved actor on the audit trail', function () {
     app(EnvKitConfigurator::class)->resolveActorUsing(fn () => 'alice');
     EnvKit::set('A', '2');
 
-    expect(lastAuditActor(dirname($path).'/audit.log'))->toBe('alice');
+    expect(lastAuditActor(dirname($path) . '/audit.log'))->toBe('alice');
 });
 
 it('honours a config actor override', function () {
     $path = $this->bindEnv("A=1\n", [
-        'env-kit.auto_backup' => false,
+        'env-kit.auto_backup'   => false,
         'env-kit.audit.enabled' => true,
-        'env-kit.audit.actor' => 'ci-bot',
+        'env-kit.audit.actor'   => 'ci-bot',
     ]);
 
     EnvKit::set('A', '2');
 
-    expect(lastAuditActor(dirname($path).'/audit.log'))->toBe('ci-bot');
+    expect(lastAuditActor(dirname($path) . '/audit.log'))->toBe('ci-bot');
 });

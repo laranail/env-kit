@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\BackupNotFoundException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProductionGuardException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProtectedKeyException;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProtectedKeyException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\BackupNotFoundException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProductionGuardException;
 
 uses(TestCase::class);
 
@@ -53,7 +53,7 @@ it('commits a batch as one transaction', function () {
 
 it('supports group / only / except / interpolated reads', function () {
     $this->bindEnv(
-        "MAIL_HOST=smtp\nMAIL_PORT=587\nAPP_NAME=Acme\n".'URL=${MAIL_HOST}:${MAIL_PORT}'."\n"
+        "MAIL_HOST=smtp\nMAIL_PORT=587\nAPP_NAME=Acme\n" . 'URL=${MAIL_HOST}:${MAIL_PORT}' . "\n",
     );
 
     expect(EnvKit::group('MAIL'))->toBe(['MAIL_HOST' => 'smtp', 'MAIL_PORT' => '587'])
@@ -67,7 +67,7 @@ it('takes an auto-backup before an immediate write', function () {
 
     EnvKit::set('A', '2');
 
-    expect(glob(dirname($path).'/backups/*.bak'))->toHaveCount(1)
+    expect(glob(dirname($path) . '/backups/*.bak'))->toHaveCount(1)
         ->and(EnvKit::get('A'))->toBe('2');
 });
 
@@ -106,7 +106,7 @@ it('enforces config-level protected keys against writes', function () {
     // protected_keys flows into the constructor list, which must be merged into
     // the pipeline's ProtectedKeys for the write to be refused.
     $this->bindEnv("A=1\n", [
-        'env-kit.auto_backup' => false,
+        'env-kit.auto_backup'    => false,
         'env-kit.protected_keys' => ['APP_KEY'],
     ]);
 
@@ -184,11 +184,11 @@ it('restore() takes a safety backup before overwriting when auto_backup is on', 
 
     $backup = EnvKit::backup();                                  // 1 backup
     file_put_contents($path, "A=2\n");                           // change out-of-band
-    $before = count(glob(dirname($path).'/backups/*.bak') ?: []);
+    $before = count(glob(dirname($path) . '/backups/*.bak') ?: []);
 
     EnvKit::restore($backup->name);
 
-    expect(count(glob(dirname($path).'/backups/*.bak') ?: []))->toBe($before + 1)
+    expect(count(glob(dirname($path) . '/backups/*.bak') ?: []))->toBe($before + 1)
         ->and((string) file_get_contents($path))->toContain('A=1');
 });
 
@@ -201,7 +201,7 @@ it('restore() skips the safety backup when auto_backup is off', function () {
     EnvKit::restore($backup->name);
 
     // no extra safety backup is taken (would be 2 under autoBackup||is_file)
-    expect(glob(dirname($path).'/backups/*.bak'))->toHaveCount(1)
+    expect(glob(dirname($path) . '/backups/*.bak'))->toHaveCount(1)
         ->and((string) file_get_contents($path))->toContain('A=1');
 });
 
@@ -215,7 +215,7 @@ it('restore() rewrites through the configured custom writer', function () {
     {
         public function write(string $path, string $contents): void
         {
-            file_put_contents($path, $contents."\n# WRITTEN_BY_CUSTOM_WRITER\n");
+            file_put_contents($path, $contents . "\n# WRITTEN_BY_CUSTOM_WRITER\n");
         }
     });
 

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Audit\HistoryReader;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\SchemaException;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Porter\Formats\DotenvFormat;
-use Simtabi\Laranail\EnvKit\Headless\Porter\Formats\YamlFormat;
-use Simtabi\Laranail\EnvKit\Headless\Rules\MatchesEnvSchema;
-use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
-use Simtabi\Laranail\EnvKit\Headless\Support\DocsGenerator;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
+use Simtabi\Laranail\EnvKit\Headless\Audit\HistoryReader;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\EnvKit\Headless\Support\DocsGenerator;
+use Simtabi\Laranail\EnvKit\Headless\Rules\MatchesEnvSchema;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\Porter\Formats\YamlFormat;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\SchemaException;
+use Simtabi\Laranail\EnvKit\Headless\Porter\Formats\DotenvFormat;
 
 uses(TestCase::class);
 
@@ -45,11 +45,11 @@ it('YamlFormat stringifies scalar and array values on import', function () {
 });
 
 it('HistoryReader clamps a zero/negative limit to one', function () {
-    $file = sys_get_temp_dir().'/hrc-'.bin2hex(random_bytes(5)).'.log';
+    $file = sys_get_temp_dir() . '/hrc-' . bin2hex(random_bytes(5)) . '.log';
     file_put_contents($file, implode("\n", [
         '{"occurred_at":1,"changes":[]}',
         '{"occurred_at":2,"changes":[]}',
-    ])."\n");
+    ]) . "\n");
 
     expect((new HistoryReader($file))->recent(0))->toHaveCount(1); // max(1, 0) === 1
 
@@ -76,13 +76,13 @@ it('EnvSchema::describe() lists the exact rule labels per key', function () {
 });
 
 it('HistoryReader honours the limit, orders newest-first and skips malformed lines', function () {
-    $file = sys_get_temp_dir().'/hr-'.bin2hex(random_bytes(5)).'.log';
+    $file = sys_get_temp_dir() . '/hr-' . bin2hex(random_bytes(5)) . '.log';
     file_put_contents($file, implode("\n", [
         'NOT JSON',
         '{"occurred_at":1,"changes":[]}',
         '{"occurred_at":2,"changes":[]}',
         '{"occurred_at":3,"changes":[]}',
-    ])."\n");
+    ]) . "\n");
 
     expect((new HistoryReader($file))->recent(10))->toHaveCount(3); // malformed line skipped
 
@@ -117,15 +117,15 @@ it('EnvDocument::withComment and withEmptyLine append entries', function () {
 });
 
 it('env:history shows the actor and changed key names', function () {
-    $dir = sys_get_temp_dir().'/hist-'.bin2hex(random_bytes(5));
+    $dir = sys_get_temp_dir() . '/hist-' . bin2hex(random_bytes(5));
     @mkdir($dir, 0777, true);
-    file_put_contents($dir.'/.env', "A=1\n");
+    file_put_contents($dir . '/.env', "A=1\n");
     config([
-        'env-kit.path' => $dir.'/.env',
-        'env-kit.audit.path' => $dir.'/audit.log',
+        'env-kit.path'          => $dir . '/.env',
+        'env-kit.audit.path'    => $dir . '/audit.log',
         'env-kit.audit.enabled' => true,
-        'env-kit.audit.actor' => 'deploy-bot',
-        'env-kit.auto_backup' => false,
+        'env-kit.audit.actor'   => 'deploy-bot',
+        'env-kit.auto_backup'   => false,
     ]);
     $this->app->forgetInstance(EnvKitInterface::class);
     EnvKit::set('FLAG', '2');

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Doctor;
 
 use Closure;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
+use Throwable;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 use Simtabi\Laranail\Package\Tools\Services\Doctor\DoctorCheck;
 use Simtabi\Laranail\Package\Tools\Services\Doctor\DoctorResult;
-use Throwable;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 
 /**
  * Adapter: exposes ONE bespoke {@see DoctorRuleInterface} through the standard
@@ -25,7 +25,7 @@ use Throwable;
 final readonly class BespokeRuleCheck implements DoctorCheck
 {
     /**
-     * @param  Closure(): EnvDocument  $document  lazy provider for the .env document
+     * @param Closure(): EnvDocument $document lazy provider for the .env document
      */
     public function __construct(
         private DoctorRuleInterface $rule,
@@ -49,7 +49,7 @@ final readonly class BespokeRuleCheck implements DoctorCheck
         try {
             $diagnostics = $this->rule->check(($this->document)());
         } catch (Throwable $e) {
-            return DoctorResult::skip('Could not read the .env document: '.$e->getMessage());
+            return DoctorResult::skip('Could not read the .env document: ' . $e->getMessage());
         }
 
         if ($diagnostics === []) {

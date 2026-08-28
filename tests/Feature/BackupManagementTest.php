@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
 
 uses(TestCase::class);
 
@@ -27,10 +27,10 @@ it('deletes a backup by name', function () {
 });
 
 it('deletes backups older than N days', function () {
-    $dir = sys_get_temp_dir().'/envkit-old-'.bin2hex(random_bytes(5));
+    $dir = sys_get_temp_dir() . '/envkit-old-' . bin2hex(random_bytes(5));
     @mkdir($dir, 0700, true);
-    $old = $dir.'/env.20200101-000000-000000-aaaa.bak';
-    $recent = $dir.'/env.20260101-000000-000000-bbbb.bak';
+    $old = $dir . '/env.20200101-000000-000000-aaaa.bak';
+    $recent = $dir . '/env.20260101-000000-000000-bbbb.bak';
     file_put_contents($old, "A=1\n");
     file_put_contents($recent, "A=1\n");
     touch($old, time() - 40 * 86400);
@@ -41,7 +41,7 @@ it('deletes backups older than N days', function () {
         ->and(is_file($old))->toBeFalse()
         ->and(is_file($recent))->toBeTrue();
 
-    array_map('unlink', glob($dir.'/*') ?: []);
+    array_map('unlink', glob($dir . '/*') ?: []);
     @rmdir($dir);
 });
 

@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Extension;
 
 use Closure;
+use Simtabi\Laranail\EnvKit\Headless\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
 use Simtabi\Laranail\EnvKit\Headless\Audit\CallbackActorResolver;
-use Simtabi\Laranail\EnvKit\Headless\Authorization\DefaultUpdateGate;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\ActorResolverInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\UpdateGateInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
+use Simtabi\Laranail\EnvKit\Headless\Authorization\DefaultUpdateGate;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\ActorResolverInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\WriteObserverInterface;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
-use Simtabi\Laranail\EnvKit\Headless\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
 
 /**
  * The fluent registration DSL (`EnvKit::configure()->…`). A bound singleton a
@@ -62,6 +62,16 @@ final class EnvKitConfigurator
 
     private bool $schemaSeeded = false;
 
+    private ?UpdateGateInterface $updateGate = null;
+
+    private ?UpdateGateInterface $defaultUpdateGate = null;
+
+    /** @var list<Closure(UpdateGateInterface): UpdateGateInterface> */
+    private array $gateDecorators = [];
+
+    /** @var list<WriteObserverInterface> */
+    private array $observers = [];
+
     /** The runtime schema builder (lazily created; shared with config-seeded rules). */
     public function schema(): EnvSchema
     {
@@ -72,7 +82,7 @@ final class EnvKitConfigurator
      * Provider-seeded once from config('env-kit.schema') — runtime `schema()->…` rules
      * (added in the consumer's boot) are preserved on the same instance.
      *
-     * @param  array<array-key, mixed>  $rules
+     * @param array<array-key, mixed> $rules
      */
     public function seedSchemaFromConfig(array $rules): void
     {
@@ -113,16 +123,6 @@ final class EnvKitConfigurator
         return $this->valueLengthLimit;
     }
 
-    private ?UpdateGateInterface $updateGate = null;
-
-    private ?UpdateGateInterface $defaultUpdateGate = null;
-
-    /** @var list<Closure(UpdateGateInterface): UpdateGateInterface> */
-    private array $gateDecorators = [];
-
-    /** @var list<WriteObserverInterface> */
-    private array $observers = [];
-
     /** Replace the update-authorization gate outright (drops the default + ability bridge). */
     public function useUpdateGate(UpdateGateInterface $gate): self
     {
@@ -135,7 +135,7 @@ final class EnvKitConfigurator
      * Wrap the current update gate (composes; the last decorator registered is the
      * OUTERMOST wrapper, like the container's extend()).
      *
-     * @param  Closure(UpdateGateInterface): UpdateGateInterface  $decorator
+     * @param Closure(UpdateGateInterface): UpdateGateInterface $decorator
      */
     public function decorateUpdateGate(Closure $decorator): self
     {
@@ -182,7 +182,7 @@ final class EnvKitConfigurator
      * Resolve "who" performs each commit (audit trail + events). Accepts a closure
      * `fn (): ?string` or an {@see ActorResolverInterface}.
      *
-     * @param  Closure(): ?string|ActorResolverInterface  $resolver
+     * @param Closure(): ?string|ActorResolverInterface $resolver
      */
     public function resolveActorUsing(Closure|ActorResolverInterface $resolver): self
     {
@@ -221,7 +221,7 @@ final class EnvKitConfigurator
      * Restrict writable keys to an allowlist (supports wildcards, e.g. `APP_*`).
      * Empty = no restriction. Merged with config('env-kit.editable_keys').
      *
-     * @param  list<string>  $keys
+     * @param list<string> $keys
      */
     public function onlyEditable(array $keys): self
     {
@@ -294,7 +294,7 @@ final class EnvKitConfigurator
      * Provider-seeded: lazily resolve the default cipher so the Encrypter (and its
      * APP_KEY) is only touched when encryption is actually used.
      *
-     * @param  Closure(): ValueCipherInterface  $resolver
+     * @param Closure(): ValueCipherInterface $resolver
      */
     public function resolveCipherUsing(Closure $resolver): self
     {

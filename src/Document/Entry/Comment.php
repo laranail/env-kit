@@ -24,6 +24,6 @@ final class Comment extends AbstractEntry
             return $this->original;
         }
 
-        return $this->text === '' ? '#' : '# '.$this->text;
+        return $this->text === '' ? '#' : '# ' . $this->text;
     }
 }

@@ -57,25 +57,25 @@ it('strips an inline comment from an unquoted value', function () {
 it('escapes each special character on encode with exact output', function (string $value, string $expected) {
     expect(ValueFormatter::encode($value))->toBe($expected);
 })->with([
-    'backslash' => ['\\', '"\\\\"'],
-    'double quote' => ['"', '"\\""'],
-    'dollar sign' => ['$', '"\\$"'],
-    'newline' => ["\n", '"\\n"'],
+    'backslash'       => ['\\', '"\\\\"'],
+    'double quote'    => ['"', '"\\""'],
+    'dollar sign'     => ['$', '"\\$"'],
+    'newline'         => ["\n", '"\\n"'],
     'carriage return' => ["\r", '"\\r"'],
-    'tab' => ["\t", '"\\t"'],
+    'tab'             => ["\t", '"\\t"'],
 ]);
 
 it('unescapes each escape sequence on decode back to the literal char', function (string $raw, string $expected) {
     expect(ValueFormatter::decode($raw))->toBe($expected);
 })->with([
-    'backslash' => ['"\\\\"', '\\'],
-    'double quote' => ['"\\""', '"'],
-    'dollar sign' => ['"\\$"', '$'],
-    'newline' => ['"\\n"', "\n"],
+    'backslash'       => ['"\\\\"', '\\'],
+    'double quote'    => ['"\\""', '"'],
+    'dollar sign'     => ['"\\$"', '$'],
+    'newline'         => ['"\\n"', "\n"],
     'carriage return' => ['"\\r"', "\r"],
-    'tab' => ['"\\t"', "\t"],
-    'form feed' => ['"\\f"', "\f"],
-    'vertical tab' => ['"\\v"', "\v"],
+    'tab'             => ['"\\t"', "\t"],
+    'form feed'       => ['"\\f"', "\f"],
+    'vertical tab'    => ['"\\v"', "\v"],
 ]);
 
 it('quotes a value with a leading NUL byte (whitespace regex misses NUL)', function () {

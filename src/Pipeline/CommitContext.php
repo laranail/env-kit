@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Pipeline;
 
+use function array_key_exists;
+
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 
 /** The payload that flows through the commit pipeline. */
@@ -34,13 +36,13 @@ final class CommitContext
         $keys = [];
 
         foreach ($after as $key => $value) {
-            if (! \array_key_exists($key, $before) || $before[$key] !== $value) {
+            if (! array_key_exists($key, $before) || $before[$key] !== $value) {
                 $keys[] = $key;
             }
         }
 
         foreach (array_keys($before) as $key) {
-            if (! \array_key_exists($key, $after)) {
+            if (! array_key_exists($key, $after)) {
                 $keys[] = $key;
             }
         }

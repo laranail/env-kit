@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Security;
 
+use function strlen;
+
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidValueException;
 
 /**
@@ -29,7 +31,7 @@ final class ValueSanitizer
 
         $clean = preg_replace(self::STRIP, '', $value) ?? $value;
 
-        if ($this->maxLength !== null && \strlen($clean) > $this->maxLength) {
+        if ($this->maxLength !== null && strlen($clean) > $this->maxLength) {
             throw InvalidValueException::tooLong($key, $this->maxLength);
         }
 

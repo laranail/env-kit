@@ -34,10 +34,10 @@ final class BackupManager
         // retention prunes the genuinely-oldest even for rapid same-second backups.
         // Strip the leading dot of `.env` so backups are not hidden dotfiles.
         $base = ltrim(basename($envPath), '.') ?: 'env';
-        $tag = is_string($label) && $label !== '' ? preg_replace('/[^A-Za-z0-9_-]+/', '-', $label).'.' : '';
+        $tag = is_string($label) && $label !== '' ? preg_replace('/[^A-Za-z0-9_-]+/', '-', $label) . '.' : '';
         $micros = (int) (fmod(microtime(true), 1) * 1_000_000);
         $name = sprintf('%s.%s%s-%06d-%s.bak', $base, $tag, date('Ymd-His'), $micros, bin2hex(random_bytes(2)));
-        $destination = $this->directory.'/'.$name;
+        $destination = $this->directory . '/' . $name;
 
         if (! @copy($envPath, $destination)) {
             throw FileNotWritableException::for($destination);
@@ -59,7 +59,7 @@ final class BackupManager
 
         $backups = array_map(
             static fn (string $p): BackupFile => new BackupFile(basename($p), $p, @filemtime($p) ?: 0, @filesize($p) ?: 0),
-            glob($this->directory.'/*.bak') ?: [],
+            glob($this->directory . '/*.bak') ?: [],
         );
 
         usort($backups, static fn (BackupFile $a, BackupFile $b): int => $b->name <=> $a->name);

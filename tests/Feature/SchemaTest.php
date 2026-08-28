@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\SchemaException;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Rules\MatchesEnvSchema;
-use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
+use Simtabi\Laranail\EnvKit\Headless\Rules\MatchesEnvSchema;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\SchemaException;
 
 uses(TestCase::class);
 
@@ -44,7 +44,7 @@ it('assertValid throws on failure', function () {
 it('seeds the schema from config', function () {
     $this->bindEnv("APP_ENV=invalid\n", [
         'env-kit.auto_backup' => false,
-        'env-kit.schema' => ['APP_ENV' => 'required|in:local,production'],
+        'env-kit.schema'      => ['APP_ENV' => 'required|in:local,production'],
     ]);
 
     expect(EnvKit::isValid())->toBeFalse()
@@ -54,7 +54,7 @@ it('seeds the schema from config', function () {
 it('the env:validate command reports schema errors and exits 3', function () {
     $this->bindEnv("PORT=oops\n", [
         'env-kit.auto_backup' => false,
-        'env-kit.schema' => ['PORT' => 'integer'],
+        'env-kit.schema'      => ['PORT' => 'integer'],
     ]);
 
     $this->artisan('env:validate')->expectsOutputToContain('Schema')->assertExitCode(3);

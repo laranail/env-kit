@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Security;
 
+use function strlen;
+
 /**
  * Masks secret-shaped values for logs, audit records and UI listings. Exceptions
  * never carry raw values in the first place; this redactor is the second line of
@@ -35,8 +37,8 @@ final class SecretRedactor
             return '';
         }
 
-        if ($keep > 0 && \strlen($value) > $keep) {
-            return substr($value, 0, $keep).$this->mask;
+        if ($keep > 0 && strlen($value) > $keep) {
+            return substr($value, 0, $keep) . $this->mask;
         }
 
         return $this->mask;
@@ -52,7 +54,7 @@ final class SecretRedactor
      * Replace any occurrence of the given secret values in a free-form string
      * (e.g. a third-party log line) with the mask.
      *
-     * @param  list<string>  $secrets
+     * @param list<string> $secrets
      */
     public function scrub(string $message, array $secrets): string
     {

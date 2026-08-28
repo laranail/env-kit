@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes;
 
 use Closure;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
 use Simtabi\Laranail\EnvKit\Headless\Security\EditableKeys;
-use Simtabi\Laranail\EnvKit\Headless\Security\ProductionGuard;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
 use Simtabi\Laranail\EnvKit\Headless\Security\ProtectedKeys;
+use Simtabi\Laranail\EnvKit\Headless\Security\ProductionGuard;
 
 /** Enforces the production guard + protected-key + editable-allowlist policy before any write. */
 final class Guard

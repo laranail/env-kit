@@ -21,7 +21,7 @@ final class ConflictDetector
 
         $hash = @hash_file('sha256', $path);
 
-        return $hash !== false ? $hash : 'mtime:'.((string) @filemtime($path));
+        return $hash !== false ? $hash : 'mtime:' . ((string) @filemtime($path));
     }
 
     public function ensureUnchanged(string $path, string $expected): void

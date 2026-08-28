@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Security;
 
+use function strlen;
+use function is_string;
+
 use Illuminate\Contracts\Encryption\Encrypter;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\EncryptionException;
@@ -23,7 +26,7 @@ final class LaravelValueCipher implements ValueCipherInterface
 
     public function encrypt(string $plain): string
     {
-        return self::PREFIX.$this->encrypter->encrypt($plain);
+        return self::PREFIX . $this->encrypter->encrypt($plain);
     }
 
     public function decrypt(string $cipher): string
@@ -32,9 +35,9 @@ final class LaravelValueCipher implements ValueCipherInterface
             return $cipher;
         }
 
-        $value = $this->encrypter->decrypt(substr($cipher, \strlen(self::PREFIX)));
+        $value = $this->encrypter->decrypt(substr($cipher, strlen(self::PREFIX)));
 
-        if (! \is_string($value)) {
+        if (! is_string($value)) {
             throw EncryptionException::corrupt();
         }
 

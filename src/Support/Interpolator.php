@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Support;
 
+use function array_key_exists;
+
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\ValidationException;
 
 /**
@@ -30,7 +32,7 @@ final class Interpolator
             function (array $matches) use ($vars, $depth): string {
                 $name = $matches[1];
 
-                if (! \array_key_exists($name, $vars)) {
+                if (! array_key_exists($name, $vars)) {
                     if ($this->throwOnUndefined) {
                         throw new ValidationException("Undefined interpolation variable: \${{$name}}.");
                     }

@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Event;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 use Simtabi\Laranail\EnvKit\Headless\Events\AfterWrite;
 use Simtabi\Laranail\EnvKit\Headless\Events\BeforeRestore;
 use Simtabi\Laranail\EnvKit\Headless\Events\WriteRejected;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProductionGuardException;
-use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 
 uses(TestCase::class);
 
@@ -31,7 +31,7 @@ it('emits WriteRejected (and not BeforeRestore) when a restore is blocked in pro
 
 it('restores a backup and records it to the audit trail', function () {
     $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false, 'env-kit.audit.enabled' => true]);
-    $auditPath = dirname($path).'/audit.log';
+    $auditPath = dirname($path) . '/audit.log';
 
     $backup = EnvKit::backup();      // snapshot A=1
     EnvKit::set('A', '2');           // drift to A=2

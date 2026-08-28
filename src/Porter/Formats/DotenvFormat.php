@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Porter\Formats;
 
-use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 use Simtabi\Laranail\EnvKit\Headless\Support\ValueFormatter;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
 
 /** Plain `KEY=VALUE` dotenv text — round-trips through the same encoder/parser as the engine. */
 final class DotenvFormat implements PortFormatInterface
@@ -20,10 +20,10 @@ final class DotenvFormat implements PortFormatInterface
     {
         $lines = [];
         foreach ($values as $key => $value) {
-            $lines[] = $key.'='.ValueFormatter::encode($value);
+            $lines[] = $key . '=' . ValueFormatter::encode($value);
         }
 
-        return $lines === [] ? '' : implode("\n", $lines)."\n";
+        return $lines === [] ? '' : implode("\n", $lines) . "\n";
     }
 
     public function import(string $content): array

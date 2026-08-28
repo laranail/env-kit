@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
-use Simtabi\Laranail\EnvKit\Headless\EnvKit as EnvKitService;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProtectedKeyException;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\EnvKit as EnvKitService;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProtectedKeyException;
 
 uses(TestCase::class);
 
@@ -16,7 +16,7 @@ it('lets a consumer add a macro via configure() (no subclassing)', function () {
     $this->bindEnv("A=1\n");
 
     EnvKit::configure()->macro('tagged', function () {
-        return 'env:'.$this->get('A');
+        return 'env:' . $this->get('A');
     });
 
     expect(EnvKit::tagged())->toBe('env:1');

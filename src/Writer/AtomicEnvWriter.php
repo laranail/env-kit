@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Writer;
 
+use Throwable;
+
+use function strlen;
+use function dirname;
+
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\LockException;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\LockException;
 
 /**
  * Crash-safe writer: write to a temp file ON THE SAME FILESYSTEM, flush + fsync,
@@ -22,7 +27,7 @@ final class AtomicEnvWriter implements WriterInterface
 {
     public function write(string $path, string $contents): void
     {
-        $dir = \dirname($path);
+        $dir = dirname($path);
 
         if (! is_dir($dir) || ! is_writable($dir)) {
             throw FileNotWritableException::for($dir);
@@ -40,7 +45,7 @@ final class AtomicEnvWriter implements WriterInterface
             if (! @rename($tmp, $path)) {
                 throw FileNotWritableException::for($path);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             if (is_file($tmp)) {
                 @unlink($tmp);
             }
@@ -60,7 +65,7 @@ final class AtomicEnvWriter implements WriterInterface
                 throw LockException::for($target);
             }
 
-            if (@fwrite($handle, $contents) !== \strlen($contents)) {
+            if (@fwrite($handle, $contents) !== strlen($contents)) {
                 throw FileNotWritableException::for($tmp);
             }
 

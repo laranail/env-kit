@@ -6,9 +6,9 @@ namespace Simtabi\Laranail\EnvKit\Headless\Console;
 
 use Closure;
 
-use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
+use function Laravel\Prompts\select;
+use function Laravel\Prompts\confirm;
 
 use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
@@ -21,6 +21,10 @@ use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
  */
 final class EditCommand extends AbstractEnvCommand
 {
+    private const ADD = '＋ Add a new key';
+
+    private const QUIT = 'Quit';
+
     /** @var string */
     protected $signature = 'laranail::env-kit.edit
         {--file= : operate on a custom .env file}
@@ -31,10 +35,6 @@ final class EditCommand extends AbstractEnvCommand
 
     /** @var list<string> */
     protected array $commandAliases = ['env:edit'];
-
-    private const ADD = '＋ Add a new key';
-
-    private const QUIT = 'Quit';
 
     private bool $force = false;
 
@@ -83,9 +83,9 @@ final class EditCommand extends AbstractEnvCommand
     {
         match ((string) select("Edit [{$key}]", ['Edit value', 'Rename', 'Delete', 'Back'])) {
             'Edit value' => $this->editValue($env, $key),
-            'Rename' => $this->renameKey($env, $key),
-            'Delete' => $this->deleteKey($env, $key),
-            default => null,
+            'Rename'     => $this->renameKey($env, $key),
+            'Delete'     => $this->deleteKey($env, $key),
+            default      => null,
         };
     }
 

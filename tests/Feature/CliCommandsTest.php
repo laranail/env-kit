@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Artisan;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
 
 uses(TestCase::class);
 
@@ -108,7 +108,7 @@ it('env:set --export writes the export prefix', function () {
 
 it('operates on an alternate file with --file and falls back to the default for an empty --file', function () {
     $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
-    $alt = dirname($path).'/.env.alt';
+    $alt = dirname($path) . '/.env.alt';
     file_put_contents($alt, "B=2\n");
 
     $this->artisan('env:list', ['--file' => $alt])
@@ -147,7 +147,7 @@ it('env:export honours --format, falls back to json for an empty one, and report
         ->doesntExpectOutputToContain('KEY,VALUE')
         ->assertExitCode(0);
 
-    $out = dirname($path).'/export.json';
+    $out = dirname($path) . '/export.json';
     $this->artisan('env:export', ['--output' => $out])
         ->expectsOutputToContain("Exported to [{$out}].")
         ->assertExitCode(0);
@@ -162,7 +162,7 @@ it('env:export honours --format, falls back to json for an empty one, and report
 
 it('env:import applies a json source and reports it', function () {
     $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
-    $src = dirname($path).'/values.json';
+    $src = dirname($path) . '/values.json';
     file_put_contents($src, (string) json_encode(['NEW' => 'imported']));
 
     $this->artisan('env:import', ['source' => $src])
@@ -193,9 +193,9 @@ it('env:generate prints the value when --set is empty, without writing anything'
 
 it('env:check and env:sync honour --example and fall back to the sibling example when empty', function () {
     $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
-    $custom = dirname($path).'/custom.example';
+    $custom = dirname($path) . '/custom.example';
     file_put_contents($custom, "A=x\nNEWKEY=default\n");
-    file_put_contents(dirname($path).'/.env.example', "A=x\nSIBKEY=sib\n");
+    file_put_contents(dirname($path) . '/.env.example', "A=x\nSIBKEY=sib\n");
 
     // --example drives the comparison
     $this->artisan('env:check', ['--example' => $custom])
