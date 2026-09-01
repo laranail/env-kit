@@ -16,7 +16,7 @@ with care and follow the private disclosure process below.
 Please report security vulnerabilities privately. **Do not open a public GitHub
 issue, pull request, or discussion for security problems.**
 
-Email **opensource@simtabi.com** with:
+Email **security@simtabi.com** with:
 
 - a description of the vulnerability and its impact;
 - the affected version(s);
@@ -31,3 +31,9 @@ Email **opensource@simtabi.com** with:
   release notes unless you prefer to remain anonymous.
 
 Thank you for helping keep the package and its users safe.
+
+> **Prefer GitHub private vulnerability reporting** when you can: open it from this
+> repository's Security tab. The report arrives attached to the repo with a draft advisory
+> and a CVE request path already in place. Email is the fallback for anyone who would
+> rather not use GitHub.
+
