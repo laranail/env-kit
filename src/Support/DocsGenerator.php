@@ -19,7 +19,7 @@ final class DocsGenerator
 
         $markdown = "# Environment schema\n\n| Key | Rules |\n|-----|-------|\n";
         foreach ($described as $key => $rules) {
-            $markdown .= '| `' . $key . '` | ' . implode(', ', $rules) . " |\n";
+            $markdown .= '| `'.$key.'` | '.implode(', ', $rules)." |\n";
         }
 
         return $markdown;

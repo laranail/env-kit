@@ -38,7 +38,7 @@ final class SecretRedactor
         }
 
         if ($keep > 0 && strlen($value) > $keep) {
-            return substr($value, 0, $keep) . $this->mask;
+            return substr($value, 0, $keep).$this->mask;
         }
 
         return $this->mask;
@@ -54,7 +54,7 @@ final class SecretRedactor
      * Replace any occurrence of the given secret values in a free-form string
      * (e.g. a third-party log line) with the mask.
      *
-     * @param list<string> $secrets
+     * @param  list<string>  $secrets
      */
     public function scrub(string $message, array $secrets): string
     {

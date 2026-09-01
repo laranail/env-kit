@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Pipeline;
 
-use Illuminate\Pipeline\Pipeline;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Pipeline\Pipeline;
 use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Audit;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Guard;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Write;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Backup;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Guard;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\ValidateKeys;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Verify;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Write;
 use Simtabi\Laranail\EnvKit\Headless\Security\EditableKeys;
 use Simtabi\Laranail\EnvKit\Headless\Security\KeyValidator;
+use Simtabi\Laranail\EnvKit\Headless\Security\ProductionGuard;
 use Simtabi\Laranail\EnvKit\Headless\Security\ProtectedKeys;
 use Simtabi\Laranail\EnvKit\Headless\Writer\AtomicEnvWriter;
-use Simtabi\Laranail\EnvKit\Headless\Security\ProductionGuard;
 use Simtabi\Laranail\EnvKit\Headless\Writer\IntegrityVerifier;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\ValidateKeys;
 
 /**
  * Runs a commit through `validate → guard → [consumer middleware] → backup →

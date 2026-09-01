@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Doctor;
 
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Rules\BlankValue;
-use Simtabi\Laranail\Package\Tools\Services\Doctor\DoctorCheck;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Rules\ByteOrderMark;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Rules\DuplicateKeys;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Rules\MissingTrailingNewline;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\Package\Tools\Services\Doctor\DoctorCheck;
 
 /**
  * Builds the package-tools {@see DoctorCheck} set that surfaces env-kit's
@@ -61,23 +61,23 @@ final class Checks
     {
         return [
             [
-                'rule'        => new DuplicateKeys,
-                'name'        => 'env:duplicate-keys',
+                'rule' => new DuplicateKeys,
+                'name' => 'env:duplicate-keys',
                 'description' => 'No .env key is defined more than once.',
             ],
             [
-                'rule'        => new BlankValue,
-                'name'        => 'env:blank-values',
+                'rule' => new BlankValue,
+                'name' => 'env:blank-values',
                 'description' => 'No .env key is assigned a blank value.',
             ],
             [
-                'rule'        => new ByteOrderMark,
-                'name'        => 'env:byte-order-mark',
+                'rule' => new ByteOrderMark,
+                'name' => 'env:byte-order-mark',
                 'description' => 'The .env file has no leading UTF-8 byte-order mark.',
             ],
             [
-                'rule'        => new MissingTrailingNewline,
-                'name'        => 'env:trailing-newline',
+                'rule' => new MissingTrailingNewline,
+                'name' => 'env:trailing-newline',
                 'description' => 'The .env file ends with a trailing newline.',
             ],
         ];

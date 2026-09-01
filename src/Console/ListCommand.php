@@ -26,7 +26,7 @@ final class ListCommand extends AbstractEnvCommand
             $reveal = (bool) $this->option('reveal');
 
             foreach ($this->targetEnv($env)->all() as $key => $value) {
-                $this->line($key . '=' . ($reveal ? $value : $redactor->forKey($key, $value)));
+                $this->line($key.'='.($reveal ? $value : $redactor->forKey($key, $value)));
             }
 
             return self::EXIT_OK;

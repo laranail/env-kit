@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Porter\Porter;
-use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\PortException;
+use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Porter\Formats\CsvFormat;
 use Simtabi\Laranail\EnvKit\Headless\Porter\Formats\JsonFormat;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
+use Simtabi\Laranail\EnvKit\Headless\Porter\Porter;
+use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 
 uses(TestCase::class);
 
@@ -39,7 +39,7 @@ it('round-trips csv with quoted values', function () {
 
 it('writes an export to a file with env:export --output', function () {
     $path = $this->bindEnv("A=1\nB=2\n");
-    $out = dirname($path) . '/export.json';
+    $out = dirname($path).'/export.json';
 
     $this->artisan('env:export', ['--output' => $out])->assertExitCode(0);
 
@@ -48,7 +48,7 @@ it('writes an export to a file with env:export --output', function () {
 
 it('imports from a file with env:import', function () {
     $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
-    $src = dirname($path) . '/in.json';
+    $src = dirname($path).'/in.json';
     file_put_contents($src, '{"IMPORTED":"yes"}');
 
     $this->artisan('env:import', ['source' => $src])->assertExitCode(0);
@@ -196,10 +196,10 @@ it('json export: is pretty-printed with unescaped slashes', function () {
 it('json import: casts scalars to string and nested arrays to json', function () {
     expect((new JsonFormat)->import('{"NUM":5,"FLAG":true,"NESTED":{"x":1},"STR":"keep"}'))
         ->toBe([
-            'NUM'    => '5',
-            'FLAG'   => '1',
+            'NUM' => '5',
+            'FLAG' => '1',
             'NESTED' => '{"x":1}',
-            'STR'    => 'keep',
+            'STR' => 'keep',
         ]);
 });
 
@@ -214,13 +214,13 @@ it('json import: throws PortException when the payload is not an object/array', 
 });
 
 it('json import: accepts nesting at the configured depth limit', function () {
-    $atLimit = str_repeat('[', 511) . str_repeat(']', 511);
+    $atLimit = str_repeat('[', 511).str_repeat(']', 511);
 
     expect((new JsonFormat)->import($atLimit))->toBeArray();
 });
 
 it('json import: rejects nesting beyond the configured depth limit', function () {
-    $tooDeep = str_repeat('[', 512) . str_repeat(']', 512);
+    $tooDeep = str_repeat('[', 512).str_repeat(']', 512);
 
     expect(fn () => (new JsonFormat)->import($tooDeep))
         ->toThrow(PortException::class);

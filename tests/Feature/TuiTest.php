@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
 
 uses(TestCase::class);
 

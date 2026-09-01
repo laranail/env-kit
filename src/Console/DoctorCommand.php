@@ -35,9 +35,9 @@ final class DoctorCommand extends AbstractEnvCommand
                     : $diagnostic->message;
 
                 match ($diagnostic->severity) {
-                    'error'   => $this->error($line),
+                    'error' => $this->error($line),
                     'warning' => $this->warn($line),
-                    default   => $this->line($line),
+                    default => $this->line($line),
                 };
 
                 $hasError = $hasError || $diagnostic->isError();

@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless;
 
-use LogicException;
-
-use function is_string;
-
-use Illuminate\Support\Manager;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Foundation\Application;
-use Simtabi\Laranail\EnvKit\Headless\Security\LaravelValueCipher;
+use Illuminate\Support\Manager;
+use LogicException;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
+use Simtabi\Laranail\EnvKit\Headless\Security\LaravelValueCipher;
+
+use function is_string;
 
 /**
  * The cipher driver registry (Illuminate\Support\Manager). Ships a `laravel`

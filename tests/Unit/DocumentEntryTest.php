@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
-use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Comment;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Rules\ByteOrderMark;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Comment;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 
 it('the ByteOrderMark rule flags a UTF-8 BOM and passes a clean file', function () {
     $withBom = EnvDocument::parse("\u{FEFF}A=1\n");

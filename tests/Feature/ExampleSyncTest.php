@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
-use Simtabi\Laranail\EnvKit\Headless\Support\ExampleSync;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Support\ExampleSync;
+use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 
 uses(TestCase::class);
 
 function envkitDir(): string
 {
-    $dir = sys_get_temp_dir() . '/envkit-ex-' . bin2hex(random_bytes(5));
+    $dir = sys_get_temp_dir().'/envkit-ex-'.bin2hex(random_bytes(5));
     @mkdir($dir, 0777, true);
 
     return $dir;
@@ -30,9 +30,9 @@ it('the ExampleSync helper reports missing and extra keys', function () {
 
 it('lists keys missing from the .env relative to .env.example', function () {
     $dir = envkitDir();
-    file_put_contents($dir . '/.env', "A=1\n");
-    file_put_contents($dir . '/.env.example', "A=\nB=\nDB_HOST=\n");
-    config(['env-kit.path' => $dir . '/.env', 'env-kit.auto_backup' => false]);
+    file_put_contents($dir.'/.env', "A=1\n");
+    file_put_contents($dir.'/.env.example', "A=\nB=\nDB_HOST=\n");
+    config(['env-kit.path' => $dir.'/.env', 'env-kit.auto_backup' => false]);
     $this->app->forgetInstance(EnvKitInterface::class);
 
     expect(EnvKit::missingFromExample())->toBe(['B', 'DB_HOST']);
@@ -40,9 +40,9 @@ it('lists keys missing from the .env relative to .env.example', function () {
 
 it('syncs missing keys from .env.example into .env', function () {
     $dir = envkitDir();
-    file_put_contents($dir . '/.env', "A=1\n");
-    file_put_contents($dir . '/.env.example', "A=\nB=default\nDB_HOST=localhost\n");
-    config(['env-kit.path' => $dir . '/.env', 'env-kit.auto_backup' => false]);
+    file_put_contents($dir.'/.env', "A=1\n");
+    file_put_contents($dir.'/.env.example', "A=\nB=default\nDB_HOST=localhost\n");
+    config(['env-kit.path' => $dir.'/.env', 'env-kit.auto_backup' => false]);
     $this->app->forgetInstance(EnvKitInterface::class);
 
     EnvKit::syncFromExample();
@@ -55,9 +55,9 @@ it('syncs missing keys from .env.example into .env', function () {
 
 it('env:check exits non-zero on drift and zero when in sync', function () {
     $dir = envkitDir();
-    file_put_contents($dir . '/.env', "A=1\n");
-    file_put_contents($dir . '/.env.example', "A=\nB=\n");
-    config(['env-kit.path' => $dir . '/.env', 'env-kit.auto_backup' => false]);
+    file_put_contents($dir.'/.env', "A=1\n");
+    file_put_contents($dir.'/.env.example', "A=\nB=\n");
+    config(['env-kit.path' => $dir.'/.env', 'env-kit.auto_backup' => false]);
     $this->app->forgetInstance(EnvKitInterface::class);
 
     $this->artisan('env:check')->expectsOutputToContain('missing')->assertExitCode(3);

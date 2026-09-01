@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Document;
 
-use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
-use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Comment;
-use Simtabi\Laranail\EnvKit\Headless\Support\ValueFormatter;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EntryInterface;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Comment;
 use Simtabi\Laranail\EnvKit\Headless\Document\Entry\EmptyLine;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
+use Simtabi\Laranail\EnvKit\Headless\Support\ValueFormatter;
 
 /**
  * Parses raw .env text into an immutable {@see EnvDocument}, capturing the

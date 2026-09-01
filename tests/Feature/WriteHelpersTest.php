@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
+use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 
 uses(TestCase::class);
 

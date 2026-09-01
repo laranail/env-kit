@@ -55,8 +55,8 @@ it('trims control whitespace before numeric parsing', function () {
 
     // A leading NUL is stripped by trim() but breaks both is_numeric() and the
     // (int)/(float) cast when left in place, so the trims on both operands matter.
-    expect($typed->int("\x00" . '42', 7))->toBe(42)
-        ->and($typed->float("\x00" . '42', 7.0))->toBe(42.0);
+    expect($typed->int("\x00".'42', 7))->toBe(42)
+        ->and($typed->float("\x00".'42', 7.0))->toBe(42.0);
 });
 
 it('decodes JSON objects to associative arrays', function () {
@@ -74,8 +74,8 @@ it('honours the json() decode depth limit', function () {
 
     // 511 nested levels decode within the 512 depth budget; 512 levels exceed it
     // and fall back to the default — pinning the literal 512 depth argument.
-    $within = str_repeat('[', 511) . str_repeat(']', 511);
-    $beyond = str_repeat('[', 512) . str_repeat(']', 512);
+    $within = str_repeat('[', 511).str_repeat(']', 511);
+    $beyond = str_repeat('[', 512).str_repeat(']', 512);
 
     expect($typed->json($within, 'def'))->toBeArray()
         ->and($typed->json($beyond, 'def'))->toBe('def');

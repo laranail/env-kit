@@ -6,14 +6,14 @@ namespace Simtabi\Laranail\EnvKit\Headless\Console;
 
 use Closure;
 use Illuminate\Console\Command;
+use Simtabi\Laranail\Console\Tools\Commands\Concerns\SupportsNamespacedNames;
 use Simtabi\Laranail\EnvKit\Headless\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ConflictException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\LockException;
 use Simtabi\Laranail\EnvKit\Headless\Security\ProductionBanner;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ConflictException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
-use Simtabi\Laranail\Console\Tools\Commands\Concerns\SupportsNamespacedNames;
 
 /**
  * Base for the EnvKit Artisan commands. Provides the `laranail::env-kit.*`
@@ -64,7 +64,7 @@ abstract class AbstractEnvCommand extends Command
      * Run an action, mapping EnvKit exceptions to the exit-code contract.
      * Exception messages are secret-safe (they carry key names, never values).
      *
-     * @param Closure(): int $action
+     * @param  Closure(): int  $action
      */
     protected function runSafely(Closure $action): int
     {

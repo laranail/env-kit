@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Pipeline;
 
-use function array_key_exists;
-
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+
+use function array_key_exists;
 
 /** The payload that flows through the commit pipeline. */
 final class CommitContext

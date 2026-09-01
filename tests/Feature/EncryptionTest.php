@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Contracts\Encryption\Encrypter;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
 use Simtabi\Laranail\EnvKit\Headless\EnvKitManager;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 use Simtabi\Laranail\EnvKit\Headless\Security\LaravelValueCipher;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
+use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 
 uses(TestCase::class);
 
@@ -81,7 +81,7 @@ it('resolves the default laravel cipher and honours EnvKitManager::extend()', fu
     {
         public function encrypt(string $plain): string
         {
-            return 'rev:' . strrev($plain);
+            return 'rev:'.strrev($plain);
         }
 
         public function decrypt(string $cipher): string
@@ -109,7 +109,7 @@ it('uses a custom cipher registered via configure()->useCipher()', function () {
     {
         public function encrypt(string $plain): string
         {
-            return 'X:' . base64_encode($plain);
+            return 'X:'.base64_encode($plain);
         }
 
         public function decrypt(string $cipher): string

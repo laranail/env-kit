@@ -5,27 +5,26 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Testing;
 
 use Closure;
-use PHPUnit\Framework\Assert;
-
-use function array_key_exists;
-
 use Illuminate\Support\Collection;
-use Simtabi\Laranail\EnvKit\Headless\Doctor\Doctor;
-use Simtabi\Laranail\EnvKit\Headless\Porter\Porter;
-use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
+use PHPUnit\Framework\Assert;
 use Simtabi\Laranail\EnvKit\Headless\Backup\BackupFile;
-use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
 use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Support\Interpolator;
-use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
-use Simtabi\Laranail\EnvKit\Headless\Support\TypedAccessor;
-use Simtabi\Laranail\EnvKit\Headless\Support\SecretGenerator;
-use Simtabi\Laranail\EnvKit\Headless\Results\ValidationResult;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
+use Simtabi\Laranail\EnvKit\Headless\Doctor\Doctor;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\SchemaException;
 use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
+use Simtabi\Laranail\EnvKit\Headless\Porter\Porter;
+use Simtabi\Laranail\EnvKit\Headless\Results\ValidationResult;
+use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
+use Simtabi\Laranail\EnvKit\Headless\Support\Interpolator;
+use Simtabi\Laranail\EnvKit\Headless\Support\SecretGenerator;
+use Simtabi\Laranail\EnvKit\Headless\Support\TypedAccessor;
+
+use function array_key_exists;
 
 /**
  * An in-memory EnvKit for consumer tests: reads are answered from a map, writes
@@ -82,8 +81,7 @@ final class EnvKitFake implements EnvKitInterface
     }
 
     /**
-     * @param array<int|string, mixed>|null $default
-     *
+     * @param  array<int|string, mixed>|null  $default
      * @return array<int|string, mixed>|null
      */
     public function getArray(string $key, ?array $default = null): ?array
@@ -119,8 +117,7 @@ final class EnvKitFake implements EnvKitInterface
     }
 
     /**
-     * @param list<string> $keys
-     *
+     * @param  list<string>  $keys
      * @return array<string, string>
      */
     public function only(array $keys): array
@@ -129,8 +126,7 @@ final class EnvKitFake implements EnvKitInterface
     }
 
     /**
-     * @param list<string> $keys
-     *
+     * @param  list<string>  $keys
      * @return array<string, string>
      */
     public function except(array $keys): array
@@ -141,7 +137,7 @@ final class EnvKitFake implements EnvKitInterface
     /** @return array<string, string> */
     public function group(string $prefix): array
     {
-        $needle = rtrim($prefix, '_') . '_';
+        $needle = rtrim($prefix, '_').'_';
 
         return array_filter(
             $this->values,
@@ -406,9 +402,9 @@ final class EnvKitFake implements EnvKitInterface
         }
 
         return [
-            'only_here'  => array_values(array_diff(array_keys($this->values), array_keys($there))),
+            'only_here' => array_values(array_diff(array_keys($this->values), array_keys($there))),
             'only_there' => array_values(array_diff(array_keys($there), array_keys($this->values))),
-            'changed'    => $changed,
+            'changed' => $changed,
         ];
     }
 
@@ -465,8 +461,8 @@ final class EnvKitFake implements EnvKitInterface
 
         return match ($type) {
             'app_key', 'key' => $generator->appKey(),
-            'base64'         => $generator->token($bytes, 'base64'),
-            default          => $generator->token($bytes, 'hex'),
+            'base64' => $generator->token($bytes, 'base64'),
+            default => $generator->token($bytes, 'hex'),
         };
     }
 

@@ -16,11 +16,11 @@ function envkit_temp(): string
 {
     static $counter = 0;
 
-    $dir = sys_get_temp_dir() . '/envkit-' . getmypid() . '-' . (++$counter);
+    $dir = sys_get_temp_dir().'/envkit-'.getmypid().'-'.(++$counter);
     @mkdir($dir, 0777, true);
     register_shutdown_function(static fn () => envkit_rmrf($dir));
 
-    return $dir . '/.env';
+    return $dir.'/.env';
 }
 
 function envkit_rmrf(string $dir): void
@@ -34,7 +34,7 @@ function envkit_rmrf(string $dir): void
             continue;
         }
 
-        $path = $dir . '/' . $entry;
+        $path = $dir.'/'.$entry;
         is_dir($path) ? envkit_rmrf($path) : @unlink($path);
     }
 

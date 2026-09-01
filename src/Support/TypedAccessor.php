@@ -24,9 +24,9 @@ final class TypedAccessor
         }
 
         return match (strtolower(trim($raw))) {
-            'true', '1', 'yes', 'on'      => true,
+            'true', '1', 'yes', 'on' => true,
             'false', '0', 'no', 'off', '' => false,
-            default                       => (bool) $raw,
+            default => (bool) $raw,
         };
     }
 
@@ -41,8 +41,7 @@ final class TypedAccessor
     }
 
     /**
-     * @param array<int|string, mixed>|null $default
-     *
+     * @param  array<int|string, mixed>|null  $default
      * @return array<int|string, mixed>|null
      */
     public function array(?string $raw, ?array $default): ?array

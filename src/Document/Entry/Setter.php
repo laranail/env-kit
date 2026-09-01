@@ -31,7 +31,7 @@ final class Setter extends AbstractEntry
 
         $prefix = $this->export ? 'export ' : '';
 
-        return $prefix . $this->key . '=' . ValueFormatter::encode($this->value, $this->alwaysQuote);
+        return $prefix.$this->key.'='.ValueFormatter::encode($this->value, $this->alwaysQuote);
     }
 
     /** A new, dirty Setter for the same key with a different value. */

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
+use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 
 uses(TestCase::class);
 
@@ -46,7 +46,7 @@ it('runs a custom doctor rule registered via configure()', function () {
 
 it('returns a structured diff between two files', function () {
     $path = $this->bindEnv("A=1\nB=2\nC=3\n");
-    $other = dirname($path) . '/.env.other';
+    $other = dirname($path).'/.env.other';
     file_put_contents($other, "A=1\nB=99\nD=4\n");
 
     $diff = EnvKit::diff($other);
@@ -58,7 +58,7 @@ it('returns a structured diff between two files', function () {
 
 it('prints the diff with env:diff', function () {
     $path = $this->bindEnv("A=1\nC=3\n");
-    $other = dirname($path) . '/.env.other';
+    $other = dirname($path).'/.env.other';
     file_put_contents($other, "A=1\nD=4\n");
 
     $this->artisan('env:diff', ['against' => $other])
@@ -69,7 +69,7 @@ it('prints the diff with env:diff', function () {
 
 it('reports no differences for identical files', function () {
     $path = $this->bindEnv("A=1\n");
-    $other = dirname($path) . '/.env.same';
+    $other = dirname($path).'/.env.same';
     file_put_contents($other, "A=1\n");
 
     $this->artisan('env:diff', ['against' => $other])->expectsOutputToContain('No differences.')->assertExitCode(0);
@@ -87,20 +87,20 @@ it('env:diff reports each kind of difference and never claims a clean diff for t
     $path = $this->bindEnv("A=1\nC=1\n");
     $dir = dirname($path);
 
-    file_put_contents($dir . '/only-here.env', "C=1\n");
-    $this->artisan('env:diff', ['against' => $dir . '/only-here.env'])
+    file_put_contents($dir.'/only-here.env', "C=1\n");
+    $this->artisan('env:diff', ['against' => $dir.'/only-here.env'])
         ->expectsOutputToContain('+ A (only here)')
         ->doesntExpectOutputToContain('No differences.')
         ->assertExitCode(0);
 
-    file_put_contents($dir . '/only-there.env', "A=1\nB=2\nC=1\n");
-    $this->artisan('env:diff', ['against' => $dir . '/only-there.env'])
+    file_put_contents($dir.'/only-there.env', "A=1\nB=2\nC=1\n");
+    $this->artisan('env:diff', ['against' => $dir.'/only-there.env'])
         ->expectsOutputToContain("- B (only in {$dir}/only-there.env)")
         ->doesntExpectOutputToContain('No differences.')
         ->assertExitCode(0);
 
-    file_put_contents($dir . '/changed.env', "A=1\nC=2\n");
-    $this->artisan('env:diff', ['against' => $dir . '/changed.env'])
+    file_put_contents($dir.'/changed.env', "A=1\nC=2\n");
+    $this->artisan('env:diff', ['against' => $dir.'/changed.env'])
         ->expectsOutputToContain('~ C (value differs)')
         ->doesntExpectOutputToContain('No differences.')
         ->assertExitCode(0);

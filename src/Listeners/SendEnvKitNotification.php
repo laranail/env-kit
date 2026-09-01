@@ -6,13 +6,13 @@ namespace Simtabi\Laranail\EnvKit\Headless\Listeners;
 
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Notification;
-use Simtabi\Laranail\EnvKit\Headless\Events\AfterWrite;
-use Simtabi\Laranail\EnvKit\Headless\Events\BeforeWrite;
 use Simtabi\Laranail\EnvKit\Headless\Events\AfterRestore;
+use Simtabi\Laranail\EnvKit\Headless\Events\AfterWrite;
 use Simtabi\Laranail\EnvKit\Headless\Events\BackupCreated;
+use Simtabi\Laranail\EnvKit\Headless\Events\BeforeWrite;
+use Simtabi\Laranail\EnvKit\Headless\Events\ConflictDetected;
 use Simtabi\Laranail\EnvKit\Headless\Events\WriteRejected;
 use Simtabi\Laranail\EnvKit\Headless\Events\WriteRolledBack;
-use Simtabi\Laranail\EnvKit\Headless\Events\ConflictDetected;
 use Simtabi\Laranail\EnvKit\Headless\Notifications\EnvKitEventNotification;
 
 /**
@@ -24,13 +24,13 @@ final class SendEnvKitNotification
 {
     /** @var array<class-string, string> */
     private const EVENT_KEYS = [
-        BeforeWrite::class      => 'before_write',
-        AfterWrite::class       => 'after_write',
-        WriteRejected::class    => 'write_rejected',
-        BackupCreated::class    => 'backup_created',
-        AfterRestore::class     => 'after_restore',
+        BeforeWrite::class => 'before_write',
+        AfterWrite::class => 'after_write',
+        WriteRejected::class => 'write_rejected',
+        BackupCreated::class => 'backup_created',
+        AfterRestore::class => 'after_restore',
         ConflictDetected::class => 'conflict_detected',
-        WriteRolledBack::class  => 'write_rolled_back',
+        WriteRolledBack::class => 'write_rolled_back',
     ];
 
     public function handle(object $event): void

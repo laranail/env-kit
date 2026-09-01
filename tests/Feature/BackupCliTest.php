@@ -12,7 +12,7 @@ it('creates a backup with env:backup', function () {
 
     $this->artisan('env:backup')->assertExitCode(0);
 
-    expect(glob(dirname($path) . '/backups/*.bak'))->toHaveCount(1);
+    expect(glob(dirname($path).'/backups/*.bak'))->toHaveCount(1);
 });
 
 it('lists backups with env:backups', function () {
@@ -64,14 +64,14 @@ it('prunes backups older than N days via --older-than', function () {
     $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
 
     $this->artisan('env:backup')->assertExitCode(0);
-    $backup = glob(dirname($path) . '/backups/*.bak')[0];
+    $backup = glob(dirname($path).'/backups/*.bak')[0];
     touch($backup, time() - 3_600); // an hour old
 
     $this->artisan('env:backup-delete', ['--older-than' => '0'])
         ->expectsOutputToContain('Deleted 1 backup(s) older than 0 day(s).')
         ->assertExitCode(0);
 
-    expect(glob(dirname($path) . '/backups/*.bak'))->toBe([]);
+    expect(glob(dirname($path).'/backups/*.bak'))->toBe([]);
 });
 
 it('demands a backup name when neither a name nor --older-than is usable', function () {

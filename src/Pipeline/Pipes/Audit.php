@@ -7,11 +7,11 @@ namespace Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes;
 use Closure;
 use Illuminate\Contracts\Events\Dispatcher;
 use Simtabi\Laranail\EnvKit\Headless\Audit\AuditEvent;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
 use Simtabi\Laranail\EnvKit\Headless\Events\AfterWrite;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\ChangeSet;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
 use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
 
 /**
  * The final pipe: after a successful write+verify, record the (redacted) change

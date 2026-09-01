@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Session;
 
-use function array_key_exists;
-
 use Illuminate\Contracts\Events\Dispatcher;
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Events\WriteRejected;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
-use Simtabi\Laranail\EnvKit\Headless\Events\ConflictDetected;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitPipeline;
-use Simtabi\Laranail\EnvKit\Headless\Security\ValueSanitizer;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\EnvKit\Headless\Events\ConflictDetected;
+use Simtabi\Laranail\EnvKit\Headless\Events\WriteRejected;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\ConflictException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitPipeline;
+use Simtabi\Laranail\EnvKit\Headless\Security\ValueSanitizer;
+
+use function array_key_exists;
 
 /**
  * A transactional editing session over a single .env file.

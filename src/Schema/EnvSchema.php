@@ -50,12 +50,12 @@ final class EnvSchema
     /** @param list<string> $allowed */
     public function in(string $key, array $allowed): self
     {
-        return $this->rule($key, static fn (?string $v): ?string => $v !== null && $v !== '' && ! in_array($v, $allowed, true) ? 'must be one of: ' . implode(', ', $allowed) : null, 'one of: ' . implode(', ', $allowed));
+        return $this->rule($key, static fn (?string $v): ?string => $v !== null && $v !== '' && ! in_array($v, $allowed, true) ? 'must be one of: '.implode(', ', $allowed) : null, 'one of: '.implode(', ', $allowed));
     }
 
     public function regex(string $key, string $pattern): self
     {
-        return $this->rule($key, static fn (?string $v): ?string => $v !== null && $v !== '' && @preg_match($pattern, $v) !== 1 ? 'does not match the required format' : null, 'matches ' . $pattern);
+        return $this->rule($key, static fn (?string $v): ?string => $v !== null && $v !== '' && @preg_match($pattern, $v) !== 1 ? 'does not match the required format' : null, 'matches '.$pattern);
     }
 
     public function url(string $key): self
@@ -90,7 +90,7 @@ final class EnvSchema
     /**
      * Apply a Laravel-style rule spec (`'required|integer|in:a,b'` or a list).
      *
-     * @param string|list<string> $rules
+     * @param  string|list<string>  $rules
      */
     public function define(string $key, string|array $rules): self
     {
@@ -105,16 +105,16 @@ final class EnvSchema
             [$name, $arg] = array_pad(explode(':', $spec, 2), 2, null);
 
             match (strtolower((string) $name)) {
-                'required'                   => $this->required($key),
-                'string'                     => $this->string($key),
-                'integer', 'int'             => $this->integer($key),
-                'boolean', 'bool'            => $this->boolean($key),
+                'required' => $this->required($key),
+                'string' => $this->string($key),
+                'integer', 'int' => $this->integer($key),
+                'boolean', 'bool' => $this->boolean($key),
                 'number', 'numeric', 'float' => $this->number($key),
-                'url'                        => $this->url($key),
-                'email'                      => $this->email($key),
-                'in', 'enum'                 => $this->in($key, array_map('trim', explode(',', (string) $arg))),
-                'regex'                      => $this->regex($key, (string) $arg),
-                default                      => null,
+                'url' => $this->url($key),
+                'email' => $this->email($key),
+                'in', 'enum' => $this->in($key, array_map('trim', explode(',', (string) $arg))),
+                'regex' => $this->regex($key, (string) $arg),
+                default => null,
             };
         }
 

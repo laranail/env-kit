@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Compat;
 
 use Illuminate\Support\Facades\Facade;
-use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 
 /**
  * A drop-in `jackiedo/dotenv-editor`-style facade — resolves the SAME bound
