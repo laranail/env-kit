@@ -19,8 +19,7 @@ if (! function_exists('env_kit')) {
      *
      * @template TDefault
      *
-     * @param TDefault $default
-     *
+     * @param  TDefault  $default
      * @return ($key is null ? EnvKitInterface : mixed|TDefault)
      */
     function env_kit(?string $key = null, mixed $default = null): mixed

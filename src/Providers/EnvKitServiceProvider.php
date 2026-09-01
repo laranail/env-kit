@@ -5,30 +5,30 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Providers;
 
 use Composer\InstalledVersions;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Contracts\Events\Dispatcher;
-use Simtabi\Laranail\Package\Tools\Package;
-use Simtabi\Laranail\EnvKit\Headless\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Console;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Simtabi\Laranail\EnvKit\Headless\Doctor\Checks;
-use Simtabi\Laranail\EnvKit\Headless\EnvKitManager;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\Event;
 use Simtabi\Laranail\EnvKit\Headless\Audit\FileAuditSink;
 use Simtabi\Laranail\EnvKit\Headless\Audit\NullAuditSink;
-use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
-use Simtabi\Laranail\EnvKit\Headless\Support\Interpolator;
-use Simtabi\Laranail\EnvKit\Headless\Support\TypedAccessor;
-use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
-use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
-use Simtabi\Laranail\Package\Tools\Providers\PackageServiceProvider;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\DefaultUpdateGate;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\LaravelAbilityGate;
+use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
+use Simtabi\Laranail\EnvKit\Headless\Console;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\WriteObserverInterface;
+use Simtabi\Laranail\EnvKit\Headless\Doctor\Checks;
+use Simtabi\Laranail\EnvKit\Headless\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\EnvKitManager;
+use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 use Simtabi\Laranail\EnvKit\Headless\Listeners\SendEnvKitNotification;
+use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
+use Simtabi\Laranail\EnvKit\Headless\Support\Interpolator;
+use Simtabi\Laranail\EnvKit\Headless\Support\TypedAccessor;
+use Simtabi\Laranail\Package\Tools\Package;
+use Simtabi\Laranail\Package\Tools\Providers\PackageServiceProvider;
 use Simtabi\Laranail\Package\Tools\Support\Definitions\AboutSectionDefinition;
 
 final class EnvKitServiceProvider extends PackageServiceProvider
@@ -155,7 +155,7 @@ final class EnvKitServiceProvider extends PackageServiceProvider
                 return is_scalar($id) ? (string) $id : 'user';
             }
 
-            return $this->app->runningInConsole() ? ((get_current_user() ?: 'cli') . '@cli') : null;
+            return $this->app->runningInConsole() ? ((get_current_user() ?: 'cli').'@cli') : null;
         });
 
         // The shipped update gate: env-aware default, bridged to a Laravel `env-kit.update`

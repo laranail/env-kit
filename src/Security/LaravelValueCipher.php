@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Security;
 
-use function strlen;
-use function is_string;
-
 use Illuminate\Contracts\Encryption\Encrypter;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\EncryptionException;
+
+use function is_string;
+use function strlen;
 
 /**
  * The default cipher: Laravel's APP_KEY-based {@see Encrypter}. Ciphertext is
@@ -26,7 +26,7 @@ final class LaravelValueCipher implements ValueCipherInterface
 
     public function encrypt(string $plain): string
     {
-        return self::PREFIX . $this->encrypter->encrypt($plain);
+        return self::PREFIX.$this->encrypter->encrypt($plain);
     }
 
     public function decrypt(string $cipher): string

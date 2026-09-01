@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
+use Simtabi\Laranail\EnvKit\Headless\Doctor\BespokeRuleCheck;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Doctor\BespokeRuleCheck;
 use Simtabi\Laranail\Package\Tools\Services\Doctor\DoctorStatus;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 
 /** A bespoke rule that always returns the given diagnostics. */
 function adapter_rule(Diagnostic ...$diagnostics): DoctorRuleInterface

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 
 it('exposes only setter entries from setters(), skipping comments and blanks', function () {
     $doc = EnvDocument::parse("# header\nA=1\n\nB=2\n");
@@ -83,7 +83,7 @@ it('renames only the first of duplicate keys', function () {
 });
 
 it('reproduces eol, BOM and trailing-newline metadata', function () {
-    $doc = EnvDocument::parse("\xEF\xBB\xBF" . "A=1\r\nB=2");
+    $doc = EnvDocument::parse("\xEF\xBB\xBF"."A=1\r\nB=2");
 
     expect($doc->eol())->toBe("\r\n")
         ->and($doc->hasBom())->toBeTrue()

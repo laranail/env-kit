@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes;
 
 use Closure;
-use Simtabi\Laranail\EnvKit\Headless\Security\KeyValidator;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
+use Simtabi\Laranail\EnvKit\Headless\Security\KeyValidator;
 
 /** Rejects invalid identifiers among the keys being added or updated. */
 final class ValidateKeys

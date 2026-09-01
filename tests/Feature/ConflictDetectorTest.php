@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Session\ConflictDetector;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\ConflictException;
+use Simtabi\Laranail\EnvKit\Headless\Session\ConflictDetector;
 
 if (! function_exists('envkit_is_root')) {
     /** True when the process can read files it has chmod-ed 0000 (i.e. running as root). */
@@ -57,7 +57,7 @@ it('falls back to an mtime fingerprint when the file cannot be hashed', function
         restore_error_handler();
     }
 
-    expect($fingerprint)->toBe('mtime:' . ((string) filemtime($path)));
+    expect($fingerprint)->toBe('mtime:'.((string) filemtime($path)));
 })->skip(envkit_is_root(), 'unreadable-file behaviour cannot be exercised as root');
 
 it('passes ensureUnchanged when the file still matches the fingerprint', function () {

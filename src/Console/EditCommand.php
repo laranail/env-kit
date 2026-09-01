@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Console;
 
 use Closure;
-
-use function Laravel\Prompts\text;
-use function Laravel\Prompts\select;
-use function Laravel\Prompts\confirm;
-
 use Simtabi\Laranail\EnvKit\Headless\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
+
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\select;
+use function Laravel\Prompts\text;
 
 /**
  * The interactive TUI (`env:edit`): a browse/edit loop on laravel/prompts (the
@@ -83,9 +82,9 @@ final class EditCommand extends AbstractEnvCommand
     {
         match ((string) select("Edit [{$key}]", ['Edit value', 'Rename', 'Delete', 'Back'])) {
             'Edit value' => $this->editValue($env, $key),
-            'Rename'     => $this->renameKey($env, $key),
-            'Delete'     => $this->deleteKey($env, $key),
-            default      => null,
+            'Rename' => $this->renameKey($env, $key),
+            'Delete' => $this->deleteKey($env, $key),
+            default => null,
         };
     }
 

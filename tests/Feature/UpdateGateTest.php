@@ -3,15 +3,15 @@
 declare(strict_types=1);
 
 use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Illuminate\Support\Facades\Gate;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteContext;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteDecision;
-use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\UpdateGateInterface;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\UnauthorizedUpdateException;
+use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
+use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 
 uses(TestCase::class);
 

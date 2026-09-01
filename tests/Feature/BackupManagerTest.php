@@ -9,7 +9,7 @@ it('creates a timestamped backup of an existing file', function () {
     $path = envkit_temp();
     file_put_contents($path, "A=1\n");
 
-    $backup = (new BackupManager(dirname($path) . '/backups'))->backup($path);
+    $backup = (new BackupManager(dirname($path).'/backups'))->backup($path);
 
     expect($backup)->not->toBeNull()
         ->and(is_file($backup->path))->toBeTrue()
@@ -20,13 +20,13 @@ it('creates a timestamped backup of an existing file', function () {
 it('returns null when there is nothing to back up', function () {
     $path = envkit_temp(); // file intentionally not created
 
-    expect((new BackupManager(dirname($path) . '/backups'))->backup($path))->toBeNull();
+    expect((new BackupManager(dirname($path).'/backups'))->backup($path))->toBeNull();
 });
 
 it('lists newest-first and prunes beyond the retention count', function () {
     $path = envkit_temp();
     file_put_contents($path, "A=1\n");
-    $manager = new BackupManager(dirname($path) . '/backups', retain: 2);
+    $manager = new BackupManager(dirname($path).'/backups', retain: 2);
 
     for ($i = 0; $i < 4; $i++) {
         $manager->backup($path);
@@ -41,7 +41,7 @@ it('records the real byte size on the returned backup', function () {
     $path = envkit_temp();
     file_put_contents($path, "HELLO\n"); // 6 bytes
 
-    $backup = (new BackupManager(dirname($path) . '/backups'))->backup($path);
+    $backup = (new BackupManager(dirname($path).'/backups'))->backup($path);
 
     expect($backup->size)->toBe(6);
 });
@@ -50,7 +50,7 @@ it('records a zero size when backing up an empty file', function () {
     $path = envkit_temp();
     file_put_contents($path, '');
 
-    $backup = (new BackupManager(dirname($path) . '/backups'))->backup($path);
+    $backup = (new BackupManager(dirname($path).'/backups'))->backup($path);
 
     expect($backup->size)->toBe(0);
 });
@@ -58,7 +58,7 @@ it('records a zero size when backing up an empty file', function () {
 it('reports the real size and timestamp when listing backups', function () {
     $path = envkit_temp();
     file_put_contents($path, "HELLO\n"); // 6 bytes
-    $manager = new BackupManager(dirname($path) . '/backups');
+    $manager = new BackupManager(dirname($path).'/backups');
     $manager->backup($path);
 
     $listed = $manager->latest();
@@ -71,18 +71,18 @@ it('reports the real size and timestamp when listing backups', function () {
 it('reports a zero size for an empty backup when listing', function () {
     $path = envkit_temp();
     file_put_contents($path, '');
-    $manager = new BackupManager(dirname($path) . '/backups');
+    $manager = new BackupManager(dirname($path).'/backups');
     $manager->backup($path);
 
     expect($manager->all()[0]->size)->toBe(0);
 });
 
 it('orders listed backups newest name first', function () {
-    $dir = dirname(envkit_temp()) . '/backups';
+    $dir = dirname(envkit_temp()).'/backups';
     mkdir($dir, 0o777, true);
-    file_put_contents($dir . '/env.20260101-000000-000000-aaaa.bak', '1');
-    file_put_contents($dir . '/env.20260102-000000-000000-bbbb.bak', '22');
-    file_put_contents($dir . '/env.20260103-000000-000000-cccc.bak', '333');
+    file_put_contents($dir.'/env.20260101-000000-000000-aaaa.bak', '1');
+    file_put_contents($dir.'/env.20260102-000000-000000-bbbb.bak', '22');
+    file_put_contents($dir.'/env.20260103-000000-000000-cccc.bak', '333');
 
     $all = (new BackupManager($dir))->all();
 
@@ -93,11 +93,11 @@ it('orders listed backups newest name first', function () {
 });
 
 it('keeps exactly the retained count when pruning down to one', function () {
-    $dir = dirname(envkit_temp()) . '/backups';
+    $dir = dirname(envkit_temp()).'/backups';
     mkdir($dir, 0o777, true);
-    file_put_contents($dir . '/env.20260101-000000-000000-aaaa.bak', '1');
-    file_put_contents($dir . '/env.20260102-000000-000000-bbbb.bak', '2');
-    file_put_contents($dir . '/env.20260103-000000-000000-cccc.bak', '3');
+    file_put_contents($dir.'/env.20260101-000000-000000-aaaa.bak', '1');
+    file_put_contents($dir.'/env.20260102-000000-000000-bbbb.bak', '2');
+    file_put_contents($dir.'/env.20260103-000000-000000-cccc.bak', '3');
 
     $manager = new BackupManager($dir, retain: 1);
     $manager->prune();
@@ -109,9 +109,9 @@ it('keeps exactly the retained count when pruning down to one', function () {
 it('throws with the directory path when the backup directory cannot be created', function () {
     $path = envkit_temp();
     file_put_contents($path, "A=1\n");
-    $blocker = dirname($path) . '/blocker';
+    $blocker = dirname($path).'/blocker';
     file_put_contents($blocker, 'x'); // a regular file blocks mkdir beneath it
-    $badDir = $blocker . '/nested/backups';
+    $badDir = $blocker.'/nested/backups';
 
     $message = null;
     set_error_handler(static fn (): bool => true); // swallow the expected mkdir() warning
@@ -129,7 +129,7 @@ it('throws with the directory path when the backup directory cannot be created',
 it('creates the backup directory recursively across missing levels', function () {
     $path = envkit_temp();
     file_put_contents($path, "A=1\n");
-    $nested = dirname($path) . '/a/b/c/backups'; // none of these levels exist yet
+    $nested = dirname($path).'/a/b/c/backups'; // none of these levels exist yet
 
     $backup = (new BackupManager($nested))->backup($path);
 
@@ -141,7 +141,7 @@ it('creates the backup directory recursively across missing levels', function ()
 it('creates the backup directory owner-only (0700 — backups are plaintext secrets)', function () {
     $path = envkit_temp();
     file_put_contents($path, "A=1\n");
-    $dir = dirname($path) . '/backups';
+    $dir = dirname($path).'/backups';
 
     $backup = (new BackupManager($dir))->backup($path);
 
@@ -151,10 +151,10 @@ it('creates the backup directory owner-only (0700 — backups are plaintext secr
 
 it('derives the backup base name from the source file name', function () {
     $dir = dirname(envkit_temp());
-    $env = $dir . '/.env.production';
+    $env = $dir.'/.env.production';
     file_put_contents($env, "A=1\n");
 
-    $backup = (new BackupManager($dir . '/backups'))->backup($env);
+    $backup = (new BackupManager($dir.'/backups'))->backup($env);
 
     expect($backup->name)->toStartWith('env.production.');
 });
@@ -163,7 +163,7 @@ it('suffixes the backup name with a four-character hex token', function () {
     $path = envkit_temp();
     file_put_contents($path, "A=1\n");
 
-    $backup = (new BackupManager(dirname($path) . '/backups'))->backup($path);
+    $backup = (new BackupManager(dirname($path).'/backups'))->backup($path);
 
     expect($backup->name)->toMatch('/-[0-9a-f]{4}\.bak$/');
 });
@@ -171,7 +171,7 @@ it('suffixes the backup name with a four-character hex token', function () {
 it('embeds a sub-second component in the backup name', function () {
     $path = envkit_temp();
     file_put_contents($path, "A=1\n");
-    $manager = new BackupManager(dirname($path) . '/backups');
+    $manager = new BackupManager(dirname($path).'/backups');
 
     $micros = [];
     for ($i = 0; $i < 12; $i++) {
@@ -197,7 +197,7 @@ it('shapes the backup name as base.label.date-micros-random for a labelled backu
     $path = envkit_temp();
     file_put_contents($path, "A=1\n");
 
-    $backup = (new BackupManager(dirname($path) . '/backups'))->backup($path, 'pre deploy!');
+    $backup = (new BackupManager(dirname($path).'/backups'))->backup($path, 'pre deploy!');
 
     // The label is slugged and separated from the date stamp by a single dot.
     expect($backup->name)->toMatch('/^env\.pre-deploy-\.\d{8}-\d{6}-\d{6}-[0-9a-f]{4}\.bak$/');
@@ -207,16 +207,16 @@ it('omits the label segment entirely for null and empty labels', function (?stri
     $path = envkit_temp();
     file_put_contents($path, "A=1\n");
 
-    $backup = (new BackupManager(dirname($path) . '/backups'))->backup($path, $label);
+    $backup = (new BackupManager(dirname($path).'/backups'))->backup($path, $label);
 
     expect($backup->name)->toMatch('/^env\.\d{8}-\d{6}-\d{6}-[0-9a-f]{4}\.bak$/');
 })->with(['null label' => [null], 'empty label' => ['']]);
 
 it('lists an unstatable backup with a zero timestamp', function () {
     $path = envkit_temp();
-    $dir = dirname($path) . '/backups';
+    $dir = dirname($path).'/backups';
     mkdir($dir, 0700, true);
-    symlink($dir . '/missing-target', $dir . '/dangling.bak'); // stat() fails, glob() still matches
+    symlink($dir.'/missing-target', $dir.'/dangling.bak'); // stat() fails, glob() still matches
 
     set_error_handler(static fn (): bool => true); // swallow the expected stat warnings
 
@@ -233,9 +233,9 @@ it('lists an unstatable backup with a zero timestamp', function () {
 
 it('deleteOlderThan clamps negative day counts to zero', function () {
     $path = envkit_temp();
-    $dir = dirname($path) . '/backups';
+    $dir = dirname($path).'/backups';
     mkdir($dir, 0700, true);
-    $future = $dir . '/env.future.bak';
+    $future = $dir.'/env.future.bak';
     file_put_contents($future, "A=1\n");
     touch($future, time() + 3600); // newer than any "now" cutoff
 
@@ -247,9 +247,9 @@ it('deleteOlderThan clamps negative day counts to zero', function () {
 
 it('deleteOlderThan with zero days removes any backup older than now', function () {
     $path = envkit_temp();
-    $dir = dirname($path) . '/backups';
+    $dir = dirname($path).'/backups';
     mkdir($dir, 0700, true);
-    $old = $dir . '/env.old.bak';
+    $old = $dir.'/env.old.bak';
     file_put_contents($old, "A=1\n");
     touch($old, time() - 3600);
 
@@ -261,16 +261,16 @@ it('deleteOlderThan with zero days removes any backup older than now', function 
 
 it('deleteOlderThan cuts at exactly days * 86400 seconds', function () {
     $path = envkit_temp();
-    $dir = dirname($path) . '/backups';
+    $dir = dirname($path).'/backups';
     mkdir($dir, 0700, true);
     $days = 10_000; // amplify so a per-day off-by-one dwarfs test-runtime clock skew
     $window = $days * 86_400;
 
-    $kept = $dir . '/env.kept.bak';
+    $kept = $dir.'/env.kept.bak';
     file_put_contents($kept, "A=1\n");
     touch($kept, time() - $window + 5_000); // just inside the window
 
-    $removed = $dir . '/env.removed.bak';
+    $removed = $dir.'/env.removed.bak';
     file_put_contents($removed, "A=1\n");
     touch($removed, time() - $window - 5_000); // just outside the window
 

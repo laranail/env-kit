@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Authorization;
 
-use Simtabi\Laranail\EnvKit\Headless\Security\ProductionGuard;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\UpdateGateInterface;
+use Simtabi\Laranail\EnvKit\Headless\Security\ProductionGuard;
 
 /**
  * The shipped default: permissive and facade-free, so it never conflicts with the

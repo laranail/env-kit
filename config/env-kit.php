@@ -12,8 +12,8 @@ return [
     'auto_commit' => true,
 
     // Take a timestamped backup before each write.
-    'auto_backup'      => true,
-    'backup_path'      => storage_path('env-kit/backups'),
+    'auto_backup' => true,
+    'backup_path' => storage_path('env-kit/backups'),
     'backup_retention' => 30, // 0 = keep all
 
     // Block writes in production unless explicitly opted in (->allowProduction()).
@@ -21,8 +21,8 @@ return [
 
     // Layered key policy (§9).
     'protected_keys' => ['APP_KEY', 'DB_PASSWORD'], // never writable
-    'hidden_keys'    => ['APP_KEY', '*_PASSWORD', '*_SECRET', '*_TOKEN'], // masked in listings
-    'editable_keys'  => [], // empty = all non-protected are editable (UI/API)
+    'hidden_keys' => ['APP_KEY', '*_PASSWORD', '*_SECRET', '*_TOKEN'], // masked in listings
+    'editable_keys' => [], // empty = all non-protected are editable (UI/API)
 
     // ${VAR} interpolation. Values are stored literally; call EnvKit::interpolated()
     // to resolve references on read (get() always returns the raw at-rest value).
@@ -33,7 +33,7 @@ return [
     // Audit trail: who changed what, when. Values are redacted (hidden_keys).
     'audit' => [
         'enabled' => true,
-        'path'    => storage_path('env-kit/audit.log'), // JSON-lines (file sink, the default)
+        'path' => storage_path('env-kit/audit.log'), // JSON-lines (file sink, the default)
         // Optional static actor override; null = resolve the authenticated user,
         // else a console/system identity. Customise via configure()->resolveActorUsing().
         'actor' => null,
@@ -42,7 +42,7 @@ return [
     // Bounds on written keys/values (defence against accidental/abusive huge writes).
     'limits' => [
         'max_value_length' => 32768, // 32 KiB per value; null = unbounded
-        'max_key_length'   => 256,
+        'max_key_length' => 256,
     ],
 
     // Validation schema (Laravel-style rule specs). Feeds `env:validate` + EnvKit::validate().
@@ -57,13 +57,13 @@ return [
     // notifications. Non-mail/database channels need their notification-channel
     // package (e.g. laravel/slack-notification-channel for 'slack').
     'notifications' => [
-        'enabled'  => false,
+        'enabled' => false,
         'channels' => ['mail'],
-        'routes'   => [ // channel => on-demand recipient (null = skip the channel)
-            'mail'  => null,
+        'routes' => [ // channel => on-demand recipient (null = skip the channel)
+            'mail' => null,
             'slack' => null,
         ],
-        'events'          => ['after_write', 'write_rejected'],
+        'events' => ['after_write', 'write_rejected'],
         'production_only' => true,
     ],
 

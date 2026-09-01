@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
 use Simtabi\Laranail\EnvKit\Headless\Writer\AtomicEnvWriter;
 use Simtabi\Laranail\EnvKit\Headless\Writer\IntegrityVerifier;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
 
 it('writes exact bytes and creates the file', function () {
     $path = envkit_temp();
@@ -73,7 +73,7 @@ it('throws when the target parent is a regular file, not a directory', function 
     $parent = envkit_temp(); // a real, writable file path
     file_put_contents($parent, 'x');
 
-    (new AtomicEnvWriter)->write($parent . '/.env', "A=1\n");
+    (new AtomicEnvWriter)->write($parent.'/.env', "A=1\n");
 })->throws(FileNotWritableException::class);
 
 it('verifies a file that matches the expected document', function () {

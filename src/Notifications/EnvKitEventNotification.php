@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 /**
  * A single, channel-agnostic notification for any EnvKit lifecycle event. Queued so
@@ -19,8 +19,8 @@ final class EnvKitEventNotification extends Notification implements ShouldQueue
     use Queueable;
 
     /**
-     * @param array<string, mixed> $summary
-     * @param list<string> $channels
+     * @param  array<string, mixed>  $summary
+     * @param  list<string>  $channels
      */
     public function __construct(
         public readonly array $summary,
@@ -38,8 +38,8 @@ final class EnvKitEventNotification extends Notification implements ShouldQueue
         $event = is_string($this->summary['event'] ?? null) ? $this->summary['event'] : 'change';
         $message = (new MailMessage)
             ->subject("EnvKit: {$event}")
-            ->line('File: ' . ($this->stringField('path') ?? 'unknown'))
-            ->line('Actor: ' . ($this->stringField('actor') ?? 'unknown'));
+            ->line('File: '.($this->stringField('path') ?? 'unknown'))
+            ->line('Actor: '.($this->stringField('actor') ?? 'unknown'));
 
         if (($reason = $this->stringField('reason')) !== null) {
             $message->line("Reason: {$reason}");

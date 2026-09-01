@@ -55,10 +55,10 @@ it('exposes path, actor, occurred_at and changes through AuditEvent::toArray()',
     $event = new AuditEvent('/srv/app/.env', $changes, 'tester', 1700000000);
 
     expect($event->toArray())->toBe([
-        'path'        => '/srv/app/.env',
-        'actor'       => 'tester',
+        'path' => '/srv/app/.env',
+        'actor' => 'tester',
         'occurred_at' => 1700000000,
-        'changes'     => $changes,
+        'changes' => $changes,
     ]);
 });
 

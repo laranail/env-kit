@@ -6,11 +6,11 @@ namespace Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes;
 
 use Closure;
 use Illuminate\Contracts\Events\Dispatcher;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
 use Simtabi\Laranail\EnvKit\Headless\Events\WriteRolledBack;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
 use Simtabi\Laranail\EnvKit\Headless\Writer\IntegrityVerifier;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
 
 /** Re-reads the written file; on mismatch, rolls back to the captured bytes and throws. */
 final class Verify

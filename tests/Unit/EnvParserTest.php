@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Comment;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EntryInterface;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Comment;
 use Simtabi\Laranail\EnvKit\Headless\Document\Entry\EmptyLine;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 
 /**
  * White-box access to the parsed entries. EnvDocument exposes setters/keys/render
@@ -29,7 +29,7 @@ it('parses keys, values, export prefix and empty values', function () {
         '',
         'MAIL_HOST=smtp.example.com',
         'S3_BUCKET=my-bucket-1',
-    ]) . "\n";
+    ])."\n";
 
     $doc = EnvDocument::parse($raw);
 
@@ -61,7 +61,7 @@ it('updates and removes keys immutably', function () {
 
 it('strips and reproduces a UTF-8 BOM', function () {
     $bom = "\xEF\xBB\xBF";
-    $raw = $bom . "APP_NAME=Acme\n";
+    $raw = $bom."APP_NAME=Acme\n";
 
     $doc = EnvDocument::parse($raw);
 

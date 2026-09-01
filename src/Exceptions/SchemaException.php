@@ -10,7 +10,7 @@ final class SchemaException extends EnvKitException
     /** @param list<string> $messages */
     public static function failed(array $messages): self
     {
-        return new self('Schema validation failed: ' . implode('; ', $messages));
+        return new self('Schema validation failed: '.implode('; ', $messages));
     }
 
     public function envKitReason(): string

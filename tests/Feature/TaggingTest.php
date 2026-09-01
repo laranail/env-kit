@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Support\ServiceProvider;
-use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
+use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
 
 /** Registers + tags a doctor rule during register(), before the engine's booted() seed runs. */
 final class EnvKitTagSeedingProvider extends ServiceProvider

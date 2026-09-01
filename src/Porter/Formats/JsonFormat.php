@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Porter\Formats;
 
 use JsonException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\PortException;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\PortException;
 
 /** Pretty-printed JSON object of key => value. */
 final class JsonFormat implements PortFormatInterface
@@ -38,7 +38,7 @@ final class JsonFormat implements PortFormatInterface
             $out[(string) $key] = match (true) {
                 is_string($value) => $value,
                 is_scalar($value) => (string) $value,
-                default           => (string) json_encode($value),
+                default => (string) json_encode($value),
             };
         }
 

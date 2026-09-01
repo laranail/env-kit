@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
+use Simtabi\Laranail\EnvKit\Headless\Authorization\AbstractWriteObserver;
+use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteContext;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\WriteVetoedException;
+use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
-use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteContext;
-use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\WriteVetoedException;
-use Simtabi\Laranail\EnvKit\Headless\Authorization\AbstractWriteObserver;
 
 uses(TestCase::class);
 
