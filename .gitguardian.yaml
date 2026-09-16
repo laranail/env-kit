@@ -5,26 +5,58 @@
 # not credentials: the redaction tests prove the value never reaches the audit log
 # or a listing, which requires a distinctive value to search for.
 #
-# The paths below are ignored for that reason and no other. They are named
-# individually rather than ignoring tests/** on purpose -- a real credential
-# committed to some other test must still be caught, and a blanket exclusion is
-# how that stops happening.
+# Two mechanisms keep the scanner quiet, and they cover different things:
 #
-# The fixture values were also renamed to read as canaries rather than passwords
-# (`redaction-canary-not-a-secret`). That stops future commits tripping the scan
-# at source; this file is what covers the commits already in history, which a
-# rename cannot reach.
+#   1. `envkit_canary()` in tests/Pest.php, so no line reads
+#      `SOMETHING_PASSWORD=<literal>` -- the shape the detector matches. That is
+#      the better fix, and it handles new commits at source.
+#   2. The entries below, for what a rename cannot reach: the literals already in
+#      history, and the three that remain on assignment lines today.
+#
+# WHY MATCHES AND NOT PATHS
+#
+# An earlier revision ignored three whole test files. That is wider than the
+# problem: every future finding in those files is suppressed too, including a
+# real credential pasted into one by accident. These entries name the specific
+# placeholder VALUES instead, so the files stay scanned and only known literals
+# are exempt.
+#
+# The cost is that a new fixture value needs a new entry -- which is the point.
+# Adding one should be a deliberate act, not something a path glob absorbs.
+#
+# Writing a placeholder literal here in the clear is safe precisely because it is
+# a placeholder. Never add an entry for a value that is a real credential; rotate
+# it and remove it from history instead.
 
 version: 2
 
 secret:
-  ignored-paths:
-    # Asserts the raw value is absent from the JSON-lines audit record.
-    - tests/Feature/AuditTest.php
-    # Asserts protected_keys / hidden_keys policy against *_PASSWORD keys.
-    - tests/Feature/KeyPolicyTest.php
-    # Drives the same policy through the CLI surface.
-    - tests/Feature/CliCommandsTest.php
+  ignored-matches:
+    # --- Still on `KEY=value` lines in the current tree, so these are the
+    # --- entries actually doing work.
+
+    # `SECRET=plaintext` / `API_TOKEN=plaintext-secret`: the encryption tests
+    # assert the raw value is ABSENT from the file on disk afterwards, which
+    # needs the pre-encryption value to be a known literal.
+    - name: "test fixture: pre-encryption plaintext"
+      match: plaintext
+    - name: "test fixture: pre-encryption plaintext (API_TOKEN)"
+      match: plaintext-secret
+
+    # `DB_PASSWORD=oldsecret` in the audit test: the before-value has to be
+    # distinctive to prove it is redacted in the JSON-lines record.
+    - name: "test fixture: audit record old value"
+      match: oldsecret
+
+    # --- No longer on assignment lines after the envkit_canary() change, but
+    # --- kept because they remain in the commits already pushed.
+
+    - name: "test fixture: encryption round-trip input"
+      match: hunter2
+    - name: "test fixture: audit record new value"
+      match: newsecret
+    - name: "test fixture: redaction canary"
+      match: redaction-canary-not-a-secret
 
   # A fixture that is genuinely a placeholder should be readable as one. If a
   # finding here is ever anything other than that, fix the code -- do not extend
