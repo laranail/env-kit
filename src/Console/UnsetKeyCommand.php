@@ -17,9 +17,6 @@ final class UnsetKeyCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Remove an environment key.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:unset'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

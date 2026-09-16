@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Writer;
 
-use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\LockException;
 use Throwable;
 
-use function dirname;
 use function strlen;
+use function dirname;
+
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\LockException;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
 
 /**
  * Crash-safe writer: write to a temp file ON THE SAME FILESYSTEM, flush + fsync,

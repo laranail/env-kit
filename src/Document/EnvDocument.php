@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Document;
 
-use Simtabi\Laranail\EnvKit\Headless\Contracts\EntryInterface;
-use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Comment;
-use Simtabi\Laranail\EnvKit\Headless\Document\Entry\EmptyLine;
 use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Comment;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\EntryInterface;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\EmptyLine;
 
 /**
  * Immutable, comment/format-preserving representation of an .env file.
@@ -37,7 +37,7 @@ final class EnvDocument
     {
         $body = implode($this->eol, array_map(static fn (EntryInterface $e): string => $e->render(), $this->entries));
 
-        $out = ($this->hasBom ? self::BOM : '').$body;
+        $out = ($this->hasBom ? self::BOM : '') . $body;
 
         if ($this->trailingNewline && $this->entries !== []) {
             $out .= $this->eol;

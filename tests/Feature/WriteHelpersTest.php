@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
 
 uses(TestCase::class);
 
 it('update() sets an existing key and throws on a missing one', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::update('A', '2');
     expect(EnvKit::get('A'))->toBe('2');
@@ -19,7 +19,7 @@ it('update() sets an existing key and throws on a missing one', function () {
 });
 
 it('setIfMissing() only writes when the key is absent', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::setIfMissing('A', '9'); // no-op
     EnvKit::setIfMissing('B', '2'); // writes
@@ -29,7 +29,7 @@ it('setIfMissing() only writes when the key is absent', function () {
 });
 
 it('setOrUpdate() upserts whether the key exists or not', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::setOrUpdate('A', '2')->setOrUpdate('NEW', 'v');
 
@@ -38,7 +38,7 @@ it('setOrUpdate() upserts whether the key exists or not', function () {
 });
 
 it('forgetMany() removes several keys in one commit', function () {
-    $this->bindEnv("A=1\nB=2\nC=3\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\nB=2\nC=3\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::forgetMany(['A', 'C']);
 
@@ -48,7 +48,7 @@ it('forgetMany() removes several keys in one commit', function () {
 });
 
 it('setExport() toggles the export prefix on an existing key', function () {
-    $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $path = $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::setExport('A');
     expect((string) file_get_contents($path))->toContain('export A=1');
@@ -60,7 +60,7 @@ it('setExport() toggles the export prefix on an existing key', function () {
 });
 
 it('entry() returns a key\'s setter metadata or null', function () {
-    $this->bindEnv("A=hello\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=hello\n", ['laranail.env-kit.auto_backup' => false]);
 
     expect(EnvKit::entry('A'))->toBeInstanceOf(Setter::class)
         ->and(EnvKit::entry('A')->value)->toBe('hello')

@@ -14,9 +14,6 @@ final class BackupCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Snapshot the .env file to the backup directory.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:backup'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

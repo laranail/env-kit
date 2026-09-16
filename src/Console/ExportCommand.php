@@ -17,9 +17,6 @@ final class ExportCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Export the .env values as json or csv.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:export'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

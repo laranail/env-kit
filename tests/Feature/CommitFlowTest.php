@@ -3,16 +3,16 @@
 declare(strict_types=1);
 
 use Closure;
+use Simtabi\Laranail\EnvKit\Headless\Session\EditSession;
 use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidKeyException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProductionGuardException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProtectedKeyException;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
+use Simtabi\Laranail\EnvKit\Headless\Security\ProtectedKeys;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitPipeline;
 use Simtabi\Laranail\EnvKit\Headless\Security\ProductionGuard;
-use Simtabi\Laranail\EnvKit\Headless\Security\ProtectedKeys;
-use Simtabi\Laranail\EnvKit\Headless\Session\EditSession;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidKeyException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProtectedKeyException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProductionGuardException;
 
 it('blocks a write in production and leaves the file untouched', function () {
     $path = envkit_temp();
@@ -51,13 +51,13 @@ it('rejects an invalid key at commit time', function () {
 it('creates an auto-backup of the pre-write file', function () {
     $path = envkit_temp();
     file_put_contents($path, "A=1\n");
-    $dir = dirname($path).'/backups';
+    $dir = dirname($path) . '/backups';
 
     EditSession::open($path, pipeline: CommitPipeline::default(backups: new BackupManager($dir)))
         ->set('A', '2')
         ->save();
 
-    $backups = glob($dir.'/*.bak') ?: [];
+    $backups = glob($dir . '/*.bak') ?: [];
     expect($backups)->toHaveCount(1)
         ->and(file_get_contents($backups[0]))->toBe("A=1\n");   // snapshot is the OLD content
     expect(EnvDocument::parse(file_get_contents($path))->get('A'))->toBe('2');

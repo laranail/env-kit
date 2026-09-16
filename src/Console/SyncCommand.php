@@ -16,9 +16,6 @@ final class SyncCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Add keys present in .env.example but missing from .env.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:sync'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

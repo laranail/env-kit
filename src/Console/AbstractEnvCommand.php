@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Console;
 
 use Closure;
+
+use function is_array;
+
 use Illuminate\Console\Command;
-use Simtabi\Laranail\Console\Tools\Commands\Concerns\SupportsNamespacedNames;
 use Simtabi\Laranail\EnvKit\Headless\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ConflictException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\LockException;
 use Simtabi\Laranail\EnvKit\Headless\Security\ProductionBanner;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ConflictException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
+use Simtabi\Laranail\Console\Tools\Commands\Concerns\SupportsNamespacedNames;
 
 /**
  * Base for the EnvKit Artisan commands. Provides the `laranail::env-kit.*`
@@ -35,15 +38,14 @@ abstract class AbstractEnvCommand extends Command
 
     protected const int EXIT_IO = 5;
 
-    /** @var list<string> */
-    protected array $commandAliases = [];
-
     public function __construct()
     {
         parent::__construct();
 
-        if ($this->commandAliases !== []) {
-            $this->setAliases($this->commandAliases);
+        $aliases = $this->declaredCommandAliases();
+
+        if ($aliases !== []) {
+            $this->setAliases($aliases);
         }
     }
 
@@ -64,7 +66,7 @@ abstract class AbstractEnvCommand extends Command
      * Run an action, mapping EnvKit exceptions to the exit-code contract.
      * Exception messages are secret-safe (they carry key names, never values).
      *
-     * @param  Closure(): int  $action
+     * @param Closure(): int $action
      */
     protected function runSafely(Closure $action): int
     {
@@ -104,5 +106,29 @@ abstract class AbstractEnvCommand extends Command
         $format = $this->option('format');
 
         return is_string($format) && $format !== '' ? $format : $default;
+    }
+
+    /**
+     * This command's own `$commandAliases`, if it declares one.
+     *
+     * Read here rather than through the console trait: the trait arrives from
+     * `vendor/laranail/console` at the moving `v0.1.0` tag, so relying on a
+     * method added there would make this package red until that tag moves.
+     * Reading defensively is also what makes an undeclared property safe -- and
+     * every declaration in this package was removed with its bare `env:*`
+     * aliases, which is precisely when an unguarded read starts throwing.
+     *
+     * @return list<string>
+     */
+    private function declaredCommandAliases(): array
+    {
+        if (! property_exists($this, 'commandAliases') || ! is_array($this->commandAliases)) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            $this->commandAliases,
+            static fn (mixed $alias): bool => \is_string($alias) && $alias !== '',
+        ));
     }
 }

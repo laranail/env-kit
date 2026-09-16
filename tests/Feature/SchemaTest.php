@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\SchemaException;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Rules\MatchesEnvSchema;
-use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
+use Simtabi\Laranail\EnvKit\Headless\Rules\MatchesEnvSchema;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\SchemaException;
 
 uses(TestCase::class);
 
 it('validates against a runtime schema', function () {
-    $this->bindEnv("APP_ENV=local\nPORT=8080\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("APP_ENV=local\nPORT=8080\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::schema()
         ->required('APP_ENV')->in('APP_ENV', ['local', 'production'])
@@ -26,7 +26,7 @@ it('validates against a runtime schema', function () {
 });
 
 it('passes a valid env and assertValid does not throw', function () {
-    $this->bindEnv("APP_ENV=production\nPORT=80\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("APP_ENV=production\nPORT=80\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::schema()->required('APP_ENV')->in('APP_ENV', ['local', 'production'])->integer('PORT');
 
@@ -35,7 +35,7 @@ it('passes a valid env and assertValid does not throw', function () {
 });
 
 it('assertValid throws on failure', function () {
-    $this->bindEnv("PORT=notanint\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("PORT=notanint\n", ['laranail.env-kit.auto_backup' => false]);
     EnvKit::schema()->integer('PORT');
 
     expect(fn () => EnvKit::assertValid())->toThrow(SchemaException::class);
@@ -43,8 +43,8 @@ it('assertValid throws on failure', function () {
 
 it('seeds the schema from config', function () {
     $this->bindEnv("APP_ENV=invalid\n", [
-        'env-kit.auto_backup' => false,
-        'env-kit.schema' => ['APP_ENV' => 'required|in:local,production'],
+        'laranail.env-kit.auto_backup' => false,
+        'laranail.env-kit.schema'      => ['APP_ENV' => 'required|in:local,production'],
     ]);
 
     expect(EnvKit::isValid())->toBeFalse()
@@ -53,11 +53,11 @@ it('seeds the schema from config', function () {
 
 it('the env:validate command reports schema errors and exits 3', function () {
     $this->bindEnv("PORT=oops\n", [
-        'env-kit.auto_backup' => false,
-        'env-kit.schema' => ['PORT' => 'integer'],
+        'laranail.env-kit.auto_backup' => false,
+        'laranail.env-kit.schema'      => ['PORT' => 'integer'],
     ]);
 
-    $this->artisan('env:validate')->expectsOutputToContain('Schema')->assertExitCode(3);
+    $this->artisan('laranail::env-kit.validate')->expectsOutputToContain('Schema')->assertExitCode(3);
 });
 
 it('the schema builder covers every rule type', function () {

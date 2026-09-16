@@ -34,7 +34,7 @@ use Simtabi\Laranail\EnvKit\Headless\EnvKitManager;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
 
 app(EnvKitManager::class)->extend('vault', fn () => new VaultCipher);
-// config/env-kit.php → 'encryption' => ['driver' => 'vault']
+// config/laranail/env-kit.php → 'encryption' => ['driver' => 'vault']
 ```
 
 Or swap it for a one-off via the configurator:

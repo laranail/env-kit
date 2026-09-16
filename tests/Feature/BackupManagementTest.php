@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
 
 uses(TestCase::class);
 
 it('creates a labelled backup', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     $backup = EnvKit::backup('pre-deploy');
 
@@ -18,7 +18,7 @@ it('creates a labelled backup', function () {
 });
 
 it('deletes a backup by name', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
     $backup = EnvKit::backup();
 
     expect(EnvKit::backups()->delete($backup->name))->toBeTrue()
@@ -27,10 +27,10 @@ it('deletes a backup by name', function () {
 });
 
 it('deletes backups older than N days', function () {
-    $dir = sys_get_temp_dir().'/envkit-old-'.bin2hex(random_bytes(5));
+    $dir = sys_get_temp_dir() . '/envkit-old-' . bin2hex(random_bytes(5));
     @mkdir($dir, 0700, true);
-    $old = $dir.'/env.20200101-000000-000000-aaaa.bak';
-    $recent = $dir.'/env.20260101-000000-000000-bbbb.bak';
+    $old = $dir . '/env.20200101-000000-000000-aaaa.bak';
+    $recent = $dir . '/env.20260101-000000-000000-bbbb.bak';
     file_put_contents($old, "A=1\n");
     file_put_contents($recent, "A=1\n");
     touch($old, time() - 40 * 86400);
@@ -41,20 +41,20 @@ it('deletes backups older than N days', function () {
         ->and(is_file($old))->toBeFalse()
         ->and(is_file($recent))->toBeTrue();
 
-    array_map('unlink', glob($dir.'/*') ?: []);
+    array_map('unlink', glob($dir . '/*') ?: []);
     @rmdir($dir);
 });
 
 it('the backup-delete command deletes by name, prunes by age, and errors without args', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
     $backup = EnvKit::backup();
 
-    $this->artisan('env:backup-delete', ['name' => $backup->name])
+    $this->artisan('laranail::env-kit.backup-delete', ['name' => $backup->name])
         ->expectsOutputToContain('Deleted')
         ->assertExitCode(0);
 
-    $this->artisan('env:backup-delete')->assertExitCode(2);                 // usage error
-    $this->artisan('env:backup-delete', ['--older-than' => 30])->assertExitCode(0);
+    $this->artisan('laranail::env-kit.backup-delete')->assertExitCode(2);                 // usage error
+    $this->artisan('laranail::env-kit.backup-delete', ['--older-than' => 30])->assertExitCode(0);
 });
 
 it('the fake labels its stub backup', function () {

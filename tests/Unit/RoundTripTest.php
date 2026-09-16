@@ -6,13 +6,13 @@ use Dotenv\Parser\Parser as PhpDotenvParser;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 
 dataset('fixtures', [
-    'lf' => ["# header\nAPP_NAME=Acme\nexport APP_ENV=production\nEMPTY=\nQUOTED=\"a b#c\"\n\nLAST=1\n"],
-    'crlf' => ["A=1\r\nB=2\r\n"],
+    'lf'                  => ["# header\nAPP_NAME=Acme\nexport APP_ENV=production\nEMPTY=\nQUOTED=\"a b#c\"\n\nLAST=1\n"],
+    'crlf'                => ["A=1\r\nB=2\r\n"],
     'no-trailing-newline' => ["A=1\nB=2"],
-    'bom' => ["\xEF\xBB\xBF"."A=1\nB=2\n"],
-    'blank-only' => ["\n"],
+    'bom'                 => ["\xEF\xBB\xBF" . "A=1\nB=2\n"],
+    'blank-only'          => ["\n"],
     'comments-and-blanks' => ["# one\n\n#two\nK=v\n"],
-    'empty' => [''],
+    'empty'               => [''],
 ]);
 
 it('round-trips byte-for-byte', function (string $raw) {
@@ -20,7 +20,7 @@ it('round-trips byte-for-byte', function (string $raw) {
 })->with('fixtures');
 
 it('preserves line-ending and BOM metadata', function () {
-    $doc = EnvDocument::parse("\xEF\xBB\xBF"."A=1\r\nB=2\r\n");
+    $doc = EnvDocument::parse("\xEF\xBB\xBF" . "A=1\r\nB=2\r\n");
 
     expect($doc->eol())->toBe("\r\n")
         ->and($doc->hasBom())->toBeTrue();

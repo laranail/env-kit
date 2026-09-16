@@ -57,7 +57,11 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Check code style (Pint)
-        run: vendor/bin/pint --test
+        # laranail-pint, not bare pint: it resolves the ONE shared config in
+        # vendor/laranail/package-tools and errors if it is absent. Bare `pint`
+        # silently falls back to its own defaults and exits 0, so this step was
+        # reporting "clean" against a rule set no other package here uses.
+        run: vendor/bin/laranail-pint --test
 
       - name: Static analysis (PHPStan)
         run: vendor/bin/phpstan analyse --no-progress

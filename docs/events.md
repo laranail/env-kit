@@ -36,7 +36,7 @@ By default EnvKit records the authenticated user (else a console/system identity
 
 ```php
 EnvKit::configure()->resolveActorUsing(fn () => auth()->user()?->email ?? 'system');
-// or statically: config(['env-kit.audit.actor' => 'deploy-bot']);
+// or statically: config(['laranail.env-kit.audit.actor' => 'deploy-bot']);
 ```
 
 The actor also lands on the audit trail and on notifications.

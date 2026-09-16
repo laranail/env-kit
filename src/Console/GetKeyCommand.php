@@ -17,9 +17,6 @@ final class GetKeyCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Read a single environment value.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:get'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

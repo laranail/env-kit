@@ -14,9 +14,6 @@ final class DoctorCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Run health checks over the .env file.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:doctor'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {
@@ -35,9 +32,9 @@ final class DoctorCommand extends AbstractEnvCommand
                     : $diagnostic->message;
 
                 match ($diagnostic->severity) {
-                    'error' => $this->error($line),
+                    'error'   => $this->error($line),
                     'warning' => $this->warn($line),
-                    default => $this->line($line),
+                    default   => $this->line($line),
                 };
 
                 $hasError = $hasError || $diagnostic->isError();

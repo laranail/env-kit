@@ -30,7 +30,8 @@ interface EnvKitInterface
     public function getFloat(string $key, ?float $default = null): ?float;
 
     /**
-     * @param  array<int|string, mixed>|null  $default
+     * @param array<int|string, mixed>|null $default
+     *
      * @return array<int|string, mixed>|null
      */
     public function getArray(string $key, ?array $default = null): ?array;
@@ -48,13 +49,15 @@ interface EnvKitInterface
     public function keys(): array;
 
     /**
-     * @param  list<string>  $keys
+     * @param list<string> $keys
+     *
      * @return array<string, string>
      */
     public function only(array $keys): array;
 
     /**
-     * @param  list<string>  $keys
+     * @param list<string> $keys
+     *
      * @return array<string, string>
      */
     public function except(array $keys): array;

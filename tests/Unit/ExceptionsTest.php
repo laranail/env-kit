@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\BackupNotFoundException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ConflictException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\EncryptionException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidKeyException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidValueException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\LockException;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\PortException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProductionGuardException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ConflictException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\EncryptionException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidKeyException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidValueException;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProtectedKeyException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\BackupNotFoundException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProductionGuardException;
 
 it('BackupNotFoundException::named is typed and names the backup', function () {
     $e = BackupNotFoundException::named('nightly-2026');
@@ -135,8 +135,8 @@ it('ProductionGuardException::make is typed and lists every opt-in route', funct
         ->and($e)->toBeInstanceOf(EnvKitException::class)
         ->and($e->getMessage())->toBe(
             'Refusing to modify the .env file in production. '
-            .'Opt in per-call with ->allowProduction(), the --force-production flag, '
-            .'or set protect_production=false.',
+            . 'Opt in per-call with ->allowProduction(), the --force-production flag, '
+            . 'or set protect_production=false.',
         );
 });
 

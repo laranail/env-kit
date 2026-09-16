@@ -73,7 +73,7 @@ EnvKit::addEmptyLine();                  // appends a blank line
 
 ## Three persistence modes
 
-Gated by `config('env-kit.auto_commit')`:
+Gated by `config('laranail.env-kit.auto_commit')`:
 
 **Immediate** (default) — each call is its own atomic commit:
 

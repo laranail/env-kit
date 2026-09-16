@@ -9,7 +9,7 @@ which seam to reach for.
 | Layer | What it does | Veto? | Configure |
 |---|---|:--:|---|
 | WebUI surface access | Can a request reach the editor at all (enabled / IP / token / schedule / gate) | — | `env-kit-webui.*` (WebUI package) |
-| Config guards | Production protection, protected keys, editable allowlist | yes | `env-kit.protect_production` / `protected_keys` / `editable_keys` |
+| Config guards | Production protection, protected keys, editable allowlist | yes | `laranail.env-kit.protect_production` / `protected_keys` / `editable_keys` |
 | **Update gate** | A single, decoratable "is this actor allowed to make this change?" decision | yes | `configure()->useUpdateGate()` / `decorateUpdateGate()` / a Laravel `env-kit.update` ability |
 | **Write observers** | Eloquent-style lifecycle hooks that react to / veto a write | yes | `configure()->observe()` / the `env-kit.observers` tag |
 | Lifecycle events | Notifications after the fact (`AfterWrite`, …) — see [events](events.md) | no | event listeners |

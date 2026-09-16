@@ -3,7 +3,7 @@
 A health-check engine that inspects the `.env` for common problems.
 
 ```bash
-php artisan env:doctor
+php artisan laranail::env-kit.doctor
 ```
 
 Exits `0` when there are no error-severity findings, `3` otherwise — so it fits CI

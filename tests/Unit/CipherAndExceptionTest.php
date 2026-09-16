@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Illuminate\Encryption\Encrypter;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\EncryptionException;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
 use Simtabi\Laranail\EnvKit\Headless\Security\LaravelValueCipher;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\EncryptionException;
 
 function envkitCipher(): LaravelValueCipher
 {
@@ -31,7 +31,7 @@ it('passes a non-encrypted value through decrypt unchanged', function () {
 it('throws when a cipher value decrypts to a non-string', function () {
     $encrypter = new Encrypter(str_repeat('a', 32), 'AES-256-CBC');
     $cipher = new LaravelValueCipher($encrypter);
-    $corrupt = 'envkit:'.$encrypter->encrypt(['not', 'a', 'string']); // array payload
+    $corrupt = 'envkit:' . $encrypter->encrypt(['not', 'a', 'string']); // array payload
 
     expect(fn () => $cipher->decrypt($corrupt))->toThrow(EncryptionException::class);
 });

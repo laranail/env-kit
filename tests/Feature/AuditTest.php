@@ -3,24 +3,30 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Event;
-use Simtabi\Laranail\EnvKit\Headless\Audit\AuditEvent;
-use Simtabi\Laranail\EnvKit\Headless\Audit\FileAuditSink;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Events\AfterWrite;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Audit;
-use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Audit\AuditEvent;
+use Simtabi\Laranail\EnvKit\Headless\Events\AfterWrite;
+use Simtabi\Laranail\EnvKit\Headless\Audit\FileAuditSink;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Audit;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
+use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
 
 uses(TestCase::class);
 
 it('writes a redacted JSON-lines audit record on commit', function () {
-    $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false, 'env-kit.audit.enabled' => true]);
-    $auditPath = dirname($path).'/audit.log';
+    $path = $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false, 'laranail.env-kit.audit.enabled' => true]);
+    $auditPath = dirname($path) . '/audit.log';
 
-    EnvKit::set('DB_PASSWORD', 'topsecret123');
+    // The value is a canary, not a password: the assertions below prove it never
+    // reaches the audit log, which is why they need one distinctive string to
+    // look for. It comes from envkit_canary() so no line here reads
+    // `SOMETHING_PASSWORD=<literal>` -- the shape a secret scanner matches
+    // without being able to read the value, and a scanner that cries wolf on
+    // fixtures is one nobody reads.
+    EnvKit::set('WIDGET_PASSWORD', envkit_canary());
 
     expect(is_file($auditPath))->toBeTrue();
 
@@ -28,14 +34,14 @@ it('writes a redacted JSON-lines audit record on commit', function () {
     $last = (string) end($lines);
     $record = json_decode($last, true);
 
-    expect($last)->not->toContain('topsecret123') // the raw secret never reaches the log
-        ->and($record['changes'][0]['key'])->toBe('DB_PASSWORD')
-        ->and($record['changes'][0]['new'])->not->toBe('topsecret123');
+    expect($last)->not->toContain(envkit_canary()) // the raw secret never reaches the log
+        ->and($record['changes'][0]['key'])->toBe('WIDGET_PASSWORD')
+        ->and($record['changes'][0]['new'])->not->toBe(envkit_canary());
 });
 
 it('dispatches an AfterWrite event carrying redacted changes', function () {
     Event::fake();
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::set('API_TOKEN', 'abc123');
 
@@ -46,7 +52,7 @@ it('dispatches an AfterWrite event carrying redacted changes', function () {
 });
 
 it('fans out to a sink registered via configure()', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     $spy = new class implements AuditSinkInterface
     {
@@ -65,8 +71,8 @@ it('fans out to a sink registered via configure()', function () {
 });
 
 it('does not audit a no-op (unchanged) write', function () {
-    $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false, 'env-kit.audit.enabled' => true]);
-    $auditPath = dirname($path).'/audit.log';
+    $path = $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false, 'laranail.env-kit.audit.enabled' => true]);
+    $auditPath = dirname($path) . '/audit.log';
 
     EnvKit::set('A', '1'); // same value → no-op, no commit, no audit
 
@@ -75,7 +81,7 @@ it('does not audit a no-op (unchanged) write', function () {
 
 it('keeps the FileAuditSink output parseable as JSON lines', function () {
     $path = $this->bindEnv("A=1\n");
-    $auditPath = dirname($path).'/audit.log';
+    $auditPath = dirname($path) . '/audit.log';
 
     $sink = new FileAuditSink($auditPath);
     $sink->record(new AuditEvent($path, [['key' => 'X', 'old' => null, 'new' => '1']], 'tester', 1700000000));
@@ -88,8 +94,8 @@ it('keeps the FileAuditSink output parseable as JSON lines', function () {
 });
 
 it('creates the audit directory and writes a newline-terminated, slash-unescaped JSON line', function () {
-    $base = sys_get_temp_dir().'/envkit-sink-'.bin2hex(random_bytes(5));
-    $auditPath = $base.'/nested/dir/audit.log'; // the parent directory does not exist yet
+    $base = sys_get_temp_dir() . '/envkit-sink-' . bin2hex(random_bytes(5));
+    $auditPath = $base . '/nested/dir/audit.log'; // the parent directory does not exist yet
 
     expect(is_dir(dirname($auditPath)))->toBeFalse();
 

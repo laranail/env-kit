@@ -5,30 +5,30 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Providers;
 
 use Composer\InstalledVersions;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Contracts\Events\Dispatcher;
+use Simtabi\Laranail\Package\Tools\Package;
+use Simtabi\Laranail\EnvKit\Headless\EnvKit;
+use Simtabi\Laranail\EnvKit\Headless\Console;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Simtabi\Laranail\EnvKit\Headless\Doctor\Checks;
+use Simtabi\Laranail\EnvKit\Headless\EnvKitManager;
 use Simtabi\Laranail\EnvKit\Headless\Audit\FileAuditSink;
 use Simtabi\Laranail\EnvKit\Headless\Audit\NullAuditSink;
-use Simtabi\Laranail\EnvKit\Headless\Authorization\DefaultUpdateGate;
-use Simtabi\Laranail\EnvKit\Headless\Authorization\LaravelAbilityGate;
 use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
-use Simtabi\Laranail\EnvKit\Headless\Console;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\WriteObserverInterface;
-use Simtabi\Laranail\EnvKit\Headless\Doctor\Checks;
-use Simtabi\Laranail\EnvKit\Headless\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\EnvKitManager;
-use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
-use Simtabi\Laranail\EnvKit\Headless\Listeners\SendEnvKitNotification;
-use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
 use Simtabi\Laranail\EnvKit\Headless\Support\Interpolator;
 use Simtabi\Laranail\EnvKit\Headless\Support\TypedAccessor;
-use Simtabi\Laranail\Package\Tools\Package;
+use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
+use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
 use Simtabi\Laranail\Package\Tools\Providers\PackageServiceProvider;
+use Simtabi\Laranail\EnvKit\Headless\Authorization\DefaultUpdateGate;
+use Simtabi\Laranail\EnvKit\Headless\Authorization\LaravelAbilityGate;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriteObserverInterface;
+use Simtabi\Laranail\EnvKit\Headless\Listeners\SendEnvKitNotification;
 use Simtabi\Laranail\Package\Tools\Support\Definitions\AboutSectionDefinition;
 
 final class EnvKitServiceProvider extends PackageServiceProvider
@@ -42,7 +42,7 @@ final class EnvKitServiceProvider extends PackageServiceProvider
                 AboutSectionDefinition::make('Env Kit')
                     ->field('Version', fn (): string => (string) InstalledVersions::getPrettyVersion('laranail/env-kit'))
                     ->field('Env file', function (): string {
-                        $path = config('env-kit.path', base_path('.env'));
+                        $path = config('laranail.env-kit.path', base_path('.env'));
 
                         return is_string($path) && $path !== '' ? $path : base_path('.env');
                     }),
@@ -62,10 +62,10 @@ final class EnvKitServiceProvider extends PackageServiceProvider
         // The cipher driver registry (named drivers + extend()).
         $this->app->singleton(EnvKitManager::class);
 
-        // The redactor honours config('env-kit.hidden_keys') and is shared by the
+        // The redactor honours config('laranail.env-kit.hidden_keys') and is shared by the
         // engine, the CLI (env:list), and the WebUI so masking is consistent everywhere.
         $this->app->scoped(SecretRedactor::class, function ($app): SecretRedactor {
-            $maskKeys = $app['config']->get('env-kit.hidden_keys', []);
+            $maskKeys = $app['config']->get('laranail.env-kit.hidden_keys', []);
             $maskKeys = is_array($maskKeys) ? array_values(array_filter($maskKeys, 'is_string')) : [];
 
             return $maskKeys === [] ? new SecretRedactor : new SecretRedactor($maskKeys);
@@ -76,7 +76,7 @@ final class EnvKitServiceProvider extends PackageServiceProvider
         // time, so it is always merged by then.
         $this->app->scoped(EnvKitInterface::class, function ($app): EnvKit {
             /** @var array<string, mixed> $config */
-            $config = $app['config']->get('env-kit', []);
+            $config = $app['config']->get('laranail.env-kit', []);
 
             $protectedKeys = $config['protected_keys'] ?? [];
             $protectedKeys = is_array($protectedKeys) ? array_values(array_filter($protectedKeys, 'is_string')) : [];
@@ -143,7 +143,7 @@ final class EnvKitServiceProvider extends PackageServiceProvider
         // Seed the default actor resolver: a config override, else the authenticated
         // user, else a console/system identity. Keeps auth()/app() in the provider.
         $configurator->resolveActorUsing(function (): ?string {
-            $override = config('env-kit.audit.actor');
+            $override = config('laranail.env-kit.audit.actor');
             if (is_string($override) && $override !== '') {
                 return $override;
             }
@@ -155,7 +155,7 @@ final class EnvKitServiceProvider extends PackageServiceProvider
                 return is_scalar($id) ? (string) $id : 'user';
             }
 
-            return $this->app->runningInConsole() ? ((get_current_user() ?: 'cli').'@cli') : null;
+            return $this->app->runningInConsole() ? ((get_current_user() ?: 'cli') . '@cli') : null;
         });
 
         // The shipped update gate: env-aware default, bridged to a Laravel `env-kit.update`

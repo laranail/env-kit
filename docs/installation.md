@@ -25,7 +25,7 @@ if you want to change them:
 php artisan vendor:publish --tag=env-kit-config
 ```
 
-This writes `config/env-kit.php`. See [Configuration](configuration.md) for every
+This writes `config/laranail/env-kit.php`. See [Configuration](configuration.md) for every
 key.
 
 ## Which file does it edit?
@@ -42,8 +42,8 @@ EnvKit::on('testing')->get('DB_DATABASE'); // → .env.testing alongside the bas
 ## Verify
 
 ```bash
-php artisan env:doctor   # runs health checks against the current .env
-php artisan env:keys     # lists every key
+php artisan laranail::env-kit.doctor   # runs health checks against the current .env
+php artisan laranail::env-kit.keys     # lists every key
 ```
 
 ---

@@ -14,9 +14,6 @@ final class BackupsListCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'List available .env backups (newest first).';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:backups'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

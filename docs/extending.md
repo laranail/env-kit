@@ -63,13 +63,13 @@ EnvKit::configure()->pushMutationMiddleware(new BlockEmptyValues);
 ## 4. The `EnvKitManager` driver registry
 
 For *named, config-selected* drivers (the canonical Laravel `Manager` pattern).
-Register a cipher driver and select it via `config('env-kit.encryption.driver')`:
+Register a cipher driver and select it via `config('laranail.env-kit.encryption.driver')`:
 
 ```php
 use Simtabi\Laranail\EnvKit\Headless\EnvKitManager;
 
 app(EnvKitManager::class)->extend('vault', fn () => new VaultCipher);
-// config/env-kit.php → 'encryption' => ['driver' => 'vault']
+// config/laranail/env-kit.php → 'encryption' => ['driver' => 'vault']
 ```
 
 ## 5. Container `extend()`

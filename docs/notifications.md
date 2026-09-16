@@ -5,7 +5,7 @@ queued (so they never block a write), and routed entirely from config — no not
 needed.
 
 ```php
-// config/env-kit.php
+// config/laranail/env-kit.php
 'notifications' => [
     'enabled'  => true,
     'channels' => ['mail', 'slack'],

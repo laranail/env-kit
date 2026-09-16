@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
-use Simtabi\Laranail\EnvKit\Headless\EnvKit as EnvKitService;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProtectedKeyException;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\EnvKit as EnvKitService;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProtectedKeyException;
 
 uses(TestCase::class);
 
@@ -16,14 +16,14 @@ it('lets a consumer add a macro via configure() (no subclassing)', function () {
     $this->bindEnv("A=1\n");
 
     EnvKit::configure()->macro('tagged', function () {
-        return 'env:'.$this->get('A');
+        return 'env:' . $this->get('A');
     });
 
     expect(EnvKit::tagged())->toBe('env:1');
 });
 
 it('runs consumer mutation middleware added via configure()', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::configure()->pushMutationMiddleware(new class
     {
@@ -37,7 +37,7 @@ it('runs consumer mutation middleware added via configure()', function () {
 });
 
 it('protects extra keys added via configure()', function () {
-    $this->bindEnv("SECRET_TOKEN=abc\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("SECRET_TOKEN=abc\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::configure()->protectKeys(['SECRET_TOKEN']);
 
@@ -45,7 +45,7 @@ it('protects extra keys added via configure()', function () {
 });
 
 it('uses a custom writer registered via configure()', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     $spy = new class implements WriterInterface
     {

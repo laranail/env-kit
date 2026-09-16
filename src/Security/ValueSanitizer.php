@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Security;
 
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidValueException;
-
 use function strlen;
+
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidValueException;
 
 /**
  * Cleans untrusted input before it enters a document. A NUL byte is rejected

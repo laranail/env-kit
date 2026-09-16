@@ -18,9 +18,6 @@ final class ImportCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Import keys from a json or csv file.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:import'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

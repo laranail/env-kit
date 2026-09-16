@@ -14,13 +14,13 @@ installed. The format set is extensible.
 ## CLI
 
 ```bash
-php artisan env:export                              # JSON to stdout
-php artisan env:export --format=csv --output=env.csv
-php artisan env:export --format=dotenv --output=.env.copy
-php artisan env:export --format=yaml --output=env.yaml   # needs symfony/yaml
-php artisan env:import env.json                     # JSON (default)
-php artisan env:import env.csv --format=csv
-php artisan env:import .env.copy --format=dotenv
+php artisan laranail::env-kit.export                              # JSON to stdout
+php artisan laranail::env-kit.export --format=csv --output=env.csv
+php artisan laranail::env-kit.export --format=dotenv --output=.env.copy
+php artisan laranail::env-kit.export --format=yaml --output=env.yaml   # needs symfony/yaml
+php artisan laranail::env-kit.import env.json                     # JSON (default)
+php artisan laranail::env-kit.import env.csv --format=csv
+php artisan laranail::env-kit.import .env.copy --format=dotenv
 ```
 
 Imports run through the full commit pipeline — so keys are validated, guards apply,
@@ -56,7 +56,7 @@ final class YamlFormat implements PortFormatInterface
 }
 
 EnvKit::configure()->registerPortFormat(new YamlFormat);
-// php artisan env:export --format=yaml
+// php artisan laranail::env-kit.export --format=yaml
 ```
 
 ---
