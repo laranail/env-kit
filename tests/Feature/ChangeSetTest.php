@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Authorization\AbstractWriteObserver;
-use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Session\EditSession;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Session\EditSession;
+use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
+use Simtabi\Laranail\EnvKit\Headless\Authorization\AbstractWriteObserver;
 
 uses(TestCase::class);
 
 it('observers receive the exact old/new values for create, update and delete', function () {
-    $this->bindEnv("KEEP=1\nUPD=old\nDEL=x\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("KEEP=1\nUPD=old\nDEL=x\n", ['laranail.env-kit.auto_backup' => false]);
 
     $observer = new class extends AbstractWriteObserver
     {

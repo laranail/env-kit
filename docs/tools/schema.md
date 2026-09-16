@@ -2,7 +2,7 @@
 
 EnvKit can validate a `.env` against a declarative schema — useful in CI, a
 deploy gate, or a FormRequest. Rules come from two sources that **merge**:
-`config('env-kit.schema')` (provider-seeded) and anything you chain at runtime
+`config('laranail.env-kit.schema')` (provider-seeded) and anything you chain at runtime
 through `EnvKit::schema()`.
 
 > Type rules only fire on a **present, non-empty** value. Chain `required()` to
@@ -65,11 +65,11 @@ it into a boot check or a deploy step to fail fast on an unsatisfied `.env`.
 
 ## Config-seeded rules
 
-Declare a baseline schema in `config/env-kit.php` so it applies everywhere
-(including `env:validate`) without code:
+Declare a baseline schema in `config/laranail/env-kit.php` so it applies everywhere
+(including `laranail::env-kit.validate`) without code:
 
 ```php
-// config/env-kit.php
+// config/laranail/env-kit.php
 'schema' => [
     'APP_ENV'   => 'required|in:local,testing,staging,production',
     'APP_DEBUG' => 'boolean',
@@ -102,7 +102,7 @@ public function rules(): array
 
 ## CLI
 
-`php artisan env:validate` runs well-formedness checks **and** the configured
+`php artisan laranail::env-kit.validate` runs well-formedness checks **and** the configured
 schema, exiting `3` on any failure — see [CLI](cli.md).
 
 ---

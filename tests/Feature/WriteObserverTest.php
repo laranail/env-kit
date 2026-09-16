@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Authorization\AbstractWriteObserver;
-use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteContext;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\WriteVetoedException;
-use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteContext;
+use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\WriteVetoedException;
+use Simtabi\Laranail\EnvKit\Headless\Authorization\AbstractWriteObserver;
 
 uses(TestCase::class);
 
 it('a bare AbstractWriteObserver is a no-op across every hook (write + restore)', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
     app(EnvKitConfigurator::class)->observe(new class extends AbstractWriteObserver {});
 
     $backup = EnvKit::backup();
@@ -25,7 +25,7 @@ it('a bare AbstractWriteObserver is a no-op across every hook (write + restore)'
 });
 
 it('lets an observer veto a write via saving()', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
     app(EnvKitConfigurator::class)->observe(new class extends AbstractWriteObserver
     {
         public function saving(WriteContext $context): bool
@@ -39,7 +39,7 @@ it('lets an observer veto a write via saving()', function () {
 });
 
 it('runs saved() only after a successful write', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
     $observer = new class extends AbstractWriteObserver
     {
         /** @var list<string> */
@@ -65,7 +65,7 @@ it('runs saved() only after a successful write', function () {
 });
 
 it('fires the granular updating hook and can veto a single key', function () {
-    $this->bindEnv("A=1\nB=2\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\nB=2\n", ['laranail.env-kit.auto_backup' => false]);
     app(EnvKitConfigurator::class)->observe(new class extends AbstractWriteObserver
     {
         public function updating(string $key, ?string $old, ?string $new): bool
@@ -80,7 +80,7 @@ it('fires the granular updating hook and can veto a single key', function () {
 });
 
 it('fires creating for a new key and deleting for a removed key', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
     $observer = new class extends AbstractWriteObserver
     {
         /** @var list<string> */
@@ -109,7 +109,7 @@ it('fires creating for a new key and deleting for a removed key', function () {
 });
 
 it('fires restoring/restored (not saving) on a restore', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
     $observer = new class extends AbstractWriteObserver
     {
         /** @var list<string> */

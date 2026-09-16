@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Doctor\Rules;
 
-use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\DoctorRuleInterface;
 
 /** Flags keys defined more than once (the later wins — a silent footgun). */
 final class DuplicateKeys implements DoctorRuleInterface

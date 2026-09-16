@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\AssertionFailedError;
-use Simtabi\Laranail\EnvKit\Headless\Backup\BackupFile;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
-use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
-use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Testing\EnvKitFake;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Backup\BackupFile;
+use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
+use Simtabi\Laranail\EnvKit\Headless\Testing\EnvKitFake;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 
 uses(TestCase::class);
 
@@ -56,9 +56,9 @@ it('answers get() from the map and falls back to the default', function () {
 
 it('casts typed getters and returns typed defaults for missing keys', function () {
     $fake = new EnvKitFake([
-        'STR' => 'hello',
+        'STR'  => 'hello',
         'FLAG' => 'yes',
-        'NUM' => '42',
+        'NUM'  => '42',
         'RATE' => '3.5',
         'LIST' => 'a,b,c',
         'JSON' => '{"x":1}',
@@ -292,7 +292,7 @@ it('exports and imports through the Porter', function () {
 });
 
 it('diffs the in-memory map against another file', function () {
-    $other = sys_get_temp_dir().'/envkit-fake-diff-'.bin2hex(random_bytes(4)).'.env';
+    $other = sys_get_temp_dir() . '/envkit-fake-diff-' . bin2hex(random_bytes(4)) . '.env';
     file_put_contents($other, "A=1\nGONE=9\n");
     $fake = new EnvKitFake(['A' => '2', 'NEW' => 'x']);
 

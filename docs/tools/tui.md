@@ -3,7 +3,7 @@
 An interactive, full-screen `.env` editor built on `laravel/prompts`.
 
 ```bash
-php artisan env:edit
+php artisan laranail::env-kit.edit
 ```
 
 ## What it does

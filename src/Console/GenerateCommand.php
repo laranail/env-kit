@@ -18,9 +18,6 @@ final class GenerateCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Generate a secret value (random token or Laravel APP_KEY); optionally write it to a key.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:generate'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

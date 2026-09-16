@@ -14,9 +14,6 @@ final class KeysCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'List all environment keys.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:keys'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

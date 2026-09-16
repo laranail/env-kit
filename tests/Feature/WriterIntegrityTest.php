@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Verify;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
 use Simtabi\Laranail\EnvKit\Headless\Writer\AtomicEnvWriter;
 use Simtabi\Laranail\EnvKit\Headless\Writer\IntegrityVerifier;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\FileNotWritableException;
 
 function envkitTmp(): string
 {
-    return sys_get_temp_dir().'/envkit-wi-'.bin2hex(random_bytes(5)).'.env';
+    return sys_get_temp_dir() . '/envkit-wi-' . bin2hex(random_bytes(5)) . '.env';
 }
 
 it('verifies a written file against the expected document', function () {
@@ -69,11 +69,11 @@ it('refuses to write into a non-existent directory', function () {
 });
 
 it('refuses to write into a read-only directory', function () {
-    $dir = sys_get_temp_dir().'/envkit-ro-'.bin2hex(random_bytes(5));
+    $dir = sys_get_temp_dir() . '/envkit-ro-' . bin2hex(random_bytes(5));
     mkdir($dir, 0500);
 
     try {
-        expect(fn () => (new AtomicEnvWriter)->write($dir.'/.env', "A=1\n"))
+        expect(fn () => (new AtomicEnvWriter)->write($dir . '/.env', "A=1\n"))
             ->toThrow(FileNotWritableException::class);
     } finally {
         chmod($dir, 0700);

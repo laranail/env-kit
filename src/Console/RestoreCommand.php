@@ -17,9 +17,6 @@ final class RestoreCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Restore the .env from a backup (latest if no name given).';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:restore'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

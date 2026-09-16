@@ -17,7 +17,7 @@ final class SecretGenerator
 
         return match ($encoding) {
             'base64' => rtrim(strtr(base64_encode($raw), '+/', '-_'), '='),
-            default => bin2hex($raw),
+            default  => bin2hex($raw),
         };
     }
 
@@ -26,6 +26,6 @@ final class SecretGenerator
     {
         $length = str_contains($cipher, '128') ? 16 : 32;
 
-        return 'base64:'.base64_encode(random_bytes($length));
+        return 'base64:' . base64_encode(random_bytes($length));
     }
 }

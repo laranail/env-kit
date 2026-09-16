@@ -13,8 +13,8 @@ final class ValueFormatter
     /** Escape sequences inside a double-quoted value (encode direction). */
     private const ENCODE_MAP = [
         '\\' => '\\\\',
-        '"' => '\\"',
-        '$' => '\\$',
+        '"'  => '\\"',
+        '$'  => '\\$',
         "\n" => '\\n',
         "\r" => '\\r',
         "\t" => '\\t',
@@ -23,13 +23,13 @@ final class ValueFormatter
     /** Inverse of ENCODE_MAP (decode direction). */
     private const DECODE_MAP = [
         '\\\\' => '\\',
-        '\\"' => '"',
-        '\\$' => '$',
-        '\\n' => "\n",
-        '\\r' => "\r",
-        '\\t' => "\t",
-        '\\f' => "\f",
-        '\\v' => "\v",
+        '\\"'  => '"',
+        '\\$'  => '$',
+        '\\n'  => "\n",
+        '\\r'  => "\r",
+        '\\t'  => "\t",
+        '\\f'  => "\f",
+        '\\v'  => "\v",
     ];
 
     /**
@@ -64,7 +64,7 @@ final class ValueFormatter
             return $value;
         }
 
-        return '"'.strtr($value, self::ENCODE_MAP).'"';
+        return '"' . strtr($value, self::ENCODE_MAP) . '"';
     }
 
     /** Decode the raw RHS of a `KEY=` line back into a logical value. */

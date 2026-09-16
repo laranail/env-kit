@@ -20,9 +20,6 @@ final class DecryptCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = "Decrypt a single key's previously-encrypted value back to plaintext in place.";
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:decrypt-value'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

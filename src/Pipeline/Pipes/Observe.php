@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes;
 
 use Closure;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteContext;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteDecision;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\WriteObserverInterface;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\WriteVetoedException;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\WriteObserverInterface;
 
 /**
  * Runs the registered write observers: `saving` (+ per-key `creating/updating/
@@ -55,7 +55,7 @@ final class Observe
             $outcome = match (true) {
                 $old === null => $observer->creating($key, $old, $new),
                 $new === null => $observer->deleting($key, $old, $new),
-                default => $observer->updating($key, $old, $new),
+                default       => $observer->updating($key, $old, $new),
             };
 
             if ($outcome === false) {

@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Contracts\Encryption\Encrypter;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
 use Simtabi\Laranail\EnvKit\Headless\EnvKitManager;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Security\LaravelValueCipher;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Security\LaravelValueCipher;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
 
 uses(TestCase::class);
 
@@ -16,11 +16,11 @@ it('reads the configured encryption driver name, defaulting to laravel', functio
 
     expect($manager->getDefaultDriver())->toBe('laravel');
 
-    config(['env-kit.encryption.driver' => 'custom-name']);
+    config(['laranail.env-kit.encryption.driver' => 'custom-name']);
     expect($manager->getDefaultDriver())->toBe('custom-name');
 
     // A non-string config value falls back to the 'laravel' default.
-    config(['env-kit.encryption.driver' => ['not', 'a', 'string']]);
+    config(['laranail.env-kit.encryption.driver' => ['not', 'a', 'string']]);
     expect($manager->getDefaultDriver())->toBe('laravel');
 });
 
@@ -44,7 +44,7 @@ it('passes the container to custom driver creators', function () {
 });
 
 it('encrypts a value at rest and decrypts it back', function () {
-    $path = $this->bindEnv("API_TOKEN=plaintext-secret\n", ['env-kit.auto_backup' => false]);
+    $path = $this->bindEnv("API_TOKEN=plaintext-secret\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::encrypt('API_TOKEN');
 
@@ -64,12 +64,12 @@ it('encrypts a value at rest and decrypts it back', function () {
 });
 
 it('setEncrypted stores ciphertext that getDecrypted reads back', function () {
-    $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $path = $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
-    EnvKit::setEncrypted('DB_PASSWORD', 'hunter2');
+    EnvKit::setEncrypted('WIDGET_PASSWORD', 'hunter2');
 
     expect((string) file_get_contents($path))->not->toContain('hunter2')
-        ->and(EnvKit::getDecrypted('DB_PASSWORD'))->toBe('hunter2');
+        ->and(EnvKit::getDecrypted('WIDGET_PASSWORD'))->toBe('hunter2');
 });
 
 it('resolves the default laravel cipher and honours EnvKitManager::extend()', function () {
@@ -81,7 +81,7 @@ it('resolves the default laravel cipher and honours EnvKitManager::extend()', fu
     {
         public function encrypt(string $plain): string
         {
-            return 'rev:'.strrev($plain);
+            return 'rev:' . strrev($plain);
         }
 
         public function decrypt(string $cipher): string
@@ -103,13 +103,13 @@ it('resolves the default laravel cipher and honours EnvKitManager::extend()', fu
 });
 
 it('uses a custom cipher registered via configure()->useCipher()', function () {
-    $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $path = $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::configure()->useCipher(new class implements ValueCipherInterface
     {
         public function encrypt(string $plain): string
         {
-            return 'X:'.base64_encode($plain);
+            return 'X:' . base64_encode($plain);
         }
 
         public function decrypt(string $cipher): string

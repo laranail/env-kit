@@ -9,17 +9,17 @@ it('never exposes a partial file under concurrent writers', function () {
 
     $path = envkit_temp();
     $dir = dirname($path);
-    $autoload = dirname(__DIR__, 2).'/vendor/autoload.php';
+    $autoload = dirname(__DIR__, 2) . '/vendor/autoload.php';
 
     // A worker that hammers the SAME file with its own complete document.
-    $workerFile = $dir.'/worker.php';
+    $workerFile = $dir . '/worker.php';
     file_put_contents($workerFile, '<?php require $argv[1];'
-        .' $c = "WORKER=".$argv[3]."\nPAYLOAD=".str_repeat($argv[3], 80)."\n";'
-        .' $w = new \Simtabi\Laranail\EnvKit\Headless\Writer\AtomicEnvWriter();'
-        .' for ($i = 0; $i < (int) $argv[4]; $i++) { $w->write($argv[2], $c); }');
+        . ' $c = "WORKER=".$argv[3]."\nPAYLOAD=".str_repeat($argv[3], 80)."\n";'
+        . ' $w = new \Simtabi\Laranail\EnvKit\Headless\Writer\AtomicEnvWriter();'
+        . ' for ($i = 0; $i < (int) $argv[4]; $i++) { $w->write($argv[2], $c); }');
 
     $tags = ['alpha', 'bravo', 'charlie', 'delta'];
-    $candidates = array_map(static fn (string $t): string => "WORKER={$t}\nPAYLOAD=".str_repeat($t, 80)."\n", $tags);
+    $candidates = array_map(static fn (string $t): string => "WORKER={$t}\nPAYLOAD=" . str_repeat($t, 80) . "\n", $tags);
     file_put_contents($path, $candidates[0]); // a valid starting point
 
     $spec = [['file', '/dev/null', 'r'], ['file', '/dev/null', 'w'], ['file', '/dev/null', 'w']];

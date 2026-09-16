@@ -6,9 +6,9 @@ namespace Simtabi\Laranail\EnvKit\Headless\Audit;
 
 use const PHP_EOL;
 
-use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
-
 use function dirname;
+
+use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
 
 /** Appends one JSON object per line (JSON-lines) — the zero-config default sink. */
 final class FileAuditSink implements AuditSinkInterface
@@ -25,6 +25,6 @@ final class FileAuditSink implements AuditSinkInterface
         }
 
         $line = json_encode($event->toArray(), JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
-        @file_put_contents($this->path, $line.PHP_EOL, FILE_APPEND | LOCK_EX);
+        @file_put_contents($this->path, $line . PHP_EOL, FILE_APPEND | LOCK_EX);
     }
 }

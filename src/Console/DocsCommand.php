@@ -16,9 +16,6 @@ final class DocsCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Render the resolved validation schema as a Markdown reference table.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:docs'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

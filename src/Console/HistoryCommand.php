@@ -14,13 +14,10 @@ final class HistoryCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Show the recent audit history (who changed which keys, when). Values are never shown.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:history'];
-
     public function handle(): int
     {
         return $this->runSafely(function (): int {
-            $path = config('env-kit.audit.path');
+            $path = config('laranail.env-kit.audit.path');
             $path = is_string($path) ? $path : (string) storage_path('env-kit/audit.log');
 
             $limit = $this->option('limit');

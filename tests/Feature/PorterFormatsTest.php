@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\PortException;
-use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
-use Simtabi\Laranail\EnvKit\Headless\Porter\Formats\DotenvFormat;
-use Simtabi\Laranail\EnvKit\Headless\Porter\Formats\YamlFormat;
 use Simtabi\Laranail\EnvKit\Headless\Porter\Porter;
+use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\PortException;
+use Simtabi\Laranail\EnvKit\Headless\Porter\Formats\YamlFormat;
+use Simtabi\Laranail\EnvKit\Headless\Porter\Formats\DotenvFormat;
 
 uses(TestCase::class);
 
@@ -41,7 +41,7 @@ it('yaml import rejects malformed content', function () {
 });
 
 it('EnvKit::export/import work with dotenv and yaml', function () {
-    $this->bindEnv("A=1\nB=2\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\nB=2\n", ['laranail.env-kit.auto_backup' => false]);
 
     expect(EnvKit::export('yaml'))->toContain('A:');
 

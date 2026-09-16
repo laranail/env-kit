@@ -17,9 +17,6 @@ final class BackupDeleteCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Delete a named backup, or prune backups older than N days.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:backup-delete'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

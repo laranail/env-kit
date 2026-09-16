@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Porter\Formats;
 
-use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\PortException;
-use Symfony\Component\Yaml\Yaml;
 use Throwable;
+use Symfony\Component\Yaml\Yaml;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\PortException;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\PortFormatInterface;
 
 /**
  * YAML map of key => value. Registered only when `symfony/yaml` is installed
@@ -42,7 +42,7 @@ final class YamlFormat implements PortFormatInterface
             $out[(string) $key] = match (true) {
                 is_string($value) => $value,
                 is_scalar($value) => (string) $value,
-                default => (string) json_encode($value),
+                default           => (string) json_encode($value),
             };
         }
 

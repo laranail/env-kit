@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes;
 
 use Closure;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteContext;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\UpdateGateInterface;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\UnauthorizedUpdateException;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
 
 /** Runs the (decorated) update gate; a denial aborts the commit before the write. */
 final class Authorize

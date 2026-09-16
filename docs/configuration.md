@@ -1,6 +1,6 @@
 # Configuration
 
-All settings live in `config/env-kit.php`. Every key has a safe default; you only
+All settings live in `config/laranail/env-kit.php`. Every key has a safe default; you only
 need to publish and edit the file to change behaviour.
 
 ## Reference
@@ -22,7 +22,7 @@ need to publish and edit the file to change behaviour.
 | `audit.actor` | `null` | Static actor override for the audit trail + events; `null` resolves the authenticated user (else a console/system identity). See [Events](events.md#who-is-the-actor). |
 | `limits.max_value_length` | `32768` | Reject any written value over N bytes (`null` = unbounded). Defends against accidental/abusive huge writes. |
 | `limits.max_key_length` | `256` | Reserved bound on key length. |
-| `schema` | `[]` | Baseline validation schema as `key => rule-spec` (Laravel-style, e.g. `'APP_ENV' => 'required\|in:local,production'`). Seeds `env:validate` + `EnvKit::validate()`; runtime `EnvKit::schema()->…` rules merge on top. See [Schema](tools/schema.md). |
+| `schema` | `[]` | Baseline validation schema as `key => rule-spec` (Laravel-style, e.g. `'APP_ENV' => 'required\|in:local,production'`). Seeds `laranail::env-kit.validate` + `EnvKit::validate()`; runtime `EnvKit::schema()->…` rules merge on top. See [Schema](tools/schema.md). |
 | `notifications.*` | _disabled_ | Opt-in operator alerts from lifecycle events — see [Notifications](notifications.md) for the full block. |
 | `encryption.driver` | `'laravel'` | The cipher driver for per-value encryption-at-rest. |
 
@@ -39,7 +39,7 @@ Three independent lists govern keys at different layers:
   `protected_keys`, this is bypassed by `restore()`, which reinstates a whole
   known-good snapshot.)
 - **`hidden_keys`** — a *display* guard. Matching values are masked (`••••`) in
-  `env:list`, the web panel, and exports unless secrets are explicitly revealed.
+  `laranail::env-kit.list`, the web panel, and exports unless secrets are explicitly revealed.
 
 All three can be extended at runtime — see [Extending](extending.md):
 
@@ -60,7 +60,7 @@ Override deliberately, per operation:
 
 ```php
 EnvKit::allowProduction()->set('MAINTENANCE', 'true');   // programmatic
-php artisan env:set MAINTENANCE=true --force-production   // CLI
+php artisan laranail::env-kit.set MAINTENANCE=true --force-production   // CLI
 ```
 
 A production warning banner is shown on every surface: each Artisan command

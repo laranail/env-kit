@@ -16,9 +16,6 @@ final class DiffCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Compare the .env file against another, by key.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:diff'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

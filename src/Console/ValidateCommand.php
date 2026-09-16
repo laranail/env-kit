@@ -16,9 +16,6 @@ final class ValidateCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Check every key/value for well-formedness + the configured schema.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:validate'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

@@ -14,8 +14,9 @@ final class ExampleSync
     /**
      * Keys present in $example but absent from $env (what the .env still needs).
      *
-     * @param  array<string, string>  $env
-     * @param  array<string, string>  $example
+     * @param array<string, string> $env
+     * @param array<string, string> $example
+     *
      * @return list<string>
      */
     public function missing(array $env, array $example): array
@@ -26,8 +27,9 @@ final class ExampleSync
     /**
      * Keys present in $env but absent from $example (undocumented extras).
      *
-     * @param  array<string, string>  $env
-     * @param  array<string, string>  $example
+     * @param array<string, string> $env
+     * @param array<string, string> $example
+     *
      * @return list<string>
      */
     public function extra(array $env, array $example): array
@@ -36,8 +38,8 @@ final class ExampleSync
     }
 
     /**
-     * @param  array<string, string>  $env
-     * @param  array<string, string>  $example
+     * @param array<string, string> $env
+     * @param array<string, string> $example
      */
     public function inSync(array $env, array $example): bool
     {

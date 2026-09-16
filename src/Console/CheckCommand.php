@@ -16,9 +16,6 @@ final class CheckCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'List keys in .env.example missing from .env (non-zero exit on drift — CI friendly).';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:check'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

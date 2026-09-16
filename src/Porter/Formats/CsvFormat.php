@@ -18,10 +18,10 @@ final class CsvFormat implements PortFormatInterface
     {
         $rows = ['KEY,VALUE'];
         foreach ($values as $key => $value) {
-            $rows[] = $this->encodeField((string) $key).','.$this->encodeField($value);
+            $rows[] = $this->encodeField((string) $key) . ',' . $this->encodeField($value);
         }
 
-        return implode("\n", $rows)."\n";
+        return implode("\n", $rows) . "\n";
     }
 
     public function import(string $content): array
@@ -53,7 +53,7 @@ final class CsvFormat implements PortFormatInterface
     private function encodeField(string $field): string
     {
         if (preg_match('/[",\r\n]/', $field) === 1) {
-            return '"'.str_replace('"', '""', $field).'"';
+            return '"' . str_replace('"', '""', $field) . '"';
         }
 
         return $field;

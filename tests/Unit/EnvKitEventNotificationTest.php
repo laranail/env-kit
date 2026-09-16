@@ -20,9 +20,9 @@ it('routes to its configured channels and returns the summary as the array paylo
 
 it('renders a mail message from the summary fields', function () {
     $notification = envKitNotification([
-        'event' => 'write_rejected',
-        'path' => '/srv/app/.env',
-        'actor' => 'deploy-bot',
+        'event'  => 'write_rejected',
+        'path'   => '/srv/app/.env',
+        'actor'  => 'deploy-bot',
         'reason' => 'protected',
     ]);
 

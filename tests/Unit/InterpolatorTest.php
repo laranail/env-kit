@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ValidationException;
 use Simtabi\Laranail\EnvKit\Headless\Support\Interpolator;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ValidationException;
 
 it('resolves ${VAR} brace references but not bare $VAR', function () {
     $interpolator = new Interpolator;
@@ -38,7 +38,7 @@ function chainVars(int $n): array
 {
     $vars = [];
     for ($i = 1; $i < $n; $i++) {
-        $vars["V{$i}"] = '${V'.($i + 1).'}';
+        $vars["V{$i}"] = '${V' . ($i + 1) . '}';
     }
     $vars["V{$n}"] = 'leaf';
 

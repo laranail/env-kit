@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Compat\DotenvEditor;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\EnvKit\Headless\Compat\DotenvEditor;
 
 uses(TestCase::class);
 
 it('addComment and addEmptyLine append to the file', function () {
-    $path = $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $path = $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::addComment('Database settings')->addEmptyLine();
 
@@ -17,7 +17,7 @@ it('addComment and addEmptyLine append to the file', function () {
 });
 
 it('the jackiedo aliases map to the idiomatic API', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::setKey('B', '2')->setKeys(['C' => '3', 'D' => '4']);
 
@@ -34,7 +34,7 @@ it('the jackiedo aliases map to the idiomatic API', function () {
 });
 
 it('the DotenvEditor compat facade drives the same bound engine', function () {
-    $this->bindEnv("A=1\n", ['env-kit.auto_backup' => false]);
+    $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
     DotenvEditor::setKey('X', '9');
 

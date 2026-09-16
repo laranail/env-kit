@@ -22,10 +22,10 @@ final class AuditEvent
     public function toArray(): array
     {
         return [
-            'path' => $this->path,
-            'actor' => $this->actor,
+            'path'        => $this->path,
+            'actor'       => $this->actor,
             'occurred_at' => $this->occurredAt,
-            'changes' => $this->changes,
+            'changes'     => $this->changes,
         ];
     }
 }

@@ -5,59 +5,60 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\EnvKit\Headless;
 
 use Closure;
-use Illuminate\Contracts\Events\Dispatcher;
+use Throwable;
+
+use function dirname;
+use function array_key_exists;
+
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
-use Simtabi\Laranail\EnvKit\Headless\Backup\BackupFile;
-use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
-use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
-use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
+use Illuminate\Contracts\Events\Dispatcher;
 use Simtabi\Laranail\EnvKit\Headless\Doctor\Doctor;
-use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
-use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
+use Simtabi\Laranail\EnvKit\Headless\Porter\Porter;
+use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
+use Simtabi\Laranail\EnvKit\Headless\Backup\BackupFile;
+use Simtabi\Laranail\EnvKit\Headless\Doctor\Diagnostic;
 use Simtabi\Laranail\EnvKit\Headless\Events\AfterRestore;
+use Simtabi\Laranail\EnvKit\Headless\Session\EditSession;
+use Simtabi\Laranail\EnvKit\Headless\Support\ExampleSync;
+use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
+use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 use Simtabi\Laranail\EnvKit\Headless\Events\BackupCreated;
 use Simtabi\Laranail\EnvKit\Headless\Events\BeforeRestore;
 use Simtabi\Laranail\EnvKit\Headless\Events\WriteRejected;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\BackupNotFoundException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\EncryptionException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidEnvironmentException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\SchemaException;
-use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitPipeline;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Audit;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Authorize;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Write;
+use Simtabi\Laranail\EnvKit\Headless\Support\Interpolator;
+use Simtabi\Laranail\EnvKit\Headless\Document\Entry\Setter;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Backup;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Notify;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Observe;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Verify;
-use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Write;
-use Simtabi\Laranail\EnvKit\Headless\Porter\Porter;
-use Simtabi\Laranail\EnvKit\Headless\Results\ValidationResult;
-use Simtabi\Laranail\EnvKit\Headless\Schema\EnvSchema;
 use Simtabi\Laranail\EnvKit\Headless\Security\EditableKeys;
-use Simtabi\Laranail\EnvKit\Headless\Security\ProductionGuard;
+use Simtabi\Laranail\EnvKit\Headless\Support\TypedAccessor;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Observe;
 use Simtabi\Laranail\EnvKit\Headless\Security\ProtectedKeys;
+use Simtabi\Laranail\EnvKit\Headless\Writer\AtomicEnvWriter;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitPipeline;
 use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
 use Simtabi\Laranail\EnvKit\Headless\Security\ValueSanitizer;
-use Simtabi\Laranail\EnvKit\Headless\Session\EditSession;
-use Simtabi\Laranail\EnvKit\Headless\Support\ExampleSync;
-use Simtabi\Laranail\EnvKit\Headless\Support\Interpolator;
 use Simtabi\Laranail\EnvKit\Headless\Support\SecretGenerator;
-use Simtabi\Laranail\EnvKit\Headless\Support\TypedAccessor;
-use Simtabi\Laranail\EnvKit\Headless\Writer\AtomicEnvWriter;
+use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Authorize;
+use Simtabi\Laranail\EnvKit\Headless\Results\ValidationResult;
+use Simtabi\Laranail\EnvKit\Headless\Security\ProductionGuard;
 use Simtabi\Laranail\EnvKit\Headless\Writer\IntegrityVerifier;
-use Throwable;
-
-use function array_key_exists;
-use function dirname;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\SchemaException;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
+use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\IntegrityException;
+use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\EncryptionException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\KeyNotFoundException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\BackupNotFoundException;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidEnvironmentException;
 
 /**
  * The bound root service — the single instance the `EnvKit` facade, constructor
@@ -77,8 +78,8 @@ final class EnvKit implements EnvKitInterface
     private bool $allowProduction = false;
 
     /**
-     * @param  list<string>  $protectedKeys
-     * @param  list<string>  $editableKeys
+     * @param list<string> $protectedKeys
+     * @param list<string> $editableKeys
      */
     public function __construct(
         private readonly string $path,
@@ -131,7 +132,8 @@ final class EnvKit implements EnvKitInterface
     }
 
     /**
-     * @param  array<int|string, mixed>|null  $default
+     * @param array<int|string, mixed>|null $default
+     *
      * @return array<int|string, mixed>|null
      */
     public function getArray(string $key, ?array $default = null): ?array
@@ -167,7 +169,8 @@ final class EnvKit implements EnvKitInterface
     }
 
     /**
-     * @param  list<string>  $keys
+     * @param list<string> $keys
+     *
      * @return array<string, string>
      */
     public function only(array $keys): array
@@ -176,7 +179,8 @@ final class EnvKit implements EnvKitInterface
     }
 
     /**
-     * @param  list<string>  $keys
+     * @param list<string> $keys
+     *
      * @return array<string, string>
      */
     public function except(array $keys): array
@@ -187,7 +191,7 @@ final class EnvKit implements EnvKitInterface
     /** @return array<string, string> */
     public function group(string $prefix): array
     {
-        $needle = rtrim($prefix, '_').'_';
+        $needle = rtrim($prefix, '_') . '_';
 
         return array_filter(
             $this->all(),
@@ -593,9 +597,9 @@ final class EnvKit implements EnvKitInterface
         }
 
         return [
-            'only_here' => array_values(array_diff(array_keys($here), array_keys($there))),
+            'only_here'  => array_values(array_diff(array_keys($here), array_keys($there))),
             'only_there' => array_values(array_diff(array_keys($there), array_keys($here))),
-            'changed' => $changed,
+            'changed'    => $changed,
         ];
     }
 
@@ -604,7 +608,7 @@ final class EnvKit implements EnvKitInterface
     /** The default `.env.example` path (sibling of the working .env). */
     public function examplePath(): string
     {
-        return dirname($this->path).'/.env.example';
+        return dirname($this->path) . '/.env.example';
     }
 
     /**
@@ -636,7 +640,7 @@ final class EnvKit implements EnvKitInterface
      * Produce a fresh secret value: `token`/`hex`/`base64` random tokens or an `app_key`.
      * Returns the value (set it explicitly so the key policy + guards still apply).
      *
-     * @param  array{bytes?: int}  $options
+     * @param array{bytes?: int} $options
      */
     public function generate(string $type = 'token', array $options = []): string
     {
@@ -645,8 +649,8 @@ final class EnvKit implements EnvKitInterface
 
         return match ($type) {
             'app_key', 'key' => $generator->appKey(),
-            'base64' => $generator->token($bytes, 'base64'),
-            default => $generator->token($bytes, 'hex'),
+            'base64'         => $generator->token($bytes, 'base64'),
+            default          => $generator->token($bytes, 'hex'),
         };
     }
 
@@ -699,7 +703,7 @@ final class EnvKit implements EnvKitInterface
             throw InvalidEnvironmentException::for($environment);
         }
 
-        return $this->file(dirname($this->path).'/.env.'.$environment);
+        return $this->file(dirname($this->path) . '/.env.' . $environment);
     }
 
     public function isDirty(): bool

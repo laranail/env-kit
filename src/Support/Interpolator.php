@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Support;
 
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\ValidationException;
-
 use function array_key_exists;
+
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\ValidationException;
 
 /**
  * Resolves `${VAR}` references against other keys (phpdotenv-style: brace form

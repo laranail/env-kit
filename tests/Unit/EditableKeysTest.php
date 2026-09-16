@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\EnvKit\Headless\Exceptions\NotEditableException;
 use Simtabi\Laranail\EnvKit\Headless\Security\EditableKeys;
+use Simtabi\Laranail\EnvKit\Headless\Exceptions\NotEditableException;
 
 it('treats every key as editable when the allowlist is empty', function () {
     $editable = new EditableKeys;

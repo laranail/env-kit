@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\EnvKit\Headless\Contracts;
 
-use Simtabi\Laranail\EnvKit\Headless\Authorization\AbstractWriteObserver;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteContext;
 use Simtabi\Laranail\EnvKit\Headless\Authorization\WriteDecision;
+use Simtabi\Laranail\EnvKit\Headless\Authorization\AbstractWriteObserver;
 
 /**
  * Eloquent-style lifecycle hooks around a commit. A "before" hook returning

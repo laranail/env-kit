@@ -20,9 +20,6 @@ final class EncryptCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = "Encrypt a single key's value in place (read it back with EnvKit::getDecrypted).";
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:encrypt-value'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {

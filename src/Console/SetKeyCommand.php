@@ -19,9 +19,6 @@ final class SetKeyCommand extends AbstractEnvCommand
     /** @var string */
     protected $description = 'Set or create an environment key.';
 
-    /** @var list<string> */
-    protected array $commandAliases = ['env:set'];
-
     public function handle(EnvKit $env): int
     {
         return $this->runSafely(function () use ($env): int {
