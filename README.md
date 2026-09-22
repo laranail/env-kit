@@ -1,8 +1,9 @@
 # laranail/env-kit
 
-[![Latest version on Packagist](https://img.shields.io/packagist/v/laranail/env-kit.svg)](https://packagist.org/packages/laranail/env-kit)
 [![Tests](https://github.com/laranail/env-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/laranail/env-kit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+`laranail/env-kit` is not published to Packagist, so there is no registry-version badge to show — see [Install](#install).
 
 > A view-less Laravel engine for reading and **safely editing** `.env` files — one transactional, atomic, guarded, audited commit path behind a programmatic API, a CLI, and an interactive TUI.
 
