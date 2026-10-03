@@ -22,6 +22,19 @@ EnvKit::set('MAIL_HOST', 'smtp.acme.test');   // atomic · backed-up · audited
 $debug = EnvKit::getBool('APP_DEBUG', false);  // typed read
 ```
 
+## Quick start
+
+```php
+use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
+
+EnvKit::set('MAIL_HOST', 'smtp.acme.test');    // atomic, backed up, audited
+
+EnvKit::get('MAIL_HOST');                      // "smtp.acme.test"
+EnvKit::getBool('APP_DEBUG', false);           // true / 1 / yes / on → true
+```
+
+The full walkthrough is in [Programmatic API](docs/tools/programmatic-api.md); everything else is in the [documentation index](#documentation).
+
 ## Documentation
 
 Full documentation is at **[opensource.simtabi.com/documentation/laranail/env-kit](https://opensource.simtabi.com/documentation/laranail/env-kit/)** — format-preserving atomic writes, secret redaction + encryption-at-rest, schema validation, the guard/protection policy, the CLI, the interactive TUI, and configuration.
