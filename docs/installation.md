@@ -22,7 +22,7 @@ The package works with sensible defaults out of the box. Publish the config only
 if you want to change them:
 
 ```bash
-php artisan vendor:publish --tag=env-kit-config
+php artisan vendor:publish --tag=laranail::env-kit-config
 ```
 
 This writes `config/laranail/env-kit.php`. See [Configuration](configuration.md) for every
