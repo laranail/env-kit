@@ -1,5 +1,7 @@
 # Security Policy
 
+Where this file is silent, the [laranail security policy](https://github.com/laranail/.github/blob/HEAD/SECURITY.md) applies.
+
 `laranail/env-kit` is a security-sensitive package: it reads and edits
 `.env` files and handles application secrets. Secret values are redacted from
 logs and exception messages by design. Please treat any vulnerability report
