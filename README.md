@@ -22,7 +22,19 @@ EnvKit::set('MAIL_HOST', 'smtp.acme.test');   // atomic · backed-up · audited
 $debug = EnvKit::getBool('APP_DEBUG', false);  // typed read
 ```
 
-## Quick start
+## Quick start guide and usage
+
+### Getting started
+
+The service provider and facade register themselves through package discovery, and EnvKit edits
+your application's `.env` out of the box. Optionally:
+
+1. Publish the config to change the defaults (writes `config/laranail/env-kit.php`):
+   `php artisan vendor:publish --tag=laranail::env-kit-config`.
+2. Point it at another file with the `ENV_KIT_PATH` variable.
+3. Verify against the current `.env`: `php artisan laranail::env-kit.doctor`.
+
+### Usage
 
 ```php
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
@@ -31,6 +43,13 @@ EnvKit::set('MAIL_HOST', 'smtp.acme.test');    // atomic, backed up, audited
 
 EnvKit::get('MAIL_HOST');                      // "smtp.acme.test"
 EnvKit::getBool('APP_DEBUG', false);           // true / 1 / yes / on → true
+```
+
+Target another file per call:
+
+```php
+EnvKit::file(base_path('.env.staging'))->set('APP_ENV', 'staging');
+EnvKit::on('testing')->get('DB_DATABASE'); // → .env.testing alongside the base file
 ```
 
 The full walkthrough is in [Programmatic API](docs/tools/programmatic-api.md); everything else is in the [documentation index](#documentation).
