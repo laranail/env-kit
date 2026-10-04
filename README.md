@@ -54,7 +54,7 @@ EnvKit::on('testing')->get('DB_DATABASE'); // → .env.testing alongside the bas
 
 The full walkthrough is in [Programmatic API](docs/tools/programmatic-api.md); everything else is in the [documentation index](#documentation).
 
-## Documentation
+## <a name="documentation"></a>Documentation
 
 Full documentation is at **[opensource.simtabi.com/documentation/laranail/env-kit](https://opensource.simtabi.com/documentation/laranail/env-kit/)** — format-preserving atomic writes, secret redaction + encryption-at-rest, schema validation, the guard/protection policy, the CLI, the interactive TUI, and configuration.
 
