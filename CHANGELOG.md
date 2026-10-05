@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `illuminate/bus` is now declared in `require` at `^13.0`. `src/` imports it, and it was only arriving transitively.
 - `composer style` runs the shared Pint config (`@pint`, i.e. `laranail-pint --test`). It ran a
   bare `pint --test`, which ignores `vendor/laranail/package-tools/pint.json` and so checked a
   different rule set from `composer pint`, `composer lint` and CI.
