@@ -35,6 +35,7 @@
         "laranail/console": "^0.1",
         "laranail/package-tools": "^0.1",
         "illuminate/auth": "^13.0",
+        "illuminate/bus": "^13.0",
         "illuminate/console": "^13.0",
         "illuminate/contracts": "^13.0",
         "illuminate/database": "^13.0",
