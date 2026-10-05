@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `composer style` runs the shared Pint config (`@pint`, i.e. `laranail-pint --test`). It ran a
+  bare `pint --test`, which ignores `vendor/laranail/package-tools/pint.json` and so checked a
+  different rule set from `composer pint`, `composer lint` and CI.
+
 ## [0.1.0] - 2026-07-11
 
 ### Fixed
