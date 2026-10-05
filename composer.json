@@ -92,7 +92,7 @@
     "scripts": {
         "test": "pest",
         "analyse": "phpstan analyse",
-        "style": "pint --test",
+        "style": "@pint",
         "mutate": "@php -d xdebug.mode=coverage vendor/bin/pest --mutate --covered-only --min=85",
         "pint": "@php vendor/bin/laranail-pint --test",
         "pint-fix": "@php vendor/bin/laranail-pint --parallel",
