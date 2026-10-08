@@ -44,23 +44,23 @@ it('passes the container to custom driver creators', function () {
 });
 
 it('encrypts a value at rest and decrypts it back', function () {
-    $path = $this->bindEnv("API_TOKEN=plaintext-secret\n", ['laranail.env-kit.auto_backup' => false]);
+    $path = $this->bindEnv("API_TOKEN=test-secret-not-real\n", ['laranail.env-kit.auto_backup' => false]);
 
     EnvKit::encrypt('API_TOKEN');
 
     // at rest the file holds ciphertext, not the plaintext
     $raw = (string) file_get_contents($path);
-    expect($raw)->not->toContain('plaintext-secret')
+    expect($raw)->not->toContain('test-secret-not-real')
         ->and($raw)->toContain('envkit:');
 
     // get() returns the at-rest ciphertext; getDecrypted() returns the plaintext
-    expect(EnvKit::get('API_TOKEN'))->not->toBe('plaintext-secret')
-        ->and(EnvKit::getDecrypted('API_TOKEN'))->toBe('plaintext-secret');
+    expect(EnvKit::get('API_TOKEN'))->not->toBe('test-secret-not-real')
+        ->and(EnvKit::getDecrypted('API_TOKEN'))->toBe('test-secret-not-real');
 
     // decrypt() restores plaintext at rest
     EnvKit::decrypt('API_TOKEN');
-    expect((string) file_get_contents($path))->toContain('API_TOKEN=plaintext-secret')
-        ->and(EnvKit::get('API_TOKEN'))->toBe('plaintext-secret');
+    expect((string) file_get_contents($path))->toContain('API_TOKEN=test-secret-not-real')
+        ->and(EnvKit::get('API_TOKEN'))->toBe('test-secret-not-real');
 });
 
 it('setEncrypted stores ciphertext that getDecrypted reads back', function () {

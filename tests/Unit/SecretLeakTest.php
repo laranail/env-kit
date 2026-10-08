@@ -22,9 +22,9 @@ it('never puts a raw secret value in an exception message', function () {
 });
 
 it('scrubs a secret out of any message via the redactor', function () {
-    $secret = 'super-secret-token-ABC123';
+    $secret = 'test-secret-not-real';
 
-    $scrubbed = (new SecretRedactor)->scrub("dsn=postgres://u:{$secret}@h/db", [$secret]);
+    $scrubbed = (new SecretRedactor)->scrub('dsn=postgres://u:' . $secret . '@h/db', [$secret]);
 
     expect($scrubbed)->not->toContain($secret);
 });
