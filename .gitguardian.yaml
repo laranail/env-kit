@@ -31,6 +31,8 @@
 version: 2
 
 secret:
+  ignored_paths:
+    - "tests/Fixtures/**/*"
   ignored-matches:
     # --- Still on `KEY=value` lines in the current tree, so these are the
     # --- entries actually doing work.
