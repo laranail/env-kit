@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The `--force-production` editor test no longer depends on test order. Switching the app to
+  `production` turns off Laravel's fakeable prompt fallback, so run alone (as the mutation job
+  can) the editor rendered real prompts with no TTY and `select()` threw
+  `NonInteractiveValidationException: Required.` The test now enables the fallback itself.
+
 ### Changed
 
 - `illuminate/bus` is now declared in `require` at `^13.0`. `src/` imports it, and it was only arriving transitively.
