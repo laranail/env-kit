@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Laravel\Prompts\Prompt;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\Console\Testing\InteractsWithConsole;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\EnvKitInterface;
 
-uses(TestCase::class);
+uses(TestCase::class, InteractsWithConsole::class);
 
 it('quits immediately from the editor', function () {
     $this->bindEnv("A=1\n");
@@ -110,7 +110,7 @@ it('persists multiple edits in production with --force-production', function () 
     // The fallback flag is sticky (fallbackWhen ORs), so this only passed when an
     // earlier test had already set it -- and failed when run alone or reordered,
     // as the mutation job does. Set it here so the test stands on its own.
-    Prompt::fallbackWhen(true);
+    $this->withPromptFallback();
 
     $this->artisan('laranail::env-kit.edit', ['--force-production' => true])
         ->expectsQuestion('Choose a key or action', 'A')

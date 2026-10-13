@@ -24,6 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **The editor prompts through `laranail/console` instead of `laravel/prompts`.**
+  `laranail::env-kit.edit` imported `select()`, `text()`, `confirm()` and `SelectPrompt` from
+  `laravel/prompts` without declaring the package; it arrived only because `laranail/console`
+  requires it. The prompts now go through console's `Prompter`, and the can-prompt check is
+  console's `Prompter::canPrompt()`, which carries the same rule. Behaviour is unchanged: the
+  same prompts, the same answers, and the same exit `2` without a terminal. An architecture test
+  fails if `src/` uses `Laravel\Prompts` again.
+- **Requires `laranail/console ^0.1.7`**, the first release with `Prompter::canPrompt()`
+  (raised from `^0.1`).
 - `illuminate/bus` is now declared in `require` at `^13.0`. `src/` imports it, and it was only arriving transitively.
 - `composer style` runs the shared Pint config (`@pint`, i.e. `laranail-pint --test`). It ran a
   bare `pint --test`, which ignores `vendor/laranail/package-tools/pint.json` and so checked a

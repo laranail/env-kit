@@ -32,7 +32,7 @@
     "require": {
         "php": "^8.4.1 || ^8.5",
         "ext-mbstring": "*",
-        "laranail/console": "^0.1",
+        "laranail/console": "^0.1.7",
         "laranail/package-tools": "^0.1",
         "illuminate/auth": "^13.0",
         "illuminate/bus": "^13.0",
