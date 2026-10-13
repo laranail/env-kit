@@ -1,6 +1,7 @@
 # TUI
 
-An interactive, full-screen `.env` editor built on `laravel/prompts`.
+An interactive, full-screen `.env` editor built on `laranail/console`'s `Prompter`, which wraps
+`laravel/prompts`.
 
 ```bash
 php artisan laranail::env-kit.edit
@@ -33,6 +34,16 @@ The editor needs a person at a terminal. Run with `--no-interaction`, or with st
 is not a terminal (a cron job, a CI step, a pipe), it changes nothing and exits with code
 `2`, naming the commands that work without one: `laranail::env-kit.set`,
 `laranail::env-kit.unset` and `laranail::env-kit.rename`.
+
+The check is `laranail/console`'s `Prompter::canPrompt()`: it answers yes when Laravel routes
+prompts through its fakeable question-helper fallback (on Windows, and under the test harness),
+and otherwise only when stdin is a terminal.
+
+## Prompts go through `laranail/console`
+
+env-kit does not declare `laravel/prompts` and never imports it: every prompt goes through
+`laranail/console`'s `Prompter`, which does. `tests/Unit/PromptsBoundaryTest.php` fails if a file
+under `src/` names `Laravel\Prompts`.
 
 ---
 
