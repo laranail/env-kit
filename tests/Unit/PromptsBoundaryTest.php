@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * env-kit prompts through laranail/console, which wraps laravel/prompts. It does
  * not declare laravel/prompts, so a direct import would lean on a package it never
- * asked for and bypass the wrapper's API (Prompter::canPrompt() among it).
+ * asked for and bypass the wrapper's API, such as Prompter::canPrompt().
  */
 
 arch('src/ does not use laravel/prompts directly')
