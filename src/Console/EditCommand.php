@@ -6,6 +6,10 @@ namespace Simtabi\Laranail\EnvKit\Headless\Console;
 
 use Closure;
 
+use function defined;
+
+use Laravel\Prompts\SelectPrompt;
+
 use function Laravel\Prompts\text;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\confirm;
@@ -18,6 +22,9 @@ use Simtabi\Laranail\EnvKit\Headless\Exceptions\EnvKitException;
  * UI layer of laranail/console). Pure orchestration — every mutation goes
  * through the same {@see EnvKit} engine, so atomicity/guards/audit/events all
  * apply. Engine errors are shown inline and the loop keeps running.
+ *
+ * Without a terminal to prompt on it exits with {@see self::EXIT_USAGE} and names
+ * the non-interactive commands, rather than letting the first prompt fail.
  */
 final class EditCommand extends AbstractEnvCommand
 {
@@ -37,6 +44,14 @@ final class EditCommand extends AbstractEnvCommand
 
     public function handle(EnvKit $env): int
     {
+        if (! $this->canPrompt()) {
+            return $this->failWith(
+                'laranail::env-kit.edit needs an interactive terminal. To change keys without one, use '
+                . 'laranail::env-kit.set, laranail::env-kit.unset or laranail::env-kit.rename.',
+                self::EXIT_USAGE,
+            );
+        }
+
         $this->force = (bool) $this->option('force-production');
         $target = $this->targetEnv($env);
 
@@ -57,6 +72,28 @@ final class EditCommand extends AbstractEnvCommand
         $this->info('Closed EnvKit editor.');
 
         return self::EXIT_OK;
+    }
+
+    /**
+     * Whether the editor's prompts can reach a person.
+     *
+     * Not when input is non-interactive: `--no-interaction`, or Symfony found no
+     * terminal on stdin. Yes when Laravel answers prompts through its question-helper
+     * fallback (Windows, and the test harness). Otherwise only when stdin is a terminal,
+     * the check laravel/prompts makes before it falls back to each prompt's default --
+     * which for the editor's menu is empty, and fails as "Required.".
+     */
+    private function canPrompt(): bool
+    {
+        if (! $this->input->isInteractive()) {
+            return false;
+        }
+
+        if (SelectPrompt::shouldFallback()) {
+            return true;
+        }
+
+        return defined('STDIN') && stream_isatty(STDIN);
     }
 
     /** Re-arm the production override before each mutation (each commit consumes it). */

@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`laranail::env-kit.edit` with no terminal failed with `Required.`** With stdin not a
+  terminal, laravel/prompts returns each prompt's default instead of asking, and the editor's
+  menu has none, so the first `select()` threw `NonInteractiveValidationException: Required.`
+  The editor now checks first: under `--no-interaction`, or with no terminal, it writes a
+  message naming `laranail::env-kit.set`, `laranail::env-kit.unset` and
+  `laranail::env-kit.rename`, changes nothing, and exits `2` (usage). The interactive path is
+  unchanged.
+
 - The `--force-production` editor test no longer depends on test order. Switching the app to
   `production` turns off Laravel's fakeable prompt fallback, so run alone (as the mutation job
   can) the editor rendered real prompts with no TTY and `select()` threw

@@ -27,6 +27,13 @@ editor never crashes on a guarded action.
 When the app environment is `production`, the editor shows a warning banner before
 the menu.
 
+## Without a terminal
+
+The editor needs a person at a terminal. Run with `--no-interaction`, or with stdin that
+is not a terminal (a cron job, a CI step, a pipe), it changes nothing and exits with code
+`2`, naming the commands that work without one: `laranail::env-kit.set`,
+`laranail::env-kit.unset` and `laranail::env-kit.rename`.
+
 ---
 
 [← Docs index](../../README.md#documentation)
