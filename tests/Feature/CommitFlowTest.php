@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Closure;
 use Simtabi\Laranail\EnvKit\Headless\Session\EditSession;
 use Simtabi\Laranail\EnvKit\Headless\Backup\BackupManager;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
