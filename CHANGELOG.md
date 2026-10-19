@@ -26,8 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Test credentials are generated at run time.** Secrets and tokens in the tests come from
   `TestCredentials` instead of literals, which secret scanning reported as leaks. A guard test
-  fails on any literal left behind. The `laranail/package-tools` floor is now `^0.1.9`, the
-  release that ships these helpers.
+  fails on any literal left behind. The `laranail/package-tools` floor is now `^0.1.10`, which
+  adds a second check: every purpose passed to `TestCredentials` must be a single plain lowercase
+  word, because secret scanning reads a compound purpose as the password itself.
 - **The editor prompts through `laranail/console` instead of `laravel/prompts`.**
   `laranail::env-kit.edit` imported `select()`, `text()`, `confirm()` and `SelectPrompt` from
   `laravel/prompts` without declaring the package; it arrived only because `laranail/console`
