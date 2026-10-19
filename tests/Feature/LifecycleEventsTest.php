@@ -11,6 +11,7 @@ use Simtabi\Laranail\EnvKit\Headless\Events\AfterRestore;
 use Simtabi\Laranail\EnvKit\Headless\Events\BackupCreated;
 use Simtabi\Laranail\EnvKit\Headless\Events\BeforeRestore;
 use Simtabi\Laranail\EnvKit\Headless\Events\WriteRejected;
+use Simtabi\Laranail\Package\Tools\Testing\TestCredentials;
 use Simtabi\Laranail\EnvKit\Headless\Events\WriteRolledBack;
 use Simtabi\Laranail\EnvKit\Headless\Events\ConflictDetected;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\WriterInterface;
@@ -26,7 +27,7 @@ it('dispatches BeforeWrite then AfterWrite with redacted, attributed changes', f
     app(EnvKitConfigurator::class)->resolveActorUsing(fn () => 'alice');
 
     Event::fake([BeforeWrite::class, AfterWrite::class]);
-    EnvKit::set('WIDGET_PASSWORD', 'newsecret');
+    EnvKit::set('WIDGET_PASSWORD', TestCredentials::secret('widget'));
 
     Event::assertDispatched(BeforeWrite::class, fn (BeforeWrite $e) => $e->actor === 'alice'
         && $e->operation === 'write'

@@ -10,6 +10,7 @@ use Simtabi\Laranail\EnvKit\Headless\Events\AfterWrite;
 use Simtabi\Laranail\EnvKit\Headless\Audit\FileAuditSink;
 use Simtabi\Laranail\EnvKit\Headless\Document\EnvDocument;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\Pipes\Audit;
+use Simtabi\Laranail\Package\Tools\Testing\TestCredentials;
 use Simtabi\Laranail\EnvKit\Headless\Pipeline\CommitContext;
 use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\AuditSinkInterface;
@@ -43,11 +44,12 @@ it('dispatches an AfterWrite event carrying redacted changes', function () {
     Event::fake();
     $this->bindEnv("A=1\n", ['laranail.env-kit.auto_backup' => false]);
 
-    EnvKit::set('API_TOKEN', 'abc123');
+    $value = TestCredentials::secret('token');
+    EnvKit::set('API_TOKEN', $value);
 
-    Event::assertDispatched(AfterWrite::class, function (AfterWrite $event): bool {
+    Event::assertDispatched(AfterWrite::class, function (AfterWrite $event) use ($value): bool {
         return $event->changes[0]['key'] === 'API_TOKEN'
-            && $event->changes[0]['new'] !== 'abc123'; // masked (API_TOKEN matches *_TOKEN)
+            && $event->changes[0]['new'] !== $value; // masked (API_TOKEN matches *_TOKEN)
     });
 });
 

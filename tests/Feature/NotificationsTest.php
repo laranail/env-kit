@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Simtabi\Laranail\EnvKit\Headless\Facades\EnvKit;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\Package\Tools\Testing\TestCredentials;
 use Simtabi\Laranail\EnvKit\Headless\Extension\EnvKitConfigurator;
 use Simtabi\Laranail\EnvKit\Headless\Notifications\EnvKitEventNotification;
 
@@ -67,7 +68,7 @@ it('summarizes the event with redacted, attributed content', function () {
     app(EnvKitConfigurator::class)->resolveActorUsing(fn () => 'alice');
     Notification::fake();
 
-    EnvKit::set('WIDGET_PASSWORD', 'newsecret');
+    EnvKit::set('WIDGET_PASSWORD', TestCredentials::secret('widget'));
 
     Notification::assertSentOnDemand(
         EnvKitEventNotification::class,

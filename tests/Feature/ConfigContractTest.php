@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Simtabi\Laranail\EnvKit\Headless\EnvKitManager;
 use Simtabi\Laranail\EnvKit\Headless\Tests\TestCase;
+use Simtabi\Laranail\Package\Tools\Testing\TestCredentials;
 use Simtabi\Laranail\EnvKit\Headless\Contracts\ValueCipherInterface;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\ProtectedKeyException;
 
@@ -104,7 +105,7 @@ it('actually enforces the shipped protected keys', function (): void {
     // The concrete class, not Throwable: Pest's toThrow() falls back to matching the *message*
     // for anything class_exists() rejects, and Throwable is an interface -- so the loose spelling
     // silently asserts that the message contains the word 'Throwable'.
-    expect(fn () => EnvKit::set('DB_PASSWORD', 'should-be-refused'))->toThrow(ProtectedKeyException::class);
+    expect(fn () => EnvKit::set('DB_PASSWORD', TestCredentials::secret('refused')))->toThrow(ProtectedKeyException::class);
 });
 
 it('can build a cipher for every driver its config can name', function (): void {
