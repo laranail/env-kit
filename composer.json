@@ -33,7 +33,7 @@
         "php": "^8.4.1 || ^8.5",
         "ext-mbstring": "*",
         "laranail/console": "^0.1.7",
-        "laranail/package-tools": "^0.1",
+        "laranail/package-tools": "^0.1.9",
         "illuminate/auth": "^13.0",
         "illuminate/bus": "^13.0",
         "illuminate/console": "^13.0",

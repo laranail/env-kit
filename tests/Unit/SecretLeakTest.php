@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
+use Simtabi\Laranail\Package\Tools\Testing\TestCredentials;
 use Simtabi\Laranail\EnvKit\Headless\Security\SecretRedactor;
 use Simtabi\Laranail\EnvKit\Headless\Security\ValueSanitizer;
 use Simtabi\Laranail\EnvKit\Headless\Exceptions\InvalidValueException;
 
 it('never puts a raw secret value in an exception message', function () {
-    $secret = 'super-secret-token-ABC123';
+    $secret = TestCredentials::secret('leak');
 
     $thrown = null;
     try {
@@ -22,7 +23,7 @@ it('never puts a raw secret value in an exception message', function () {
 });
 
 it('scrubs a secret out of any message via the redactor', function () {
-    $secret = 'test-secret-not-real';
+    $secret = TestCredentials::secret('scrub');
 
     $scrubbed = (new SecretRedactor)->scrub('dsn=postgres://u:' . $secret . '@h/db', [$secret]);
 
