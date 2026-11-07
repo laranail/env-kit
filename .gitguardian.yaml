@@ -27,13 +27,26 @@
 # Writing a placeholder literal here in the clear is safe precisely because it is
 # a placeholder. Never add an entry for a value that is a real credential; rotate
 # it and remove it from history instead.
+#
+# `ignored_paths` below covers `tests/Fixtures/**`, which is generated fixture
+# data rather than assertions, so there is no literal to name. That is the one
+# place a path glob is the right tool here.
+#
+# KEY SPELLING IS UNDERSCORED, AND SILENTLY SO
+#
+# ggshield reads `ignored_paths`, `ignored_matches` and `show_secrets`. A
+# hyphenated key is not an alias: it parses as valid YAML, is simply not a key
+# ggshield looks for, and the exemption it describes never applies -- with no
+# warning, because an unknown key is not an error. This file carried
+# `ignored-matches` and `show-secrets` from 2026-09-17 until 2026-11-07, so all
+# six exemptions below were inert for that whole period.
 
 version: 2
 
 secret:
   ignored_paths:
     - "tests/Fixtures/**/*"
-  ignored-matches:
+  ignored_matches:
     # --- Still on `KEY=value` lines in the current tree, so these are the
     # --- entries actually doing work.
 
@@ -63,4 +76,4 @@ secret:
   # A fixture that is genuinely a placeholder should be readable as one. If a
   # finding here is ever anything other than that, fix the code -- do not extend
   # this list.
-  show-secrets: false
+  show_secrets: false
