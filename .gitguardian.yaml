@@ -5,13 +5,17 @@
 # not credentials: the redaction tests prove the value never reaches the audit log
 # or a listing, which requires a distinctive value to search for.
 #
-# Two mechanisms keep the scanner quiet, and they cover different things:
+# Three mechanisms keep the scanner quiet, and they cover different things:
 #
 #   1. `envkit_canary()` in tests/Pest.php, so no line reads
 #      `SOMETHING_PASSWORD=<literal>` -- the shape the detector matches. That is
-#      the better fix, and it handles new commits at source.
+#      the better fix, it handles new commits at source, and it is the only one of
+#      the three that works everywhere.
 #   2. The entries below, for what a rename cannot reach: the literals already in
-#      history, and the three that remain on assignment lines today.
+#      history, and the three that remain on assignment lines today. These apply
+#      only where `ggshield` runs -- see the scope note below.
+#   3. Resolution in the GitGuardian dashboard, which is what silences the
+#      `GitGuardian Security Checks` run on a pull request.
 #
 # WHY MATCHES AND NOT PATHS
 #
@@ -40,6 +44,22 @@
 # warning, because an unknown key is not an error. This file carried
 # `ignored-matches` and `show-secrets` from 2026-09-17 until 2026-11-07, so all
 # six exemptions below were inert for that whole period.
+#
+# WHAT THIS FILE DOES AND DOES NOT REACH
+#
+# It is read by the `ggshield` CLI, so it governs a local or manual
+# `ggshield secret scan` and nothing else. It does not configure the GitGuardian
+# GitHub App: the `GitGuardian Security Checks` run on a pull request is scanned
+# server-side, and its exemptions live in the dashboard. That is why the
+# 2026-11-07 finding had to be resolved there while this file already existed in
+# the repository.
+#
+# Measured 2026-11-07: no workflow runs `ggshield` -- 429 workflow files across
+# laranail/packages and simtabi/packages, plus the 8 reusable workflows in
+# laranail/.github, none of them referencing it. So the entries below currently
+# have no consumer in CI. Fixing the key spelling was still right -- a wrong key
+# is wrong whenever something does read it -- but do not read a green
+# GitGuardian check as evidence that an entry here worked.
 
 version: 2
 
