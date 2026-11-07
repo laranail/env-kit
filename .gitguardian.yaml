@@ -70,28 +70,36 @@ secret:
     # --- Still on `KEY=value` lines in the current tree, so these are the
     # --- entries actually doing work.
 
-    # `SECRET=plaintext` / `API_TOKEN=plaintext-secret`: the encryption tests
-    # assert the raw value is ABSENT from the file on disk afterwards, which
-    # needs the pre-encryption value to be a known literal.
+    # `SECRET=plaintext` at tests/Feature/EncryptCliTest.php:11. The encryption
+    # test asserts the raw value is ABSENT from the file on disk afterwards,
+    # which needs the pre-encryption value to be a known literal.
     - name: "test fixture: pre-encryption plaintext"
       match: plaintext
-    - name: "test fixture: pre-encryption plaintext (API_TOKEN)"
-      match: plaintext-secret
 
-    # `DB_PASSWORD=oldsecret` in the audit test: the before-value has to be
-    # distinctive to prove it is redacted in the JSON-lines record.
+    # `DB_PASSWORD=oldsecret` at tests/Feature/AuditTest.php:128: the
+    # before-value has to be distinctive to prove it is redacted in the
+    # JSON-lines record.
     - name: "test fixture: audit record old value"
       match: oldsecret
 
-    # --- No longer on assignment lines after the envkit_canary() change, but
-    # --- kept because they remain in the commits already pushed.
+    # --- Not on an assignment line any more, kept because they remain in
+    # --- commits already pushed and a history scan still reaches them.
+    # --- Re-measured 2026-11-07; each line states where the value is now.
 
+    # 3 tracked files, none an assignment line.
     - name: "test fixture: encryption round-trip input"
       match: hunter2
+    # tests/Feature/AuditTest.php, not an assignment line.
     - name: "test fixture: audit record new value"
       match: newsecret
+    # tests/Pest.php -- the envkit_canary() value itself.
     - name: "test fixture: redaction canary"
       match: redaction-canary-not-a-secret
+    # Gone from the tree entirely (removed in #23); survives in 3 commits of
+    # history only. It was grouped above as live until 2026-11-07, which was
+    # wrong -- `API_TOKEN=plaintext-secret` has not existed since #23.
+    - name: "test fixture: pre-encryption plaintext (API_TOKEN), history only"
+      match: plaintext-secret
 
   # A fixture that is genuinely a placeholder should be readable as one. If a
   # finding here is ever anything other than that, fix the code -- do not extend
